@@ -185,11 +185,11 @@ class NativeAdManager(
             .forNativeAd { nativeAd ->
                 isFetchInFlight = false
 
-                val hasStore = !nativeAd.store.isNullOrEmpty()
+                val hasHeadline = !nativeAd.headline.isNullOrEmpty()
                 val hasCallToAction = !nativeAd.callToAction.isNullOrEmpty()
 
-                if (!hasStore || !hasCallToAction) {
-                    val errorMessage = "Ad missing required Store/CallToAction asset"
+                if (!hasHeadline || !hasCallToAction) {
+                    val errorMessage = "Ad missing required Headline/CallToAction asset"
                     Log.w(TAG, errorMessage)
                     nativeAd.destroy()
                     onFailed(errorMessage)
