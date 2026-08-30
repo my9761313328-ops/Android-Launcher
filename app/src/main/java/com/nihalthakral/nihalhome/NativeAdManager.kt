@@ -1,8 +1,11 @@
 package com.nihalthakral.nihalhome
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -38,13 +41,16 @@ class NativeAdManager(
     companion object {
         private const val TAG = "NativeAdManager"
 
-        private const val TEST_NATIVE_AD_UNIT_ID = "ca-app-pub-3940256099942544/2247696110"
+        private const val NATIVE_AD_UNIT_ID = "ca-app-pub-5939817111566865/3197175798"
 
         private const val COOLDOWN_MS = 67_000L
         private const val CACHE_EXPIRY_MS = 40L * 60L * 1000L
         private const val OFFLINE_FALLBACK_TAG = "offline_fallback"
         private const val SHIMMER_TAG = "shimmer_loading"
+        private const val AD_ERROR_TAG = "ad_error"
     }
+
+    private var lastAdErrorMessage: String = "Unknown error"
 
     fun refresh() {
         if (isDestroyed) return
@@ -106,6 +112,32 @@ class NativeAdManager(
         return container.getChildAt(0)?.tag == SHIMMER_TAG
     }
 
+    fun isAdErrorVisible(): Boolean {
+        return container.getChildAt(0)?.tag == AD_ERROR_TAG
+    }
+
+    private fun showAdError(errorMessage: String) {
+        if (isDestroyed) return
+        lastAdErrorMessage = errorMessage
+        displayedNativeAd?.destroy()
+        displayedNativeAd = null
+        container.removeAllViews()
+
+        val view = LayoutInflater.from(appContext)
+            .inflate(R.layout.native_ad_error_layout, container, false)
+        view.tag = AD_ERROR_TAG
+
+        view.findViewById<Button>(R.id.adErrorCopyButton).setOnClickListener {
+            val clipboard = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+            val clip = ClipData.newPlainText("Ad Error", lastAdErrorMessage)
+            clipboard?.setPrimaryClip(clip)
+            Toast.makeText(appContext, "Error copied to clipboard", Toast.LENGTH_SHORT).show()
+        }
+
+        container.addView(view)
+        onDisplayChanged()
+    }
+
     private fun fetchAndShowImmediately() {
         showShimmer()
         fetchAd(
@@ -120,11 +152,10 @@ class NativeAdManager(
                     fetchIntoCache()
                 }
             },
-            onFailed = {
+            onFailed = { errorMessage ->
                 if (!isDestroyed) {
                     hideShimmer()
-                    container.removeAllViews()
-                    onDisplayChanged()
+                    showAdError(errorMessage)
                 }
             }
         )
@@ -146,11 +177,11 @@ class NativeAdManager(
         )
     }
 
-    private fun fetchAd(onLoaded: (NativeAd) -> Unit, onFailed: () -> Unit) {
+    private fun fetchAd(onLoaded: (NativeAd) -> Unit, onFailed: (String) -> Unit) {
         if (isFetchInFlight) return
         isFetchInFlight = true
 
-        val adLoader = AdLoader.Builder(appContext, TEST_NATIVE_AD_UNIT_ID)
+        val adLoader = AdLoader.Builder(appContext, NATIVE_AD_UNIT_ID)
             .forNativeAd { nativeAd ->
                 isFetchInFlight = false
 
@@ -158,9 +189,10 @@ class NativeAdManager(
                 val hasCallToAction = !nativeAd.callToAction.isNullOrEmpty()
 
                 if (!hasStore || !hasCallToAction) {
-                    Log.w(TAG, "Ad missing Store/Install CTA, discarding")
+                    val errorMessage = "Ad missing required Store/CallToAction asset"
+                    Log.w(TAG, errorMessage)
                     nativeAd.destroy()
-                    onFailed()
+                    onFailed(errorMessage)
                     return@forNativeAd
                 }
 
@@ -169,8 +201,10 @@ class NativeAdManager(
             .withAdListener(object : AdListener() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     isFetchInFlight = false
-                    Log.e(TAG, "Native ad failed to load: ${adError.message}")
-                    onFailed()
+                    val errorMessage = "Code ${adError.code}: ${adError.message} " +
+                        "(domain: ${adError.domain})"
+                    Log.e(TAG, "Native ad failed to load: $errorMessage")
+                    onFailed(errorMessage)
                 }
             })
             .withNativeAdOptions(
