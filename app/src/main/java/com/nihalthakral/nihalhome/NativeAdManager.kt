@@ -184,18 +184,6 @@ class NativeAdManager(
         val adLoader = AdLoader.Builder(appContext, NATIVE_AD_UNIT_ID)
             .forNativeAd { nativeAd ->
                 isFetchInFlight = false
-
-                val hasHeadline = !nativeAd.headline.isNullOrEmpty()
-                val hasCallToAction = !nativeAd.callToAction.isNullOrEmpty()
-
-                if (!hasHeadline || !hasCallToAction) {
-                    val errorMessage = "Ad missing required Headline/CallToAction asset"
-                    Log.w(TAG, errorMessage)
-                    nativeAd.destroy()
-                    onFailed(errorMessage)
-                    return@forNativeAd
-                }
-
                 onLoaded(nativeAd)
             }
             .withAdListener(object : AdListener() {
@@ -248,7 +236,7 @@ class NativeAdManager(
         val headlineView = adView.findViewById<TextView>(R.id.ad_headline)
         val ctaView = adView.findViewById<Button>(R.id.ad_call_to_action)
 
-        headlineView.text = nativeAd.headline
+        headlineView.text = nativeAd.headline ?: ""
         adView.headlineView = headlineView
 
         val icon = nativeAd.icon
@@ -260,7 +248,7 @@ class NativeAdManager(
         }
         adView.iconView = iconView
 
-        ctaView.text = nativeAd.callToAction
+        ctaView.text = nativeAd.callToAction ?: ""
         adView.callToActionView = ctaView
 
         adView.setNativeAd(nativeAd)
