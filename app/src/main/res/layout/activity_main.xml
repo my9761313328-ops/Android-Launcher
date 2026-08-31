@@ -21,25 +21,63 @@
             android:paddingTop="24dp"
             android:paddingBottom="40dp">
 
-            <TextView
-                android:id="@+id/greetingText"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="26sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.02"
-                android:textColor="@color/text_primary"
-                tools:text="09:07 AM 🌄" />
+                android:orientation="horizontal"
+                android:gravity="top">
 
-            <TextView
-                android:id="@+id/dateText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="20dp"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                tools:text="Friday, 21 August" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/greetingText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.02"
+                        android:textColor="@color/text_primary"
+                        tools:text="09:07 AM 🌄" />
+
+                    <TextView
+                        android:id="@+id/dateText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_secondary"
+                        tools:text="Friday, 21 August" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/testingButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="12dp"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:background="@drawable/bg_ad_cta_button"
+                    android:textColor="@color/ad_cta_text"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textAllCaps="false"
+                    android:elevation="0dp"
+                    android:stateListAnimator="@null"
+                    android:text="Testing" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="18dp" />
+
 
             <LinearLayout
                 android:id="@+id/searchBarContainer"
