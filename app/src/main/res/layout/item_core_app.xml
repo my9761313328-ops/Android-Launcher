@@ -7,14 +7,14 @@
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingStart="10dp"
-    android:paddingTop="8dp"
+    android:paddingTop="4dp"
     android:paddingEnd="10dp"
-    android:paddingBottom="8dp">
+    android:paddingBottom="4dp">
 
     <ImageView
         android:id="@+id/appIcon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:contentDescription="@null" />
 
     <TextView
@@ -26,12 +26,13 @@
         android:gravity="center"
         android:maxLines="1"
         android:textColor="@color/text_primary"
-        android:textSize="13sp"
+        android:textSize="15sp"
+        android:textStyle="bold"
         tools:text="Settings"
         xmlns:tools="http://schemas.android.com/tools" />
 
     <Space
-        android:layout_width="32dp"
+        android:layout_width="40dp"
         android:layout_height="1dp" />
 
 </LinearLayout>
