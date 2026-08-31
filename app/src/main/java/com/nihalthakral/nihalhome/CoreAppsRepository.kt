@@ -17,7 +17,7 @@ object CoreAppsRepository {
             key = "phone",
             aliases = listOf(
                 "phone", "dialer", "calls", "call", "phone dialer",
-                "contacts & dialer", "telephone"
+                "contacts & dialer", "telephone", "contacts", "contact"
             )
         ),
         CoreAppCategory(
