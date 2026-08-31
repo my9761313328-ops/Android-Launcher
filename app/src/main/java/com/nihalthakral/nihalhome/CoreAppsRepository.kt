@@ -93,10 +93,7 @@ object CoreAppsRepository {
 
                 val tier = when {
                     normalizedLabel == normalizedAlias -> 0
-
                     containsWholeWord(normalizedLabel, normalizedAlias) -> 1
-                    normalizedLabel.contains(normalizedAlias) -> 2
-                    normalizedAlias.contains(normalizedLabel) -> 3
                     else -> continue
                 }
 
