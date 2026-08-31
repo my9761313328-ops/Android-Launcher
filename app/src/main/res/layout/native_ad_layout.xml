@@ -11,7 +11,7 @@
         android:gravity="center_vertical"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        android:paddingTop="26dp"
+        android:paddingTop="12dp"
         android:paddingBottom="12dp">
 
         <ImageView
@@ -43,6 +43,21 @@
                 app:autoSizeMinTextSize="12sp"
                 app:autoSizeMaxTextSize="17sp"
                 app:autoSizeStepGranularity="1sp" />
+
+            <TextView
+                android:id="@+id/ad_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="16dp"
+                android:layout_marginTop="4dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:gravity="center"
+                android:background="@drawable/bg_ad_badge"
+                android:text="Sponsored"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textAllCaps="false" />
         </LinearLayout>
 
         <Button
@@ -64,22 +79,5 @@
             android:elevation="0dp"
             android:stateListAnimator="@null" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/ad_badge"
-        android:layout_width="wrap_content"
-        android:layout_height="16dp"
-        android:layout_gravity="top|start"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="6dp"
-        android:paddingStart="6dp"
-        android:paddingEnd="6dp"
-        android:gravity="center"
-        android:background="@drawable/bg_ad_badge"
-        android:text="Ad"
-        android:textColor="@android:color/white"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        android:textAllCaps="false" />
 
 </com.google.android.gms.ads.nativead.NativeAdView>
