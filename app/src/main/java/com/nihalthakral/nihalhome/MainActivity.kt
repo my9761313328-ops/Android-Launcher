@@ -327,8 +327,14 @@ class MainActivity : ComponentActivity() {
             allApps
         }
 
+        val roleCandidates = try {
+            AppRepository.loadRoleCandidates(this)
+        } catch (e: Exception) {
+            emptyMap()
+        }
+
         val coreApps = try {
-            CoreAppsRepository.detectCoreApps(matchPool)
+            CoreAppsRepository.detectCoreApps(matchPool, roleCandidates)
         } catch (e: Exception) {
             emptyList()
         }
@@ -422,8 +428,13 @@ class MainActivity : ComponentActivity() {
             } catch (e: Exception) {
                 allApps
             }
+            val roleCandidates = try {
+                AppRepository.loadRoleCandidates(this)
+            } catch (e: Exception) {
+                emptyMap()
+            }
             val coreApps = try {
-                CoreAppsRepository.detectCoreApps(matchPool)
+                CoreAppsRepository.detectCoreApps(matchPool, roleCandidates)
             } catch (e: Exception) {
                 emptyList()
             }
