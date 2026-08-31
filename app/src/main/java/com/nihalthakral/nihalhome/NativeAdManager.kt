@@ -35,6 +35,7 @@ class NativeAdManager(
 
     private var isFetchInFlight = false
     private var isDestroyed = false
+    private var lastErrorMessage: String? = null
 
     companion object {
         private const val TAG = "NativeAdManager"
@@ -45,6 +46,7 @@ class NativeAdManager(
         private const val CACHE_EXPIRY_MS = 40L * 60L * 1000L
         private const val OFFLINE_FALLBACK_TAG = "offline_fallback"
         private const val SHIMMER_TAG = "shimmer_loading"
+        private const val FAILED_TAG = "ad_failed"
     }
 
     fun refresh() {
@@ -107,6 +109,14 @@ class NativeAdManager(
         return container.getChildAt(0)?.tag == SHIMMER_TAG
     }
 
+    fun isFailedVisible(): Boolean {
+        return container.getChildAt(0)?.tag == FAILED_TAG
+    }
+
+    fun getLastError(): String {
+        return lastErrorMessage ?: "Unknown"
+    }
+
     private fun fetchAndShowImmediately() {
         showShimmer()
         fetchAd(
@@ -121,10 +131,15 @@ class NativeAdManager(
                     fetchIntoCache()
                 }
             },
-            onFailed = {
+            onFailed = { errorMsg ->
                 if (!isDestroyed) {
                     hideShimmer()
+                    lastErrorMessage = errorMsg
                     container.removeAllViews()
+                    val failedView = View(appContext)
+                    failedView.tag = FAILED_TAG
+                    failedView.layoutParams = FrameLayout.LayoutParams(0, 0)
+                    container.addView(failedView)
                     onDisplayChanged()
                 }
             }
@@ -141,19 +156,19 @@ class NativeAdManager(
                     cacheTime = System.currentTimeMillis()
                 }
             },
-            onFailed = {
-
+            onFailed = { errorMsg ->
+                lastErrorMessage = errorMsg
             }
         )
     }
 
-    private fun fetchAd(onLoaded: (NativeAd) -> Unit, onFailed: () -> Unit) {
+    private fun fetchAd(onLoaded: (NativeAd) -> Unit, onFailed: (String) -> Unit) {
         if (isFetchInFlight) return
 
         val now = System.currentTimeMillis()
         if (lastRequestTime != 0L && (now - lastRequestTime) < COOLDOWN_MS) {
             Log.d(TAG, "Request cooldown active, skipping ad request")
-            onFailed()
+            onFailed("Cooldown active")
             return
         }
 
@@ -169,7 +184,7 @@ class NativeAdManager(
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     isFetchInFlight = false
                     Log.e(TAG, "Native ad failed to load: ${adError.message}")
-                    onFailed()
+                    onFailed("${adError.code}: ${adError.message}")
                 }
             })
             .withNativeAdOptions(
