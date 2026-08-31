@@ -19,6 +19,25 @@
             <action android:name="android.settings.APPLICATION_DETAILS_SETTINGS" />
             <data android:scheme="package" />
         </intent>
+
+        <!-- Needed so PackageManager.queryIntentActivities() can still find
+             the real system Phone/Messages/Camera/Contacts app on OEM
+             builds where that app hides its launcher-visible activity
+             (Android 11+ package visibility). See AppRepository.loadRoleCandidates. -->
+        <intent>
+            <action android:name="android.intent.action.DIAL" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="smsto" />
+        </intent>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:mimeType="vnd.android.cursor.dir/contact" />
+        </intent>
     </queries>
 
     <application
