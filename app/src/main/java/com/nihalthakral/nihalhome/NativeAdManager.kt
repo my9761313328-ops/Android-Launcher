@@ -153,17 +153,6 @@ class NativeAdManager(
         val adLoader = AdLoader.Builder(appContext, TEST_NATIVE_AD_UNIT_ID)
             .forNativeAd { nativeAd ->
                 isFetchInFlight = false
-
-                val hasStore = !nativeAd.store.isNullOrEmpty()
-                val hasCallToAction = !nativeAd.callToAction.isNullOrEmpty()
-
-                if (!hasStore || !hasCallToAction) {
-                    Log.w(TAG, "Ad missing Store/Install CTA, discarding")
-                    nativeAd.destroy()
-                    onFailed()
-                    return@forNativeAd
-                }
-
                 onLoaded(nativeAd)
             }
             .withAdListener(object : AdListener() {
@@ -214,7 +203,12 @@ class NativeAdManager(
         val headlineView = adView.findViewById<TextView>(R.id.ad_headline)
         val ctaView = adView.findViewById<Button>(R.id.ad_call_to_action)
 
-        headlineView.text = nativeAd.headline
+        if (!nativeAd.headline.isNullOrEmpty()) {
+            headlineView.text = nativeAd.headline
+            headlineView.visibility = View.VISIBLE
+        } else {
+            headlineView.visibility = View.INVISIBLE
+        }
         adView.headlineView = headlineView
 
         val icon = nativeAd.icon
@@ -226,7 +220,12 @@ class NativeAdManager(
         }
         adView.iconView = iconView
 
-        ctaView.text = nativeAd.callToAction
+        if (!nativeAd.callToAction.isNullOrEmpty()) {
+            ctaView.text = nativeAd.callToAction
+            ctaView.visibility = View.VISIBLE
+        } else {
+            ctaView.visibility = View.INVISIBLE
+        }
         adView.callToActionView = ctaView
 
         adView.setNativeAd(nativeAd)
