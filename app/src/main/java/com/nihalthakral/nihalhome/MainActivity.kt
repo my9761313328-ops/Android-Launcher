@@ -176,7 +176,7 @@ class MainActivity : ComponentActivity() {
         label.text = when {
             nativeAdManager?.isOfflineFallbackVisible() == true -> "Offline Game For You"
             nativeAdManager?.isShimmerVisible() == true -> "Sponsorship Not Found"
-            else -> "Sponsored App For You"
+            else -> "Sponsored • For You"
         }
     }
 
