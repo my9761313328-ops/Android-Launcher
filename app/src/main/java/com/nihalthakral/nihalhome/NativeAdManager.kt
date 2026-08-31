@@ -38,7 +38,7 @@ class NativeAdManager(
     companion object {
         private const val TAG = "NativeAdManager"
 
-        private const val TEST_NATIVE_AD_UNIT_ID = "ca-app-pub-3940256099942544/2247696110"
+        private const val NATIVE_AD_UNIT_ID = "ca-app-pub-5939817111566865/3197175798"
 
         private const val COOLDOWN_MS = 67_000L
         private const val CACHE_EXPIRY_MS = 40L * 60L * 1000L
@@ -150,7 +150,7 @@ class NativeAdManager(
         if (isFetchInFlight) return
         isFetchInFlight = true
 
-        val adLoader = AdLoader.Builder(appContext, TEST_NATIVE_AD_UNIT_ID)
+        val adLoader = AdLoader.Builder(appContext, NATIVE_AD_UNIT_ID)
             .forNativeAd { nativeAd ->
                 isFetchInFlight = false
                 onLoaded(nativeAd)
