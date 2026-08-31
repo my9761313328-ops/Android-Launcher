@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
     private var allApps: List<AppInfo> = emptyList()
     private lateinit var frequentAdapter: FrequentAppsAdapter
     private lateinit var allAppsAdapter: AllAppsAdapter
-    private lateinit var coreAppsAdapter: FrequentAppsAdapter
+    private lateinit var coreAppsAdapter: CoreAppsAdapter
 
     private var homeScreenReady = false
     private var searchInput: EditText? = null
@@ -258,11 +258,11 @@ class MainActivity : ComponentActivity() {
         coreAppsRecycler = coreAppsRecyclerView
         coreAppsRecyclerView.itemAnimator = null
         coreAppsRecyclerView.setHasFixedSize(false)
-        coreAppsAdapter = FrequentAppsAdapter(
+        coreAppsAdapter = CoreAppsAdapter(
             onClick = { launchApp(it) },
             onLongClick = { app, view -> showAppContextMenu(app, view) }
         )
-        coreAppsRecyclerView.layoutManager = GridLayoutManager(this, 4)
+        coreAppsRecyclerView.layoutManager = GridLayoutManager(this, 2)
         coreAppsRecyclerView.adapter = coreAppsAdapter
 
         val sponsoredContainer = findViewById<FrameLayout>(R.id.sponsoredContainer)
