@@ -321,12 +321,18 @@ class MainActivity : ComponentActivity() {
         allApps = AppRepository.loadApps(this)
         applyFilter((findViewById<EditText>(R.id.searchInput)).text?.toString().orEmpty())
 
+        val matchPool = try {
+            AppRepository.loadAllInstalledApps(this)
+        } catch (e: Exception) {
+            allApps
+        }
+
         val coreApps = try {
-            CoreAppsRepository.detectCoreApps(allApps)
+            CoreAppsRepository.detectCoreApps(matchPool)
         } catch (e: Exception) {
             emptyList()
         }
-        updateFrequentApps(coreApps)
+        updateFrequentApps(coreApps, matchPool)
         updateCoreApps(coreApps)
     }
 
@@ -344,7 +350,7 @@ class MainActivity : ComponentActivity() {
         allAppsAdapter.submit(filtered, grouped = trimmed.isEmpty())
     }
 
-    private fun updateFrequentApps(coreApps: List<AppInfo>) {
+    private fun updateFrequentApps(coreApps: List<AppInfo>, matchPool: List<AppInfo> = allApps) {
         val usedPackages = mutableSetOf<String>()
         usedPackages.addAll(coreApps.map { it.packageName })
         val result = mutableListOf<AppInfo>()
@@ -360,7 +366,7 @@ class MainActivity : ComponentActivity() {
         if (result.size < UsageStore.MAX_FREQUENT_APPS) {
             val remaining = UsageStore.MAX_FREQUENT_APPS - result.size
             val fallbackApps = try {
-                FallbackAppsRepository.detectFallbackApps(allApps, usedPackages)
+                FallbackAppsRepository.detectFallbackApps(matchPool, usedPackages)
             } catch (e: Exception) {
                 emptyList()
             }.take(remaining)
@@ -411,12 +417,17 @@ class MainActivity : ComponentActivity() {
             startActivity(intent)
             overridePendingTransition(0, 0)
             usageStore.recordLaunch(app.packageName)
+            val matchPool = try {
+                AppRepository.loadAllInstalledApps(this)
+            } catch (e: Exception) {
+                allApps
+            }
             val coreApps = try {
-                CoreAppsRepository.detectCoreApps(allApps)
+                CoreAppsRepository.detectCoreApps(matchPool)
             } catch (e: Exception) {
                 emptyList()
             }
-            updateFrequentApps(coreApps)
+            updateFrequentApps(coreApps, matchPool)
         } catch (e: Exception) {
 
         }
