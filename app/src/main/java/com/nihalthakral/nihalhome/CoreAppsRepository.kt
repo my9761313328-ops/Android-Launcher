@@ -91,16 +91,9 @@ object CoreAppsRepository {
             for ((aliasIndex, normalizedAlias) in category.normalizedAliases.withIndex()) {
                 if (normalizedAlias.isEmpty()) continue
 
-                val tier = when {
-                    normalizedLabel == normalizedAlias -> 0
+                if (normalizedLabel != normalizedAlias) continue
 
-                    containsWholeWord(normalizedLabel, normalizedAlias) -> 1
-                    normalizedLabel.contains(normalizedAlias) -> 2
-                    normalizedAlias.contains(normalizedLabel) -> 3
-                    else -> continue
-                }
-
-                val score = tier * 1000 + aliasIndex
+                val score = aliasIndex
                 if (score < bestScore) {
                     bestScore = score
                     bestApp = app
@@ -109,11 +102,6 @@ object CoreAppsRepository {
         }
 
         return bestApp
-    }
-
-    private fun containsWholeWord(text: String, word: String): Boolean {
-        val words = text.split(" ")
-        return words.any { it == word }
     }
 
     private fun normalize(input: String): String {
