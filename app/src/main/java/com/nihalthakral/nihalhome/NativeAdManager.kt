@@ -164,7 +164,7 @@ class NativeAdManager(
             })
             .withNativeAdOptions(
                 NativeAdOptions.Builder()
-                    .setAdChoicesPlacement(NativeAdOptions.ADCHOICES_TOP_LEFT)
+                    .setAdChoicesPlacement(NativeAdOptions.ADCHOICES_BOTTOM_LEFT)
                     .build()
             )
             .build()
