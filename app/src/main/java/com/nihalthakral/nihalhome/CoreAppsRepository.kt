@@ -7,6 +7,7 @@ object CoreAppsRepository {
 
     private class CoreAppCategory(
         val key: String,
+        val displayLabel: String,
         aliases: List<String>
     ) {
         val normalizedAliases: List<String> = aliases.map { normalize(it) }
@@ -15,6 +16,7 @@ object CoreAppsRepository {
     private val CATEGORIES = listOf(
         CoreAppCategory(
             key = "phone",
+            displayLabel = "Phone",
             aliases = listOf(
                 "phone", "dialer", "calls", "call", "phone dialer",
                 "contacts & dialer", "telephone"
@@ -22,6 +24,7 @@ object CoreAppsRepository {
         ),
         CoreAppCategory(
             key = "messages",
+            displayLabel = "Messages",
             aliases = listOf(
                 "messages", "message", "messaging", "sms", "text", "texts",
                 "sms messenger", "textra", "messages sms"
@@ -29,10 +32,12 @@ object CoreAppsRepository {
         ),
         CoreAppCategory(
             key = "camera",
+            displayLabel = "Camera",
             aliases = listOf("camera", "cam")
         ),
         CoreAppCategory(
             key = "gallery",
+            displayLabel = "Gallery",
             aliases = listOf(
                 "gallery", "photos", "photo", "images", "google photos",
                 "media", "album", "albums", "picture", "pictures"
@@ -40,14 +45,17 @@ object CoreAppsRepository {
         ),
         CoreAppCategory(
             key = "clock",
+            displayLabel = "Clock",
             aliases = listOf("clock", "alarm", "alarms", "clock & alarm", "deskclock")
         ),
         CoreAppCategory(
             key = "calculator",
+            displayLabel = "Calculator",
             aliases = listOf("calculator", "calc")
         ),
         CoreAppCategory(
             key = "files",
+            displayLabel = "Files",
             aliases = listOf(
                 "files", "file manager", "my files", "file explorer",
                 "files by google", "explorer", "file", "filemanager"
@@ -55,6 +63,7 @@ object CoreAppsRepository {
         ),
         CoreAppCategory(
             key = "settings",
+            displayLabel = "Settings",
             aliases = listOf("settings", "setting", "system settings")
         )
     )
@@ -73,7 +82,7 @@ object CoreAppsRepository {
         for (category in CATEGORIES) {
             val match = resolveCategory(apps, category, roleCandidates, usedPackages) ?: continue
             usedPackages.add(match.packageName)
-            result.add(match)
+            result.add(match.copy(label = category.displayLabel))
         }
 
         return result
