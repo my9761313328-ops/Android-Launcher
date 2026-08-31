@@ -44,6 +44,43 @@ class FrequentAppsAdapter(
     override fun getItemCount(): Int = items.size
 }
 
+class CoreAppsAdapter(
+    private val onClick: (AppInfo) -> Unit,
+    private val onLongClick: (AppInfo, View) -> Unit
+) : RecyclerView.Adapter<CoreAppsAdapter.ViewHolder>() {
+
+    private var items: List<AppInfo> = emptyList()
+
+    fun submitList(newItems: List<AppInfo>) {
+        items = newItems
+        notifyDataSetChanged()
+    }
+
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val icon: ImageView = view.findViewById(R.id.appIcon)
+        val name: TextView = view.findViewById(R.id.appName)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_core_app, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val app = items[position]
+        holder.icon.setImageDrawable(app.icon)
+        holder.name.text = app.label
+        holder.itemView.setOnClickListener { onClick(app) }
+        holder.itemView.setOnLongClickListener {
+            onLongClick(app, it)
+            true
+        }
+    }
+
+    override fun getItemCount(): Int = items.size
+}
+
 sealed class AppRow {
     data class Header(val letter: String) : AppRow()
     data class Item(val app: AppInfo) : AppRow()
