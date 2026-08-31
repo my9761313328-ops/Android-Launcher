@@ -72,15 +72,9 @@ object FallbackAppsRepository {
             for ((aliasIndex, normalizedAlias) in popular.normalizedAliases.withIndex()) {
                 if (normalizedAlias.isEmpty()) continue
 
-                val tier = when {
-                    normalizedLabel == normalizedAlias -> 0
-                    containsWholeWord(normalizedLabel, normalizedAlias) -> 1
-                    normalizedLabel.contains(normalizedAlias) -> 2
-                    normalizedAlias.contains(normalizedLabel) -> 3
-                    else -> continue
-                }
+                if (normalizedLabel != normalizedAlias) continue
 
-                val score = tier * 1000 + aliasIndex
+                val score = aliasIndex
                 if (score < bestScore) {
                     bestScore = score
                     bestApp = app
@@ -89,11 +83,6 @@ object FallbackAppsRepository {
         }
 
         return bestApp
-    }
-
-    private fun containsWholeWord(text: String, word: String): Boolean {
-        val words = text.split(" ")
-        return words.any { it == word }
     }
 
     private fun normalize(input: String): String {
