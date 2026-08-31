@@ -31,8 +31,4 @@
         tools:text="Settings"
         xmlns:tools="http://schemas.android.com/tools" />
 
-    <Space
-        android:layout_width="40dp"
-        android:layout_height="1dp" />
-
 </LinearLayout>
