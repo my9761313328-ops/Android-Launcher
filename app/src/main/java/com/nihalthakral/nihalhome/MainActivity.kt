@@ -271,6 +271,10 @@ class MainActivity : ComponentActivity() {
         }
         updateSponsoredSection()
 
+        findViewById<Button>(R.id.testingButton).setOnClickListener {
+            startActivity(Intent(this, TestAdsActivity::class.java))
+        }
+
         setupSearch()
         updateGreetingAndDate()
         refreshApps()
