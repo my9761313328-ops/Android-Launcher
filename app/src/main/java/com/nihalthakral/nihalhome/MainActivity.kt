@@ -174,7 +174,7 @@ class MainActivity : ComponentActivity() {
     private fun updateSponsoredLabel() {
         val label = findViewById<TextView>(R.id.sponsoredLabel)
         label.text = when {
-            nativeAdManager?.isOfflineFallbackVisible() == true -> "Offline Game For You"
+            nativeAdManager?.isOfflineFallbackVisible() == true -> "Offline Game • For You"
             nativeAdManager?.isShimmerVisible() == true -> "Sponsorship Not Found"
             else -> "Sponsored • For You"
         }
