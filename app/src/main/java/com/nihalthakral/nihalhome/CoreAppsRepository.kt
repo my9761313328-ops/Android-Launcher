@@ -32,17 +32,6 @@ object CoreAppsRepository {
             aliases = listOf("camera", "cam")
         ),
         CoreAppCategory(
-            key = "settings",
-            aliases = listOf("settings", "setting", "system settings")
-        ),
-        CoreAppCategory(
-            key = "files",
-            aliases = listOf(
-                "files", "file manager", "my files", "file explorer",
-                "files by google", "explorer", "file", "filemanager"
-            )
-        ),
-        CoreAppCategory(
             key = "gallery",
             aliases = listOf(
                 "gallery", "photos", "photo", "images", "google photos",
@@ -56,6 +45,17 @@ object CoreAppsRepository {
         CoreAppCategory(
             key = "calculator",
             aliases = listOf("calculator", "calc")
+        ),
+        CoreAppCategory(
+            key = "files",
+            aliases = listOf(
+                "files", "file manager", "my files", "file explorer",
+                "files by google", "explorer", "file", "filemanager"
+            )
+        ),
+        CoreAppCategory(
+            key = "settings",
+            aliases = listOf("settings", "setting", "system settings")
         )
     )
 
