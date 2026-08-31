@@ -35,6 +35,7 @@
             android:launchMode="singleTask"
             android:stateNotNeeded="true"
             android:excludeFromRecents="true"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:theme="@style/Theme.NihalHome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
