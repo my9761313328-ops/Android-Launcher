@@ -145,15 +145,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Core Apps"
-                        android:textSize="13sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_secondary" />
-
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/coreAppsRecycler"
                         android:layout_width="match_parent"
