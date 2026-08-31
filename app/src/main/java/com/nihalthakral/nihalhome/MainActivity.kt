@@ -126,6 +126,8 @@ class MainActivity : ComponentActivity() {
             val input = searchInput
             if (input != null && input.hasFocus()) {
                 input.clearFocus()
+                input.isFocusable = false
+                input.isFocusableInTouchMode = false
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
                 imm?.hideSoftInputFromWindow(input.windowToken, 0)
                 return true
@@ -189,6 +191,8 @@ class MainActivity : ComponentActivity() {
             input.setText("")
         }
         input.clearFocus()
+        input.isFocusable = false
+        input.isFocusableInTouchMode = false
 
         val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(input.windowToken, 0)
@@ -296,6 +300,8 @@ class MainActivity : ComponentActivity() {
         val searchBarContainer = findViewById<View>(R.id.searchBarContainer)
 
         searchBarContainer.setOnClickListener {
+            searchInput.isFocusableInTouchMode = true
+            searchInput.isFocusable = true
             searchInput.requestFocus()
             val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.showSoftInput(searchInput, InputMethodManager.SHOW_IMPLICIT)
@@ -394,6 +400,8 @@ class MainActivity : ComponentActivity() {
 
             pendingLaunch = app
             input.clearFocus()
+            input.isFocusable = false
+            input.isFocusableInTouchMode = false
             val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.hideSoftInputFromWindow(input.windowToken, 0)
             return
