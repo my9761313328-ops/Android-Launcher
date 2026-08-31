@@ -27,6 +27,7 @@ class NativeAdManager(
     private var cachedNativeAd: NativeAd? = null
     private var cacheTime: Long = 0L
     private var lastAdShownTime: Long = 0L
+    private var lastRequestTime: Long = 0L
 
     private var displayedNativeAd: NativeAd? = null
 
@@ -148,7 +149,16 @@ class NativeAdManager(
 
     private fun fetchAd(onLoaded: (NativeAd) -> Unit, onFailed: () -> Unit) {
         if (isFetchInFlight) return
+
+        val now = System.currentTimeMillis()
+        if (lastRequestTime != 0L && (now - lastRequestTime) < COOLDOWN_MS) {
+            Log.d(TAG, "Request cooldown active, skipping ad request")
+            onFailed()
+            return
+        }
+
         isFetchInFlight = true
+        lastRequestTime = now
 
         val adLoader = AdLoader.Builder(appContext, NATIVE_AD_UNIT_ID)
             .forNativeAd { nativeAd ->
