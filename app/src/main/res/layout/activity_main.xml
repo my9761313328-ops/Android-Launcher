@@ -2,13 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/screen_background">
+    android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/contentScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/screen_background"
         android:clipToPadding="false"
         android:scrollbars="none">
 
@@ -187,5 +187,51 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <FrameLayout
+        android:id="@+id/homeIdleOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/idleClockText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="96dp"
+            android:fontFamily="sans-serif-light"
+            android:textColor="@color/kotetsu_text"
+            android:textSize="56sp"
+            android:textStyle="bold"
+            android:shadowColor="@color/idle_clock_shadow"
+            android:shadowDx="0"
+            android:shadowDy="2"
+            android:shadowRadius="6"
+            tools:text="09:07" />
+
+        <TextView
+            android:id="@+id/kotetsuCapsule"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bg_kotetsu_capsule"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:letterSpacing="0.08"
+            android:text="Kōtetsu"
+            android:textColor="@color/kotetsu_text"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
 
 </FrameLayout>
