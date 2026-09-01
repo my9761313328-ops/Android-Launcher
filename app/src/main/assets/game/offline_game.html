@@ -19,13 +19,14 @@
             --ui-color: #2b4541;
         }
         body {
-            background-color: #0d1117;
+            background-color: #7bd5ce; /* fallback; overridden live by JS to match the current game theme */
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             overflow: hidden;
+            transition: background-color 0.6s ease;
         }
         #gameWrapper {
             position: relative;
@@ -306,7 +307,7 @@ const THEMES = [
         textDark: '#3b2312'
     }
 ];
-const THEME_INTERVAL_MS = 60000; // 1 minute per theme
+const THEME_INTERVAL_MS = 30000; // 30s per theme
 const THEME_TRANSITION_MS = 1200; // smooth cross-fade duration
 const COLOR_KEYS = ['skyTop', 'skyBottom', 'hill', 'ground', 'groundEdge', 'block', 'spike', 'planeBody', 'planeTail', 'planeWindow', 'player', 'playerStroke', 'textDark'];
 
@@ -323,13 +324,32 @@ function lerpColor(hexA, hexB, t) {
     return rgbToHex(a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t);
 }
 
-let theme = cloneTheme(THEMES[0]);       // current (possibly blended) live colors used by all drawing code
-let themeFrom = cloneTheme(THEMES[0]);
-let themeTo = THEMES[0];
+// Starting theme: always the opposite of whatever theme was showing when the
+// player last left the game (not fixed / not random) — persisted so it
+// survives reloads. Falls back to theme 0 if nothing was ever saved.
+const LAST_THEME_KEY = 'block_hop_last_theme';
+const savedThemeIndex = parseInt(localStorage.getItem(LAST_THEME_KEY), 10);
+const startThemeIndex = (Number.isInteger(savedThemeIndex) && THEMES[savedThemeIndex])
+    ? (savedThemeIndex + 1) % THEMES.length
+    : 0;
+
+let theme = cloneTheme(THEMES[startThemeIndex]);       // current (possibly blended) live colors used by all drawing code
+let themeFrom = cloneTheme(THEMES[startThemeIndex]);
+let themeTo = THEMES[startThemeIndex];
 let themeT = 1;                          // 1 = no transition in progress
 let themeTransStart = 0;
-let themeIndex = 0;
+let themeIndex = startThemeIndex;
 const themeStartTimestamp = performance.now();
+
+function saveLastTheme() {
+    try { localStorage.setItem(LAST_THEME_KEY, String(themeIndex)); } catch (e) {}
+}
+saveLastTheme();
+window.addEventListener('pagehide', saveLastTheme);
+window.addEventListener('beforeunload', saveLastTheme);
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') saveLastTheme();
+});
 
 function rebuildSkyGrad() {
     skyGrad = ctx.createLinearGradient(0, 0, 0, h);
@@ -338,13 +358,14 @@ function rebuildSkyGrad() {
 }
 
 function updateTheme(now) {
-    const idx = Math.floor((now - themeStartTimestamp) / THEME_INTERVAL_MS) % THEMES.length;
+    const idx = (startThemeIndex + Math.floor((now - themeStartTimestamp) / THEME_INTERVAL_MS)) % THEMES.length;
     if (idx !== themeIndex) {
         themeIndex = idx;
         themeFrom = cloneTheme(theme); // start the fade from whatever is currently on screen
         themeTo = THEMES[idx];
         themeTransStart = now;
         themeT = 0;
+        saveLastTheme();
     }
     if (themeT < 1) {
         themeT = Math.min(1, (now - themeTransStart) / THEME_TRANSITION_MS);
@@ -355,6 +376,13 @@ function updateTheme(now) {
         theme.blockShade = themeTo.blockShade; // rgba overlay just snaps, no visible harm
         rebuildSkyGrad();
         document.documentElement.style.setProperty('--ui-color', theme.textDark);
+        // Ambient fill: extend the current theme's sky color to whatever
+        // empty space is visible around the game box (wide/tall viewports),
+        // instead of a flat black letterbox. Skipped during GAMEOVER, where
+        // the ambient instead matches the dark overlay (see triggerGameOver).
+        if (gameState !== 'GAMEOVER') {
+            document.body.style.backgroundColor = theme.skyTop;
+        }
     }
 }
 
@@ -550,20 +578,12 @@ for (let i = 0; i < MAX_OBSTACLES; i++) {
     obstaclePool.push({ active: false, x: 0, prevX: 0, y: 0, w: 0, h: 0, type: 'BLOCK', count: 0, passed: false, noScore: false });
 }
 
-// --- Plane spacing + rare "deadly combo" tuning ---
+// --- Plane spacing tuning ---
 // No two planes back-to-back: at least this many frames must pass between
 // plane spawns (~2.6s at 60fps), giving the player a clean read each time.
 const MIN_PLANE_GAP_FRAMES = 160;
-// The dangerous "plane + box/spike directly underneath" pairing (forces a
-// double jump, since running under is blocked and a single jump hits the
-// plane) never shows up until the player has proven they know the ropes,
-// then appears rarely and unpredictably to keep them honest.
-const COMBO_MIN_SCORE = 8;
-const COMBO_MIN_GAP_FRAMES = 320; // keep combos spaced far apart — rare, not spammy
-const COMBO_CHANCE = 0.22;        // even once eligible, most planes stay a plain plane
 
 let lastPlaneSpawnFrame = -Infinity;
-let lastComboSpawnFrame = -Infinity;
 
 function spawnGroundObstacleAt(x, type) {
     const g = obstaclePool.find(o => !o.active);
@@ -619,13 +639,6 @@ function spawnObstacle() {
         obs.y = gY - 100;
 
         lastPlaneSpawnFrame = frame;
-
-        const comboEligible = score >= COMBO_MIN_SCORE && (frame - lastComboSpawnFrame) >= COMBO_MIN_GAP_FRAMES;
-        if (comboEligible && Math.random() < COMBO_CHANCE) {
-            lastComboSpawnFrame = frame;
-            const groundType = Math.random() > 0.5 ? 'SPIKES' : 'BLOCK';
-            spawnGroundObstacleAt(obs.x, groundType);
-        }
     } else {
         obs.w = 34;
         obs.h = 34;
@@ -864,9 +877,12 @@ function init() {
     for (let i = 0; i < particlePool.length; i++) particlePool[i].active = false;
     scoreEl.textContent = '0';
     lastPlaneSpawnFrame = -Infinity;
-    lastComboSpawnFrame = -Infinity;
     scheduleNextSpawn();
 }
+
+// Solid version of #gameOverlay's rgba(28,44,42,0.88) background, used to
+// color the ambient area outside the game box while that screen is up.
+const GAMEOVER_AMBIENT_COLOR = '#1c2c2a';
 
 function triggerGameOver() {
     gameState = 'GAMEOVER';
@@ -896,6 +912,10 @@ function triggerGameOver() {
     }
 
     gameOverlay.classList.add('active');
+
+    // Match the ambient area to the overlay's dark backdrop instead of
+    // leaving it on the bright theme sky color while this screen is up.
+    document.body.style.backgroundColor = GAMEOVER_AMBIENT_COLOR;
 }
 
 function startGame() {
@@ -919,7 +939,7 @@ function onInput(e) {
 }
 
 window.addEventListener('keydown', onInput);
-wrapper.addEventListener('pointerdown', (e) => {
+document.addEventListener('pointerdown', (e) => {
     if (gameState === 'GAMEOVER') return;
     onInput(e);
 }, { passive: true });
@@ -927,6 +947,7 @@ wrapper.addEventListener('pointerdown', (e) => {
 restartBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     gameOverlay.classList.remove('active');
+    document.body.style.backgroundColor = theme.skyTop; // back to the live theme's ambient color
     init();
     gameState = 'PLAYING';
 });
@@ -997,6 +1018,7 @@ function loop(now) {
 
 init();
 gY = groundY();
+document.body.style.backgroundColor = theme.skyTop; // ambient color from the very first frame
 requestAnimationFrame(loop);
 </script>
 </body>
