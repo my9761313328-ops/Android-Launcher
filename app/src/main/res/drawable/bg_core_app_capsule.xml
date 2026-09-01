@@ -5,8 +5,8 @@
     <solid android:color="@android:color/transparent" />
 
     <stroke
-        android:width="0.6dp"
-        android:color="@color/sponsored_border" />
+        android:width="1.4dp"
+        android:color="@color/core_app_border" />
 
     <corners android:radius="24dp" />
 
