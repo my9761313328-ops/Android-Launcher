@@ -45,8 +45,8 @@ class NativeAdManager(
         private const val COOLDOWN_MS = 67_000L
         private const val CACHE_EXPIRY_MS = 40L * 60L * 1000L
         private const val OFFLINE_FALLBACK_TAG = "offline_fallback"
+        private const val AD_FALLBACK_TAG = "ad_fallback"
         private const val SHIMMER_TAG = "shimmer_loading"
-        private const val FAILED_TAG = "ad_failed"
     }
 
     fun refresh() {
@@ -79,6 +79,14 @@ class NativeAdManager(
     }
 
     fun showOfflineFallback() {
+        showGameFallbackCard(OFFLINE_FALLBACK_TAG)
+    }
+
+    private fun showAdErrorFallback() {
+        showGameFallbackCard(AD_FALLBACK_TAG)
+    }
+
+    private fun showGameFallbackCard(tag: String) {
         if (isDestroyed) return
         displayedNativeAd?.destroy()
         displayedNativeAd = null
@@ -90,7 +98,7 @@ class NativeAdManager(
 
         val view = LayoutInflater.from(appContext)
             .inflate(R.layout.offline_game_layout, container, false)
-        view.tag = OFFLINE_FALLBACK_TAG
+        view.tag = tag
         view.findViewById<Button>(R.id.offlineGamePlayButton).setOnClickListener {
             val intent = Intent(appContext, OfflineGameActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -105,12 +113,12 @@ class NativeAdManager(
         return container.getChildAt(0)?.tag == OFFLINE_FALLBACK_TAG
     }
 
-    fun isShimmerVisible(): Boolean {
-        return container.getChildAt(0)?.tag == SHIMMER_TAG
+    fun isAdFallbackVisible(): Boolean {
+        return container.getChildAt(0)?.tag == AD_FALLBACK_TAG
     }
 
-    fun isFailedVisible(): Boolean {
-        return container.getChildAt(0)?.tag == FAILED_TAG
+    fun isShimmerVisible(): Boolean {
+        return container.getChildAt(0)?.tag == SHIMMER_TAG
     }
 
     fun getLastError(): String {
@@ -135,12 +143,7 @@ class NativeAdManager(
                 if (!isDestroyed) {
                     hideShimmer()
                     lastErrorMessage = errorMsg
-                    container.removeAllViews()
-                    val failedView = View(appContext)
-                    failedView.tag = FAILED_TAG
-                    failedView.layoutParams = FrameLayout.LayoutParams(0, 0)
-                    container.addView(failedView)
-                    onDisplayChanged()
+                    showAdErrorFallback()
                 }
             }
         )
