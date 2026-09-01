@@ -12,6 +12,7 @@ import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -28,6 +29,7 @@ import com.google.android.gms.ads.MobileAds
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import kotlin.math.abs
 
 class MainActivity : ComponentActivity() {
 
@@ -54,6 +56,24 @@ class MainActivity : ComponentActivity() {
 
             val delay = 1000 - (System.currentTimeMillis() % 1000)
             clockHandler.postDelayed(this, delay)
+        }
+    }
+
+    // --- Home-screen-like idle overlay ---
+    private var idleOverlay: View? = null
+    private var idleClockText: TextView? = null
+    private var idleTouchStartX = 0f
+    private var idleTouchStartY = 0f
+    private val idleSwipeThresholdPx: Float by lazy { 28 * resources.displayMetrics.density }
+    private val idleFadeDurationMs = 110L
+
+    private val idleClockHandler = Handler(Looper.getMainLooper())
+    private val idleClockTicker = object : Runnable {
+        override fun run() {
+            updateIdleClock()
+
+            val delay = 1000 - (System.currentTimeMillis() % 1000)
+            idleClockHandler.postDelayed(this, delay)
         }
     }
 
@@ -92,7 +112,7 @@ class MainActivity : ComponentActivity() {
             return true
         }
 
-        if (homeScreenReady) {
+        if (homeScreenReady && idleOverlay?.visibility != View.VISIBLE) {
             val scroll = contentScroll
             when (ev.action) {
                 android.view.MotionEvent.ACTION_DOWN -> {
@@ -104,7 +124,7 @@ class MainActivity : ComponentActivity() {
                         val dy = ev.y - pullDownStartY
                         if (dy > pullDownThresholdPx) {
                             pullDownTracking = false
-                            expandNotificationPanel()
+                            showIdleOverlay()
                         } else if (dy < 0) {
 
                             pullDownTracking = false
@@ -136,7 +156,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-
+        if (prefs.getBoolean(KEY_SETUP_DONE, false)) {
+            showIdleOverlay()
+        }
     }
 
     override fun onResume() {
@@ -147,6 +169,9 @@ class MainActivity : ComponentActivity() {
             updateGreetingAndDate()
             clockHandler.removeCallbacks(clockTicker)
             clockHandler.post(clockTicker)
+            updateIdleClock()
+            idleClockHandler.removeCallbacks(idleClockTicker)
+            idleClockHandler.post(idleClockTicker)
             updateSponsoredSection()
         }
     }
@@ -154,11 +179,13 @@ class MainActivity : ComponentActivity() {
     override fun onPause() {
         super.onPause()
         clockHandler.removeCallbacks(clockTicker)
+        idleClockHandler.removeCallbacks(idleClockTicker)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         clockHandler.removeCallbacks(clockTicker)
+        idleClockHandler.removeCallbacks(idleClockTicker)
         nativeAdManager?.destroy()
     }
 
@@ -274,18 +301,81 @@ class MainActivity : ComponentActivity() {
         setupSearch()
         updateGreetingAndDate()
         refreshApps()
+        setupIdleOverlay()
         homeScreenReady = true
     }
 
-    private fun expandNotificationPanel() {
-        try {
-            val statusBarService = getSystemService("statusbar")
-            val statusBarManager = Class.forName("android.app.StatusBarManager")
-            val method = statusBarManager.getMethod("expandNotificationsPanel")
-            method.invoke(statusBarService)
-        } catch (e: Exception) {
+    private fun setupIdleOverlay() {
+        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
 
+        val overlay = findViewById<View>(R.id.homeIdleOverlay)
+        idleOverlay = overlay
+        idleClockText = findViewById(R.id.idleClockText)
+
+        overlay.alpha = 1f
+        overlay.visibility = View.VISIBLE
+        updateIdleClock()
+
+        overlay.setOnTouchListener { _, event -> handleIdleOverlayTouch(event) }
+
+        findViewById<View>(R.id.kotetsuCapsule).setOnClickListener {
+            startActivity(Intent(this, KotetsuActivity::class.java))
+            overridePendingTransition(0, 0)
         }
+    }
+
+    private fun handleIdleOverlayTouch(event: android.view.MotionEvent): Boolean {
+        when (event.action) {
+            android.view.MotionEvent.ACTION_DOWN -> {
+                idleTouchStartX = event.x
+                idleTouchStartY = event.y
+            }
+            android.view.MotionEvent.ACTION_UP -> {
+                val dx = event.x - idleTouchStartX
+                val dy = event.y - idleTouchStartY
+                if (abs(dx) > idleSwipeThresholdPx || abs(dy) > idleSwipeThresholdPx) {
+                    revealMainScreen()
+                }
+            }
+        }
+        return true
+    }
+
+    private fun revealMainScreen() {
+        val overlay = idleOverlay ?: return
+        if (overlay.visibility != View.VISIBLE) return
+
+        overlay.animate().cancel()
+        overlay.animate()
+            .alpha(0f)
+            .setDuration(idleFadeDurationMs)
+            .withEndAction {
+                overlay.visibility = View.GONE
+                overlay.alpha = 1f
+            }
+            .start()
+    }
+
+    private fun showIdleOverlay() {
+        val overlay = idleOverlay ?: return
+        if (overlay.visibility == View.VISIBLE) return
+
+        resetUIState()
+        updateIdleClock()
+
+        overlay.animate().cancel()
+        overlay.alpha = 0f
+        overlay.visibility = View.VISIBLE
+        overlay.animate()
+            .alpha(1f)
+            .setDuration(idleFadeDurationMs)
+            .start()
+    }
+
+    private fun updateIdleClock() {
+        val clock = idleClockText ?: return
+        val timeFormat = SimpleDateFormat("hh:mm", Locale.getDefault())
+        clock.text = timeFormat.format(Calendar.getInstance().time)
     }
 
     private fun setupSearch() {
