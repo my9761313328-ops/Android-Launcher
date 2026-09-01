@@ -10,5 +10,11 @@
     <color name="divider">#E2E2E5</color>
     <color name="ad_cta_text">#FFFFFF</color>
     <color name="shimmer_placeholder">#E4E4E8</color>
+
+    <color name="kotetsu_dark_charcoal">#1B1B1D</color>
+    <color name="kotetsu_crimson_red">#9E1B32</color>
+    <color name="kotetsu_steel_silver">#B8BCC2</color>
+    <color name="kotetsu_text">#F2F1EE</color>
+    <color name="idle_clock_shadow">#66000000</color>
 </resources>
 
