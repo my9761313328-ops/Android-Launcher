@@ -19,6 +19,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.NestedScrollView
@@ -345,6 +346,8 @@ class MainActivity : ComponentActivity() {
         val overlay = idleOverlay ?: return
         if (overlay.visibility != View.VISIBLE) return
 
+        contentScroll?.setBackgroundColor(ContextCompat.getColor(this, R.color.screen_background))
+
         overlay.animate().cancel()
         overlay.animate()
             .alpha(0f)
@@ -362,6 +365,7 @@ class MainActivity : ComponentActivity() {
 
         resetUIState()
         updateIdleClock()
+        contentScroll?.background = null
 
         overlay.animate().cancel()
         overlay.alpha = 0f
