@@ -315,6 +315,8 @@ class MainActivity : ComponentActivity() {
 
         overlay.alpha = 1f
         overlay.visibility = View.VISIBLE
+        contentScroll?.background = null
+        contentScroll?.visibility = View.INVISIBLE
         updateIdleClock()
 
         overlay.setOnTouchListener { _, event -> handleIdleOverlayTouch(event) }
@@ -347,6 +349,7 @@ class MainActivity : ComponentActivity() {
         if (overlay.visibility != View.VISIBLE) return
 
         contentScroll?.setBackgroundColor(ContextCompat.getColor(this, R.color.screen_background))
+        contentScroll?.visibility = View.VISIBLE
 
         overlay.animate().cancel()
         overlay.animate()
@@ -366,6 +369,7 @@ class MainActivity : ComponentActivity() {
         resetUIState()
         updateIdleClock()
         contentScroll?.background = null
+        contentScroll?.visibility = View.INVISIBLE
 
         overlay.animate().cancel()
         overlay.alpha = 0f
