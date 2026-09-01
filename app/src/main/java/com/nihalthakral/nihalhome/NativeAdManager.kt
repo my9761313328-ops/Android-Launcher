@@ -228,12 +228,21 @@ class NativeAdManager(
         val headlineView = adView.findViewById<TextView>(R.id.ad_headline)
         val ctaView = adView.findViewById<Button>(R.id.ad_call_to_action)
 
+        val badgeView = adView.findViewById<TextView>(R.id.ad_badge)
+
         if (!nativeAd.headline.isNullOrEmpty()) {
             headlineView.text = nativeAd.headline
             headlineView.visibility = View.VISIBLE
+            (badgeView.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
+                it.topMargin = (4 * appContext.resources.displayMetrics.density).toInt()
+            }
         } else {
-            headlineView.visibility = View.INVISIBLE
+            headlineView.visibility = View.GONE
+            (badgeView.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
+                it.topMargin = 0
+            }
         }
+        badgeView.requestLayout()
         adView.headlineView = headlineView
 
         val icon = nativeAd.icon
@@ -241,7 +250,7 @@ class NativeAdManager(
             iconView.setImageDrawable(icon.drawable)
             iconView.visibility = View.VISIBLE
         } else {
-            iconView.visibility = View.INVISIBLE
+            iconView.visibility = View.GONE
         }
         adView.iconView = iconView
 
@@ -249,7 +258,7 @@ class NativeAdManager(
             ctaView.text = nativeAd.callToAction
             ctaView.visibility = View.VISIBLE
         } else {
-            ctaView.visibility = View.INVISIBLE
+            ctaView.visibility = View.GONE
         }
         adView.callToActionView = ctaView
 
