@@ -265,33 +265,12 @@ class NativeAdManager(
                     mediaContainer.setBackgroundColor(ambientColor)
                 }
             }
-
-            // Size the media box to the media's own aspect ratio instead
-            // of the fixed placeholder height, so it hugs the image/video
-            // exactly and no letterbox strip is left over. The text/CTA
-            // section below is untouched and keeps its usual sizing, so
-            // the two stay visually joined as one card. If the SDK can't
-            // report a usable aspect ratio, the container simply keeps
-            // the fixed default height already set on it in the layout.
-            val aspectRatio = nativeAd.mediaContent?.aspectRatio ?: 0f
-            if (aspectRatio > 0f) {
-                mediaContainer.post {
-                    val width = mediaContainer.width
-                    if (width > 0) {
-                        val params = mediaContainer.layoutParams
-                        params.height = (width / aspectRatio).toInt()
-                        mediaContainer.layoutParams = params
-                    }
-                }
-            }
         } else {
             mediaView.visibility = View.GONE
             mediaFallbackText.visibility = View.VISIBLE
             mediaContainer.setBackgroundColor(
                 ContextCompat.getColor(appContext, R.color.sponsored_background)
             )
-            // No media at all: keep the fixed default height defined in
-            // native_ad_layout.xml, same as the shimmer/loading state.
         }
 
         if (!nativeAd.headline.isNullOrEmpty()) {
