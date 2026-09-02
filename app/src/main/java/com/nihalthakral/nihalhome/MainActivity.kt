@@ -52,19 +52,10 @@ class MainActivity : ComponentActivity() {
     private var contentScroll: NestedScrollView? = null
     private var nativeAdManager: NativeAdManager? = null
 
-    private val clockHandler = Handler(Looper.getMainLooper())
-    private val clockTicker = object : Runnable {
-        override fun run() {
-            updateGreetingAndDate()
-
-            val delay = 1000 - (System.currentTimeMillis() % 1000)
-            clockHandler.postDelayed(this, delay)
-        }
-    }
-
     // --- Home-screen-like idle overlay ---
     private var idleOverlay: View? = null
     private var idleClockText: TextView? = null
+    private var idleDateText: TextView? = null
     private var idleTouchStartX = 0f
     private var idleTouchStartY = 0f
     private val idleSwipeThresholdPx: Float by lazy { 28 * resources.displayMetrics.density }
@@ -178,9 +169,6 @@ class MainActivity : ComponentActivity() {
         if (prefs.getBoolean(KEY_SETUP_DONE, false)) {
             refreshApps()
             resetUIState()
-            updateGreetingAndDate()
-            clockHandler.removeCallbacks(clockTicker)
-            clockHandler.post(clockTicker)
             updateIdleClock()
             idleClockHandler.removeCallbacks(idleClockTicker)
             idleClockHandler.post(idleClockTicker)
@@ -190,13 +178,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
-        clockHandler.removeCallbacks(clockTicker)
         idleClockHandler.removeCallbacks(idleClockTicker)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        clockHandler.removeCallbacks(clockTicker)
         idleClockHandler.removeCallbacks(idleClockTicker)
         nativeAdManager?.destroy()
     }
@@ -352,13 +338,13 @@ class MainActivity : ComponentActivity() {
         coreAppsRecyclerView.adapter = coreAppsAdapter
 
         val sponsoredContainer = findViewById<FrameLayout>(R.id.sponsoredContainer)
+        sponsoredContainer.clipToOutline = true
         nativeAdManager = NativeAdManager(applicationContext, sponsoredContainer) {
             updateSponsoredLabel()
         }
         updateSponsoredSection()
 
         setupSearch()
-        updateGreetingAndDate()
         refreshApps()
         setupIdleOverlay()
         homeScreenReady = true
@@ -370,6 +356,7 @@ class MainActivity : ComponentActivity() {
         val overlay = findViewById<View>(R.id.homeIdleOverlay)
         idleOverlay = overlay
         idleClockText = findViewById(R.id.idleClockText)
+        idleDateText = findViewById(R.id.idleDateText)
 
         overlay.alpha = 1f
         overlay.visibility = View.VISIBLE
@@ -440,8 +427,27 @@ class MainActivity : ComponentActivity() {
 
     private fun updateIdleClock() {
         val clock = idleClockText ?: return
+        val dateView = idleDateText
+
+        val calendar = Calendar.getInstance()
+
         val timeFormat = SimpleDateFormat("hh:mm", Locale.getDefault())
-        clock.text = timeFormat.format(Calendar.getInstance().time)
+        val amPmFormat = SimpleDateFormat("a", Locale.getDefault())
+        val timeStr = timeFormat.format(calendar.time)
+        val amPmStr = amPmFormat.format(calendar.time)
+        val fullStr = "$timeStr $amPmStr"
+
+        val spannableTime = android.text.SpannableString(fullStr)
+        spannableTime.setSpan(
+            android.text.style.RelativeSizeSpan(0.35f),
+            timeStr.length,
+            fullStr.length,
+            android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        clock.text = spannableTime
+
+        val dateFormat = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
+        dateView?.text = dateFormat.format(calendar.time)
     }
 
     private fun setupSearch() {
@@ -673,27 +679,6 @@ class MainActivity : ComponentActivity() {
         } catch (e: Exception) {
 
         }
-    }
-
-    private fun updateGreetingAndDate() {
-        val greeting = findViewById<TextView>(R.id.greetingText)
-        val dateText = findViewById<TextView>(R.id.dateText)
-
-        val calendar = Calendar.getInstance()
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-
-        val emoji = when (hour) {
-            in 4..11 -> "🌄"
-            in 12..16 -> "🌤️"
-            in 17..19 -> "🌇"
-            else -> "🌃"
-        }
-
-        val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
-        greeting.text = "${timeFormat.format(calendar.time)} $emoji"
-
-        val dateFormat = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
-        dateText.text = dateFormat.format(calendar.time)
     }
 
     private fun markSetupDone() {
