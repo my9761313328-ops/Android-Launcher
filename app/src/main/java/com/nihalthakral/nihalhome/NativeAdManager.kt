@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -265,6 +266,7 @@ class NativeAdManager(
                     mediaContainer.setBackgroundColor(ambientColor)
                 }
             }
+
         } else {
             mediaView.visibility = View.GONE
             mediaFallbackText.visibility = View.VISIBLE
@@ -292,7 +294,48 @@ class NativeAdManager(
         adView.setNativeAd(nativeAd)
 
         container.addView(adView)
+
+        // The media box is now its own box, separate from the content
+        // below it (see native_ad_layout.xml), so it no longer needs to
+        // share a fixed 170dp height with the content. Size it
+        // automatically to match the actual image/video's aspect ratio
+        // instead, so it never crops or letterboxes the media. Registered
+        // only now that the view is attached, since a ViewTreeObserver
+        // grabbed before attaching isn't reliable. Falls back to the XML
+        // default height if the ad doesn't report a usable aspect ratio.
+        val aspectRatio = nativeAd.mediaContent?.aspectRatio ?: 0f
+        if (aspectRatio > 0f) {
+            applyMediaAspectRatio(mediaContainer, aspectRatio)
+        }
+
         onDisplayChanged()
+    }
+
+    /**
+     * Resizes [mediaContainer] to match [aspectRatio] (width / height, as
+     * reported by the ad's MediaContent) once its actual on-screen width
+     * is known, so the box's height auto-follows the media's real
+     * dimensions instead of being a fixed value.
+     */
+    private fun applyMediaAspectRatio(mediaContainer: FrameLayout, aspectRatio: Float) {
+        mediaContainer.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                val width = mediaContainer.width
+                if (width <= 0) {
+                    return
+                }
+                val targetHeight = (width / aspectRatio).toInt()
+                val params = mediaContainer.layoutParams
+                if (params.height != targetHeight) {
+                    params.height = targetHeight
+                    mediaContainer.layoutParams = params
+                }
+                if (mediaContainer.viewTreeObserver.isAlive) {
+                    mediaContainer.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            }
+        })
     }
 
     /**
