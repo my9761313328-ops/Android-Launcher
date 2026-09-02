@@ -355,7 +355,6 @@ class MainActivity : ComponentActivity() {
         coreAppsRecyclerView.adapter = coreAppsAdapter
 
         val sponsoredContainer = findViewById<FrameLayout>(R.id.sponsoredContainer)
-        sponsoredContainer.clipToOutline = true
         nativeAdManager = NativeAdManager(applicationContext, sponsoredContainer) {
             updateSponsoredLabel()
         }
