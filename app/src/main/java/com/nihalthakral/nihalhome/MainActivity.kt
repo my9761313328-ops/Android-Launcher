@@ -46,6 +46,10 @@ class MainActivity : ComponentActivity() {
 
     private var homeScreenReady = false
     private var searchInput: EditText? = null
+    private var searchInputSticky: EditText? = null
+    private var searchBarContainer: View? = null
+    private var searchBarSticky: View? = null
+    private var isSyncingSearchText = false
     private var allAppsRecycler: RecyclerView? = null
     private var frequentRecycler: RecyclerView? = null
     private var coreAppsRecycler: RecyclerView? = null
@@ -147,10 +151,16 @@ class MainActivity : ComponentActivity() {
 
         if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
             val input = searchInput
-            if (input != null && input.hasFocus()) {
-                input.clearFocus()
+            val stickyInput = searchInputSticky
+            val focused = when {
+                input != null && input.hasFocus() -> input
+                stickyInput != null && stickyInput.hasFocus() -> stickyInput
+                else -> null
+            }
+            if (focused != null) {
+                focused.clearFocus()
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
-                imm?.hideSoftInputFromWindow(input.windowToken, 0)
+                imm?.hideSoftInputFromWindow(focused.windowToken, 0)
                 return true
             }
         }
@@ -173,6 +183,7 @@ class MainActivity : ComponentActivity() {
             idleClockHandler.removeCallbacks(idleClockTicker)
             idleClockHandler.post(idleClockTicker)
             updateSponsoredSection()
+            contentScroll?.post { updateStickySearchBarVisibility() }
         }
     }
 
@@ -276,6 +287,9 @@ class MainActivity : ComponentActivity() {
             idleOverlayView.paddingRight,
             idleOverlayView.paddingBottom
         )
+        val searchBarStickyView = findViewById<View>(R.id.searchBarSticky)
+        val searchBarStickyInitialTopMargin =
+            (searchBarStickyView.layoutParams as android.view.ViewGroup.MarginLayoutParams).topMargin
         ViewCompat.setOnApplyWindowInsetsListener(rootContainer) { view, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 
@@ -296,6 +310,9 @@ class MainActivity : ComponentActivity() {
                 idleOverlayInitialPadding[2] + bars.right,
                 idleOverlayInitialPadding[3] + bars.bottom
             )
+            (searchBarStickyView.layoutParams as android.view.ViewGroup.MarginLayoutParams).topMargin =
+                searchBarStickyInitialTopMargin + bars.top
+            searchBarStickyView.requestLayout()
 
             ViewCompat.onApplyWindowInsets(view, insets)
         }
@@ -456,11 +473,24 @@ class MainActivity : ComponentActivity() {
         val clearIcon = findViewById<TextView>(R.id.clearIcon)
         val normalContent = findViewById<View>(R.id.normalContent)
         val searchBarContainer = findViewById<View>(R.id.searchBarContainer)
+        this.searchBarContainer = searchBarContainer
+
+        val searchInputSticky = findViewById<EditText>(R.id.searchInputSticky)
+        this.searchInputSticky = searchInputSticky
+        val clearIconSticky = findViewById<TextView>(R.id.clearIconSticky)
+        val searchBarSticky = findViewById<View>(R.id.searchBarSticky)
+        this.searchBarSticky = searchBarSticky
 
         searchBarContainer.setOnClickListener {
             searchInput.requestFocus()
             val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.showSoftInput(searchInput, InputMethodManager.SHOW_IMPLICIT)
+        }
+
+        searchBarSticky.setOnClickListener {
+            searchInputSticky.requestFocus()
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.showSoftInput(searchInputSticky, InputMethodManager.SHOW_IMPLICIT)
         }
 
         searchInput.addTextChangedListener(object : TextWatcher {
@@ -471,11 +501,66 @@ class MainActivity : ComponentActivity() {
                 clearIcon.visibility = if (query.isEmpty()) View.GONE else View.VISIBLE
                 normalContent.visibility = if (query.isEmpty()) View.VISIBLE else View.GONE
                 applyFilter(query)
+
+                if (!isSyncingSearchText && searchInputSticky.text?.toString().orEmpty() != query) {
+                    isSyncingSearchText = true
+                    searchInputSticky.setText(query)
+                    searchInputSticky.setSelection(searchInputSticky.text?.length ?: 0)
+                    isSyncingSearchText = false
+                }
+            }
+        })
+
+        searchInputSticky.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val query = s?.toString().orEmpty()
+                clearIconSticky.visibility = if (query.isEmpty()) View.GONE else View.VISIBLE
+
+                if (!isSyncingSearchText && searchInput.text?.toString().orEmpty() != query) {
+                    isSyncingSearchText = true
+                    searchInput.setText(query)
+                    searchInput.setSelection(searchInput.text?.length ?: 0)
+                    isSyncingSearchText = false
+                }
             }
         })
 
         clearIcon.setOnClickListener {
             searchInput.setText("")
+        }
+
+        clearIconSticky.setOnClickListener {
+            searchInputSticky.setText("")
+        }
+
+        contentScroll?.setOnScrollChangeListener { _, _, _, _, _ ->
+            updateStickySearchBarVisibility()
+        }
+    }
+
+    private fun updateStickySearchBarVisibility() {
+        val bar = searchBarContainer ?: return
+        val sticky = searchBarSticky ?: return
+        val scroll = contentScroll ?: return
+
+        val barLocation = IntArray(2)
+        bar.getLocationOnScreen(barLocation)
+        val scrollLocation = IntArray(2)
+        scroll.getLocationOnScreen(scrollLocation)
+        val visibleTop = scrollLocation[1] + scroll.paddingTop
+
+        val shouldStick = barLocation[1] <= visibleTop
+        if (shouldStick && sticky.visibility != View.VISIBLE) {
+            sticky.visibility = View.VISIBLE
+        } else if (!shouldStick && sticky.visibility != View.GONE) {
+            sticky.visibility = View.GONE
+            if (searchInputSticky?.hasFocus() == true) {
+                searchInputSticky?.clearFocus()
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(searchInputSticky?.windowToken, 0)
+            }
         }
     }
 
