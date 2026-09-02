@@ -35,6 +35,13 @@ class NativeAdManager(
     private var lastAdShownTime: Long = 0L
     private var lastRequestTime: Long = 0L
 
+    // Tracks consecutive real AdMob failures (requests that actually went
+    // out and got an error back) to drive the escalating error-backoff
+    // cooldown. Internal skips (e.g. our own cooldown blocking a request
+    // before it's sent) never touch this.
+    private var consecutiveAdErrorCount: Int = 0
+    private var nextRetryAllowedAt: Long = 0L
+
     private var displayedNativeAd: NativeAd? = null
 
     private var shimmerView: ShimmerFrameLayout? = null
@@ -48,8 +55,18 @@ class NativeAdManager(
 
         private const val NATIVE_AD_UNIT_ID = "ca-app-pub-5939817111566865/3197175798"
 
-        private const val COOLDOWN_MS = 67_000L
+        private const val COOLDOWN_MS = 300_000L
         private const val CACHE_EXPIRY_MS = 40L * 60L * 1000L
+
+        // Escalating cooldown applied only after a *real* AdMob request
+        // comes back with an error (No Fill, network error, etc.) — not
+        // after an internally-skipped request (e.g. our own cooldown was
+        // still active). Resets to the 1st tier the moment a real ad
+        // loads successfully.
+        private const val ERROR_COOLDOWN_TIER_1_MS = 15L * 60L * 1000L  // 1st consecutive error
+        private const val ERROR_COOLDOWN_TIER_2_MS = 30L * 60L * 1000L  // 2nd consecutive error
+        private const val ERROR_COOLDOWN_TIER_3_MS = 60L * 60L * 1000L  // 3rd+ consecutive error (max)
+
         private const val OFFLINE_FALLBACK_TAG = "offline_fallback"
         private const val AD_FALLBACK_TAG = "ad_fallback"
         private const val SHIMMER_TAG = "shimmer_loading"
@@ -89,6 +106,23 @@ class NativeAdManager(
     }
 
     private fun showAdErrorFallback() {
+        val now = System.currentTimeMillis()
+        val cached = cachedNativeAd
+
+        if (cached != null && (now - cacheTime) <= CACHE_EXPIRY_MS) {
+            // We still have a good, non-expired cached ad — show that
+            // instead of dropping to the offline game card. The user
+            // never notices the request that just failed in the
+            // background.
+            cachedNativeAd = null
+            hideShimmer()
+            showOnScreen(cached)
+            lastAdShownTime = now
+            return
+        }
+
+        // No usable cache — this is the only case where the offline
+        // game card is shown for an ad error.
         showGameFallbackCard(AD_FALLBACK_TAG)
     }
 
@@ -96,8 +130,10 @@ class NativeAdManager(
         if (isDestroyed) return
         displayedNativeAd?.destroy()
         displayedNativeAd = null
-        cachedNativeAd?.destroy()
-        cachedNativeAd = null
+        // Note: the cached ad (cachedNativeAd) is intentionally left
+        // untouched here. It should only ever be destroyed when it
+        // actually expires (see refresh()) — never just because we're
+        // showing a fallback card due to an error or no internet.
         shimmerView?.stopShimmer()
         shimmerView = null
         container.removeAllViews()
@@ -175,6 +211,16 @@ class NativeAdManager(
         if (isFetchInFlight) return
 
         val now = System.currentTimeMillis()
+
+        // Escalating cooldown from previous real errors — skipping here
+        // means no request goes out at all, so this does NOT count as
+        // another consecutive error.
+        if (now < nextRetryAllowedAt) {
+            Log.d(TAG, "Error backoff active, skipping ad request")
+            onFailed("Cooldown active")
+            return
+        }
+
         if (lastRequestTime != 0L && (now - lastRequestTime) < COOLDOWN_MS) {
             Log.d(TAG, "Request cooldown active, skipping ad request")
             onFailed("Cooldown active")
@@ -187,12 +233,27 @@ class NativeAdManager(
         val adLoader = AdLoader.Builder(appContext, NATIVE_AD_UNIT_ID)
             .forNativeAd { nativeAd ->
                 isFetchInFlight = false
+                // Real success — clear any error backoff entirely.
+                consecutiveAdErrorCount = 0
+                nextRetryAllowedAt = 0L
                 onLoaded(nativeAd)
             }
             .withAdListener(object : AdListener() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     isFetchInFlight = false
                     Log.e(TAG, "Native ad failed to load: ${adError.message}")
+
+                    // This was a real request that Google responded to
+                    // with an error, so it counts toward the escalating
+                    // backoff.
+                    consecutiveAdErrorCount += 1
+                    val backoffMs = when {
+                        consecutiveAdErrorCount <= 1 -> ERROR_COOLDOWN_TIER_1_MS
+                        consecutiveAdErrorCount == 2 -> ERROR_COOLDOWN_TIER_2_MS
+                        else -> ERROR_COOLDOWN_TIER_3_MS
+                    }
+                    nextRetryAllowedAt = System.currentTimeMillis() + backoffMs
+
                     onFailed("${adError.code}: ${adError.message}")
                 }
             })
