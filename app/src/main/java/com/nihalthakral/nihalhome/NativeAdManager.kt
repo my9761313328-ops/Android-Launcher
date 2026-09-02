@@ -7,12 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.nativead.MediaView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
@@ -227,35 +227,24 @@ class NativeAdManager(
             .inflate(R.layout.native_ad_layout, container, false) as NativeAdView
         (adView.layoutParams as? FrameLayout.LayoutParams)?.gravity = android.view.Gravity.CENTER
 
-        val iconView = adView.findViewById<ImageView>(R.id.ad_app_icon)
+        val mediaView = adView.findViewById<MediaView>(R.id.ad_media_view)
         val headlineView = adView.findViewById<TextView>(R.id.ad_headline)
         val ctaView = adView.findViewById<Button>(R.id.ad_call_to_action)
 
-        val badgeView = adView.findViewById<TextView>(R.id.ad_badge)
+        // Registering the MediaView is what makes the SDK render the ad's
+        // image/video into it. A transparent view sits on top of it in the
+        // layout (ad_media_click_blocker) so taps on the media are absorbed
+        // there instead of triggering the ad click.
+        mediaView.setMediaContent(nativeAd.mediaContent)
+        adView.mediaView = mediaView
 
         if (!nativeAd.headline.isNullOrEmpty()) {
             headlineView.text = nativeAd.headline
             headlineView.visibility = View.VISIBLE
-            (badgeView.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
-                it.topMargin = (4 * appContext.resources.displayMetrics.density).toInt()
-            }
         } else {
             headlineView.visibility = View.GONE
-            (badgeView.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let {
-                it.topMargin = 0
-            }
         }
-        badgeView.requestLayout()
         adView.headlineView = headlineView
-
-        val icon = nativeAd.icon
-        if (icon?.drawable != null) {
-            iconView.setImageDrawable(icon.drawable)
-            iconView.visibility = View.VISIBLE
-        } else {
-            iconView.visibility = View.GONE
-        }
-        adView.iconView = iconView
 
         if (!nativeAd.callToAction.isNullOrEmpty()) {
             ctaView.text = nativeAd.callToAction
