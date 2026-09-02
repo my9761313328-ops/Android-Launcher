@@ -257,6 +257,19 @@ class MainActivity : ComponentActivity() {
             insets
         }
 
+        // Keep the status bar and navigation bar solid white, never letting
+        // the wallpaper show through behind them.
+        val statusBarScrim = findViewById<View>(R.id.statusBarScrim)
+        val navBarScrim = findViewById<View>(R.id.navBarScrim)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.rootContainer)) { view, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            statusBarScrim.layoutParams = statusBarScrim.layoutParams.apply { height = bars.top }
+            navBarScrim.layoutParams = navBarScrim.layoutParams.apply { height = bars.bottom }
+            statusBarScrim.requestLayout()
+            navBarScrim.requestLayout()
+            ViewCompat.onApplyWindowInsets(view, insets)
+        }
+
         contentScroll = findViewById(R.id.contentScroll)
         val allAppsRecyclerView = findViewById<RecyclerView>(R.id.allAppsRecycler)
         val frequentRecyclerView = findViewById<RecyclerView>(R.id.frequentRecycler)
