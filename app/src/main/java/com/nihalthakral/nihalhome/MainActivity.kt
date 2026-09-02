@@ -21,7 +21,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -88,6 +90,15 @@ class MainActivity : ComponentActivity() {
         prefs = getSharedPreferences("nihal_home_prefs", MODE_PRIVATE)
         usageStore = UsageStore(this)
         MobileAds.initialize(this)
+
+        // Home/launcher windows are laid out edge-to-edge by the system, so
+        // android:statusBarColor / navigationBarColor in the theme are ignored
+        // on modern Android. Make it explicit and draw our own solid white
+        // bars via scrim views instead (set up in setupHomeScreen()).
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val insetsController = WindowInsetsControllerCompat(window, window.decorView)
+        insetsController.isAppearanceLightStatusBars = true
+        insetsController.isAppearanceLightNavigationBars = true
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -258,17 +269,51 @@ class MainActivity : ComponentActivity() {
         }
 
         // Keep the status bar and navigation bar solid white, never letting
-        // the wallpaper show through behind them.
+        // the wallpaper show through behind them. Since the window is
+        // edge-to-edge, we draw our own opaque bars sized to the system bar
+        // insets, and pad the scrollable/idle content so nothing sits under
+        // them.
         val statusBarScrim = findViewById<View>(R.id.statusBarScrim)
         val navBarScrim = findViewById<View>(R.id.navBarScrim)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.rootContainer)) { view, insets ->
+        val rootContainer = findViewById<View>(R.id.rootContainer)
+        val contentScrollView = findViewById<NestedScrollView>(R.id.contentScroll)
+        val idleOverlayView = findViewById<View>(R.id.homeIdleOverlay)
+        val contentScrollInitialPadding = intArrayOf(
+            contentScrollView.paddingLeft,
+            contentScrollView.paddingTop,
+            contentScrollView.paddingRight,
+            contentScrollView.paddingBottom
+        )
+        val idleOverlayInitialPadding = intArrayOf(
+            idleOverlayView.paddingLeft,
+            idleOverlayView.paddingTop,
+            idleOverlayView.paddingRight,
+            idleOverlayView.paddingBottom
+        )
+        ViewCompat.setOnApplyWindowInsetsListener(rootContainer) { view, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
             statusBarScrim.layoutParams = statusBarScrim.layoutParams.apply { height = bars.top }
             navBarScrim.layoutParams = navBarScrim.layoutParams.apply { height = bars.bottom }
             statusBarScrim.requestLayout()
             navBarScrim.requestLayout()
+
+            contentScrollView.setPadding(
+                contentScrollInitialPadding[0] + bars.left,
+                contentScrollInitialPadding[1] + bars.top,
+                contentScrollInitialPadding[2] + bars.right,
+                contentScrollInitialPadding[3] + bars.bottom
+            )
+            idleOverlayView.setPadding(
+                idleOverlayInitialPadding[0] + bars.left,
+                idleOverlayInitialPadding[1] + bars.top,
+                idleOverlayInitialPadding[2] + bars.right,
+                idleOverlayInitialPadding[3] + bars.bottom
+            )
+
             ViewCompat.onApplyWindowInsets(view, insets)
         }
+        ViewCompat.requestApplyInsets(rootContainer)
 
         contentScroll = findViewById(R.id.contentScroll)
         val allAppsRecyclerView = findViewById<RecyclerView>(R.id.allAppsRecycler)
