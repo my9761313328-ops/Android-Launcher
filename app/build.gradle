@@ -51,4 +51,9 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'com.google.android.gms:play-services-ads:23.5.0'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+    // Mediation adapters (fixes "Adapter Not found / SDK Not ready" in Ad Inspector)
+    implementation 'com.google.ads.mediation:applovin:13.1.0.0'
+    implementation 'com.google.ads.mediation:adcolony:4.9.0.0'
+    implementation 'com.google.ads.mediation:vungle:7.4.2.0' // Vungle SDK = Liftoff Monetize
 }
