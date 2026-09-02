@@ -53,7 +53,8 @@ dependencies {
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
     // Mediation adapters (fixes "Adapter Not found / SDK Not ready" in Ad Inspector)
-    implementation 'com.google.ads.mediation:applovin:13.1.0.0'
-    implementation 'com.google.ads.mediation:adcolony:4.9.0.0'
-    implementation 'com.google.ads.mediation:vungle:7.4.2.0' // Vungle SDK = Liftoff Monetize
+    implementation 'com.google.ads.mediation:applovin:13.6.4.0'
+    implementation 'com.google.ads.mediation:vungle:7.7.0.1' // Vungle SDK = Liftoff Monetize
+    // NOTE: AdColony intentionally NOT added — Google deprecated it (no longer supported).
+    // Recommendation: remove AdColony from your AdMob mediation groups in the console too.
 }
