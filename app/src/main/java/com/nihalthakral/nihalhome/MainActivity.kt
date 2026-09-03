@@ -551,6 +551,11 @@ class MainActivity : ComponentActivity() {
                     // to bring back the idle overlay (with the Kōtetsu
                     // capsule) in this case - only back press should do that.
                     resetUIState()
+                } else {
+                    // Open the top app from the current search results, if any.
+                    currentFilteredApps.firstOrNull()?.let { topApp ->
+                        launchApp(topApp)
+                    }
                 }
                 true
             } else {
@@ -658,6 +663,8 @@ class MainActivity : ComponentActivity() {
         updateFrequentApps(lastCoreApps)
     }
 
+    private var currentFilteredApps: List<AppInfo> = emptyList()
+
     private fun applyFilter(query: String) {
         val trimmed = query.trim()
         val emptyState = findViewById<View>(R.id.emptyState)
@@ -667,6 +674,7 @@ class MainActivity : ComponentActivity() {
         } else {
             allApps.filter { it.label.contains(trimmed, ignoreCase = true) }
         }
+        currentFilteredApps = filtered
 
         emptyState.visibility = if (filtered.isEmpty()) View.VISIBLE else View.GONE
         allAppsAdapter.submit(filtered, grouped = trimmed.isEmpty())
