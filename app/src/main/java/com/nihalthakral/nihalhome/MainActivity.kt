@@ -545,6 +545,14 @@ class MainActivity : ComponentActivity() {
             }
         })
 
+        searchInputSticky.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                // Re-evaluate visibility now that focus is gone, in case scroll
+                // position changed while the hide was being skipped above.
+                updateStickySearchBarVisibility()
+            }
+        }
+
         clearIcon.setOnClickListener {
             searchInput.setText("")
         }
@@ -573,11 +581,18 @@ class MainActivity : ComponentActivity() {
         if (shouldStick && sticky.visibility != View.VISIBLE) {
             sticky.visibility = View.VISIBLE
         } else if (!shouldStick && sticky.visibility != View.GONE) {
-            sticky.visibility = View.GONE
-            if (searchInputSticky?.hasFocus() == true) {
-                searchInputSticky?.clearFocus()
-                val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
-                imm?.hideSoftInputFromWindow(searchInputSticky?.windowToken, 0)
+            // Guard: while the user is actively typing in the sticky search box,
+            // filtering the app list (applyFilter) changes the content height of
+            // contentScroll, which fires this same scroll-change callback again
+            // with a transient/incorrect position reading. That was causing the
+            // sticky bar to be hidden and its focus cleared mid-keystroke (most
+            // noticeable on backspace, since removing characters grows the
+            // filtered list back and re-triggers layout), leaving the EditText
+            // in a state with no visible cursor until it was tapped again.
+            // Skip the hide/clearFocus while the sticky input still has focus so
+            // an active edit session is never interrupted by list reflow.
+            if (searchInputSticky?.hasFocus() != true) {
+                sticky.visibility = View.GONE
             }
         }
     }
