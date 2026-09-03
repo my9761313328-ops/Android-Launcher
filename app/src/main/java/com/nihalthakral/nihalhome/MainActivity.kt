@@ -129,6 +129,8 @@ class MainActivity : ComponentActivity() {
         renderCorrectScreen()
     }
 
+    private var isFirstResume = true
+
     private var imeVisible = false
     private var pendingLaunch: AppInfo? = null
     private var activeContextPopup: android.widget.PopupWindow? = null
@@ -196,7 +198,16 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         if (prefs.getBoolean(KEY_SETUP_DONE, false)) {
-            refreshApps()
+            // refreshApps() already runs once inside setupHomeScreen() during
+            // onCreate(). Skip that first automatic onResume() call so the
+            // heavy "scan all installed apps" process doesn't run twice back
+            // to back on app start. Subsequent resumes (coming back from
+            // another app) still refresh normally.
+            if (isFirstResume) {
+                isFirstResume = false
+            } else {
+                refreshApps()
+            }
             resetUIState()
             updateIdleClock()
             idleClockHandler.removeCallbacks(idleClockTicker)
