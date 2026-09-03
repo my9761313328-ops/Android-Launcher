@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -28,5 +29,16 @@
         android:textColor="@color/text_primary"
         android:textSize="15sp"
         tools:text="WhatsApp" />
+
+    <ImageView
+        android:id="@+id/favStar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/bg_fav_star_off"
+        android:contentDescription="@null"
+        android:padding="6dp"
+        android:src="@drawable/ic_star"
+        app:tint="@color/fav_star_icon_off" />
 
 </LinearLayout>
