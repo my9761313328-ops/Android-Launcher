@@ -24,7 +24,7 @@ jobs:
           cache-read-only: false
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --no-daemon --parallel --build-cache
+        run: gradle assembleDebug --no-daemon --parallel --build-cache
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
