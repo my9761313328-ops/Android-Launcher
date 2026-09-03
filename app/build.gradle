@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'com.nihalthakral.nihalhome'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.nihalthakral.nihalhome"
@@ -49,7 +49,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.activity:activity-ktx:1.9.0'
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
-    implementation 'com.google.android.gms:play-services-ads:23.5.0'
+    implementation 'com.google.android.gms:play-services-ads:25.4.0'
     implementation 'com.google.android.ump:user-messaging-platform:4.0.0'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 }
