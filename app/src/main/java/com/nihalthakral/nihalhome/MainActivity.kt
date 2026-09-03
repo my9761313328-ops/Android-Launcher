@@ -11,6 +11,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.view.WindowManager
 import android.widget.Button
@@ -49,10 +50,11 @@ class MainActivity : ComponentActivity() {
 
     private var homeScreenReady = false
     private var searchInput: EditText? = null
-    private var searchInputSticky: EditText? = null
-    private var searchBarContainer: View? = null
-    private var searchBarSticky: View? = null
-    private var isSyncingSearchText = false
+    private var searchIcon: View? = null
+    private var clearIcon: View? = null
+    private var searchBarContainer: ViewGroup? = null
+    private var searchBarSticky: ViewGroup? = null
+    private var isSearchBarPinned = false
     private var allAppsRecycler: RecyclerView? = null
     private var frequentRecycler: RecyclerView? = null
     private var coreAppsRecycler: RecyclerView? = null
@@ -169,16 +171,10 @@ class MainActivity : ComponentActivity() {
 
         if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
             val input = searchInput
-            val stickyInput = searchInputSticky
-            val focused = when {
-                input != null && input.hasFocus() -> input
-                stickyInput != null && stickyInput.hasFocus() -> stickyInput
-                else -> null
-            }
-            if (focused != null) {
-                focused.clearFocus()
+            if (input != null && input.hasFocus()) {
+                input.clearFocus()
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
-                imm?.hideSoftInputFromWindow(focused.windowToken, 0)
+                imm?.hideSoftInputFromWindow(input.windowToken, 0)
                 return true
             }
         }
@@ -488,28 +484,32 @@ class MainActivity : ComponentActivity() {
     private fun setupSearch() {
         val searchInput = findViewById<EditText>(R.id.searchInput)
         this.searchInput = searchInput
-        val clearIcon = findViewById<TextView>(R.id.clearIcon)
+        val clearIcon = findViewById<View>(R.id.clearIcon)
+        this.clearIcon = clearIcon
+        val searchIcon = findViewById<View>(R.id.searchIcon)
+        this.searchIcon = searchIcon
         val normalContent = findViewById<View>(R.id.normalContent)
-        val searchBarContainer = findViewById<View>(R.id.searchBarContainer)
+        val searchBarContainer = findViewById<ViewGroup>(R.id.searchBarContainer)
         this.searchBarContainer = searchBarContainer
 
-        val searchInputSticky = findViewById<EditText>(R.id.searchInputSticky)
-        this.searchInputSticky = searchInputSticky
-        val clearIconSticky = findViewById<TextView>(R.id.clearIconSticky)
-        val searchBarSticky = findViewById<View>(R.id.searchBarSticky)
+        val searchBarSticky = findViewById<ViewGroup>(R.id.searchBarSticky)
         this.searchBarSticky = searchBarSticky
 
-        searchBarContainer.setOnClickListener {
+        // There is only ONE search icon / EditText / clear icon in the whole
+        // screen. "searchBarContainer" (inline, inside the scrolling content)
+        // and "searchBarSticky" (an empty overlay docked at the top) are just
+        // two differently-styled shells. When the user scrolls past the inline
+        // bar, the same three child views are physically moved into the sticky
+        // shell instead of being duplicated/synced, so there is exactly one
+        // cursor, one focus state and one text buffer at all times - no more
+        // keeping two EditTexts in sync.
+        val clickToFocus = View.OnClickListener {
             searchInput.requestFocus()
             val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.showSoftInput(searchInput, InputMethodManager.SHOW_IMPLICIT)
         }
-
-        searchBarSticky.setOnClickListener {
-            searchInputSticky.requestFocus()
-            val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.showSoftInput(searchInputSticky, InputMethodManager.SHOW_IMPLICIT)
-        }
+        searchBarContainer.setOnClickListener(clickToFocus)
+        searchBarSticky.setOnClickListener(clickToFocus)
 
         searchInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -519,46 +519,11 @@ class MainActivity : ComponentActivity() {
                 clearIcon.visibility = if (query.isEmpty()) View.GONE else View.VISIBLE
                 normalContent.visibility = if (query.isEmpty()) View.VISIBLE else View.GONE
                 applyFilter(query)
-
-                if (!isSyncingSearchText && searchInputSticky.text?.toString().orEmpty() != query) {
-                    isSyncingSearchText = true
-                    searchInputSticky.setText(query)
-                    searchInputSticky.setSelection(searchInputSticky.text?.length ?: 0)
-                    isSyncingSearchText = false
-                }
             }
         })
-
-        searchInputSticky.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                val query = s?.toString().orEmpty()
-                clearIconSticky.visibility = if (query.isEmpty()) View.GONE else View.VISIBLE
-
-                if (!isSyncingSearchText && searchInput.text?.toString().orEmpty() != query) {
-                    isSyncingSearchText = true
-                    searchInput.setText(query)
-                    searchInput.setSelection(searchInput.text?.length ?: 0)
-                    isSyncingSearchText = false
-                }
-            }
-        })
-
-        searchInputSticky.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                // Re-evaluate visibility now that focus is gone, in case scroll
-                // position changed while the hide was being skipped above.
-                updateStickySearchBarVisibility()
-            }
-        }
 
         clearIcon.setOnClickListener {
             searchInput.setText("")
-        }
-
-        clearIconSticky.setOnClickListener {
-            searchInputSticky.setText("")
         }
 
         contentScroll?.setOnScrollChangeListener { _, _, _, _, _ ->
@@ -566,9 +531,53 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Moves the search icon / EditText / clear icon between the inline shell
+     * (searchBarContainer, inside the scrolling content) and the pinned shell
+     * (searchBarSticky, an overlay docked to the top) based on scroll
+     * position. Because these are the *same* View instances every time
+     * (nothing is duplicated or text-synced), focus, cursor position and the
+     * IME input connection all move with them automatically - there is no
+     * separate "sticky EditText" that can fall out of sync.
+     */
+    private fun setSearchBarPinned(pinned: Boolean) {
+        if (pinned == isSearchBarPinned) return
+        val icon = searchIcon ?: return
+        val input = searchInput ?: return
+        val clear = clearIcon ?: return
+        val inlineShell = searchBarContainer ?: return
+        val stickyShell = searchBarSticky ?: return
+
+        // Reparenting an EditText clears its focus/IME connection for a
+        // moment; remember the state so we can seamlessly restore it and the
+        // user never notices (and never has to tap the field again).
+        val hadFocus = input.hasFocus()
+
+        val fromShell = if (pinned) inlineShell else stickyShell
+        val toShell = if (pinned) stickyShell else inlineShell
+
+        fromShell.removeView(icon)
+        fromShell.removeView(input)
+        fromShell.removeView(clear)
+        toShell.addView(icon)
+        toShell.addView(input)
+        toShell.addView(clear)
+
+        // Keep the inline shell occupying its normal space (INVISIBLE, not
+        // GONE) so the rest of the list doesn't jump when it's emptied out.
+        inlineShell.visibility = if (pinned) View.INVISIBLE else View.VISIBLE
+        stickyShell.visibility = if (pinned) View.VISIBLE else View.GONE
+        isSearchBarPinned = pinned
+
+        if (hadFocus) {
+            input.requestFocus()
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT)
+        }
+    }
+
     private fun updateStickySearchBarVisibility() {
         val bar = searchBarContainer ?: return
-        val sticky = searchBarSticky ?: return
         val scroll = contentScroll ?: return
 
         val barLocation = IntArray(2)
@@ -578,23 +587,7 @@ class MainActivity : ComponentActivity() {
         val visibleTop = scrollLocation[1] + scroll.paddingTop
 
         val shouldStick = barLocation[1] <= visibleTop
-        if (shouldStick && sticky.visibility != View.VISIBLE) {
-            sticky.visibility = View.VISIBLE
-        } else if (!shouldStick && sticky.visibility != View.GONE) {
-            // Guard: while the user is actively typing in the sticky search box,
-            // filtering the app list (applyFilter) changes the content height of
-            // contentScroll, which fires this same scroll-change callback again
-            // with a transient/incorrect position reading. That was causing the
-            // sticky bar to be hidden and its focus cleared mid-keystroke (most
-            // noticeable on backspace, since removing characters grows the
-            // filtered list back and re-triggers layout), leaving the EditText
-            // in a state with no visible cursor until it was tapped again.
-            // Skip the hide/clearFocus while the sticky input still has focus so
-            // an active edit session is never interrupted by list reflow.
-            if (searchInputSticky?.hasFocus() != true) {
-                sticky.visibility = View.GONE
-            }
-        }
+        setSearchBarPinned(shouldStick)
     }
 
     private fun refreshApps() {
