@@ -12,6 +12,7 @@ import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.view.WindowManager
 import android.widget.Button
@@ -533,6 +534,30 @@ class MainActivity : ComponentActivity() {
             searchInput.setText("")
         }
 
+        searchInput.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                actionId == EditorInfo.IME_ACTION_DONE ||
+                actionId == EditorInfo.IME_ACTION_UNSPECIFIED
+            ) {
+                // Always clear focus and hide the keyboard - previously the
+                // keyboard stayed visible after pressing Enter even though
+                // focus had already left the field.
+                searchInput.clearFocus()
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(searchInput.windowToken, 0)
+
+                if (searchInput.text.isNullOrEmpty()) {
+                    // Same as pressing the back button, except we don't want
+                    // to bring back the idle overlay (with the Kōtetsu
+                    // capsule) in this case - only back press should do that.
+                    resetUIState()
+                }
+                true
+            } else {
+                false
+            }
+        }
+
         contentScroll?.setOnScrollChangeListener { _, _, _, _, _ ->
             updateStickySearchBarVisibility()
         }
@@ -625,8 +650,8 @@ class MainActivity : ComponentActivity() {
 
     /**
      * Called whenever a favorite is toggled from the All Apps list.
-     * Rebuilds the Fav. Apps section and makes sure favorited apps
-     * immediately drop out of / never show in Recommended Apps.
+     * Rebuilds the Fav. Apps section. Favorite apps are still allowed
+     * to appear in Recommended Apps.
      */
     private fun onFavoritesChanged() {
         applyFilter((findViewById<EditText>(R.id.searchInput)).text?.toString().orEmpty())
@@ -650,9 +675,7 @@ class MainActivity : ComponentActivity() {
     private fun updateFrequentApps(coreApps: List<AppInfo>, matchPool: List<AppInfo> = allApps) {
         val usedPackages = mutableSetOf<String>()
         usedPackages.addAll(coreApps.map { it.packageName })
-        // Favorited apps live in their own "Fav. Apps" section, so they should
-        // never be suggested again inside Recommended Apps.
-        usedPackages.addAll(favoritesStore.getFavoritePackages())
+        // Favorite apps are now allowed to also appear in Recommended Apps.
         val result = mutableListOf<AppInfo>()
 
         val topPackages = usageStore.getTopPackages(UsageStore.MAX_FREQUENT_APPS)
