@@ -33,6 +33,9 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import kotlin.math.abs
+import com.google.android.ump.ConsentInformation
+import com.google.android.ump.ConsentRequestParameters
+import com.google.android.ump.UserMessagingPlatform
 
 class MainActivity : ComponentActivity() {
 
