@@ -606,9 +606,31 @@ function spawnGroundObstacleAt(x, type) {
     }
 }
 
+function setSpikes(o) {
+    o.type = 'SPIKES';
+    o.count = Math.random() > 0.5 ? 3 : 4;
+    o.w = o.count * 16;
+    o.h = 24;
+    o.y = gY - o.h;
+}
+
+function setBlock(o) {
+    o.type = 'BLOCK';
+    o.w = 34;
+    o.h = 34;
+    o.y = gY - o.h;
+}
+
+function setPlane(o, yOverride) {
+    o.type = 'PLANE';
+    o.w = 66;
+    o.h = 30;
+    o.y = yOverride !== undefined ? yOverride : gY - 100;
+}
+
 function spawnObstacle() {
     const obs = obstaclePool.find(o => !o.active);
-    if (!obs) return; // pool exhausted (shouldn't happen at these speeds)
+    if (!obs) return;
     obs.active = true;
     obs.passed = false;
     obs.noScore = false;
@@ -617,32 +639,42 @@ function spawnObstacle() {
 
     const planeAllowed = (frame - lastPlaneSpawnFrame) >= MIN_PLANE_GAP_FRAMES;
     const r = Math.random();
-    let type = r > 0.65 ? 'SPIKES' : (r > 0.35 ? 'BLOCK' : 'PLANE');
-    if (type === 'PLANE' && !planeAllowed) {
-        // Cooldown active — fall back to a ground obstacle instead of a plane.
+    let type = r > 0.70 ? 'SPIKES' : (r > 0.40 ? 'BLOCK' : (r > 0.22 ? 'PLANE' : (r > 0.11 ? 'PLANE_STACK' : 'PLANE_GROUND')));
+    if ((type === 'PLANE' || type === 'PLANE_STACK' || type === 'PLANE_GROUND') && !planeAllowed) {
         type = Math.random() > 0.5 ? 'SPIKES' : 'BLOCK';
     }
-    obs.type = type;
 
-    if (obs.type === 'SPIKES') {
-        obs.count = Math.random() > 0.5 ? 3 : 4;
-        obs.w = obs.count * 16;
-        obs.h = 24;
-        obs.y = gY - obs.h;
-    } else if (obs.type === 'PLANE') {
-        // Flies at a fixed band above the ground: too low for a normal
-        // single jump to clear (so jumping into it = game over), but
-        // running underneath it (not jumping at all) is completely safe.
-        // Only a double jump reaches high enough to pass over the top.
-        obs.w = 66;
-        obs.h = 30;
-        obs.y = gY - 100;
-
+    if (type === 'SPIKES') {
+        setSpikes(obs);
+    } else if (type === 'BLOCK') {
+        setBlock(obs);
+    } else if (type === 'PLANE') {
+        setPlane(obs);
         lastPlaneSpawnFrame = frame;
-    } else {
-        obs.w = 34;
-        obs.h = 34;
-        obs.y = gY - obs.h;
+    } else if (type === 'PLANE_STACK') {
+        setPlane(obs);
+        lastPlaneSpawnFrame = frame;
+        const topPlane = obstaclePool.find(o => !o.active);
+        if (topPlane) {
+            topPlane.active = true;
+            topPlane.passed = false;
+            topPlane.noScore = true;
+            topPlane.x = obs.x;
+            topPlane.prevX = topPlane.x;
+            setPlane(topPlane, obs.y - obs.h - 14);
+        }
+    } else if (type === 'PLANE_GROUND') {
+        setPlane(obs);
+        lastPlaneSpawnFrame = frame;
+        const ground = obstaclePool.find(o => !o.active);
+        if (ground) {
+            ground.active = true;
+            ground.passed = false;
+            ground.noScore = true;
+            ground.x = obs.x;
+            ground.prevX = ground.x;
+            if (Math.random() > 0.5) setSpikes(ground); else setBlock(ground);
+        }
     }
 }
 
