@@ -113,9 +113,9 @@ class AllAppsAdapter(
         val favoritePackages = favoritesStore.getFavoritePackages()
         var hasFavorites = false
         if (favoritePackages.isNotEmpty()) {
-            val favoriteApps = apps
-                .filter { it.packageName in favoritePackages }
-                .sortedBy { it.label.lowercase() }
+            val orderedFavoritePackages = favoritesStore.getFavoritePackagesOrdered()
+            val appsByPackage = apps.associateBy { it.packageName }
+            val favoriteApps = orderedFavoritePackages.mapNotNull { appsByPackage[it] }
             if (favoriteApps.isNotEmpty()) {
                 hasFavorites = true
                 result.add(AppRow.Header(FAV_HEADER_LABEL))
