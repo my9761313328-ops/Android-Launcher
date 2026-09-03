@@ -1,10 +1,13 @@
 package com.nihalthakral.nihalhome
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.RecyclerView
 
 class FrequentAppsAdapter(
@@ -87,8 +90,10 @@ sealed class AppRow {
 }
 
 class AllAppsAdapter(
+    private val favoritesStore: FavoritesStore,
     private val onClick: (AppInfo) -> Unit,
-    private val onLongClick: (AppInfo, View) -> Unit
+    private val onLongClick: (AppInfo, View) -> Unit,
+    private val onFavoriteToggled: (AppInfo, Boolean) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var rows: List<AppRow> = emptyList()
@@ -104,6 +109,18 @@ class AllAppsAdapter(
 
     private fun buildGroupedRows(apps: List<AppInfo>): List<AppRow> {
         val result = mutableListOf<AppRow>()
+
+        val favoritePackages = favoritesStore.getFavoritePackages()
+        if (favoritePackages.isNotEmpty()) {
+            val favoriteApps = apps
+                .filter { it.packageName in favoritePackages }
+                .sortedBy { it.label.lowercase() }
+            if (favoriteApps.isNotEmpty()) {
+                result.add(AppRow.Header(FAV_HEADER_LABEL))
+                favoriteApps.forEach { result.add(AppRow.Item(it)) }
+            }
+        }
+
         var lastLetter: String? = null
         for (app in apps) {
             val letter = app.label.take(1).uppercase()
@@ -135,14 +152,42 @@ class AllAppsAdapter(
             is AppRow.Header -> (holder as HeaderViewHolder).letter.text = row.letter
             is AppRow.Item -> {
                 val h = holder as ItemViewHolder
-                h.icon.setImageDrawable(row.app.icon)
-                h.name.text = row.app.label
-                h.itemView.setOnClickListener { onClick(row.app) }
+                val app = row.app
+                h.icon.setImageDrawable(app.icon)
+                h.name.text = app.label
+                h.itemView.setOnClickListener { onClick(app) }
                 h.itemView.setOnLongClickListener {
-                    onLongClick(row.app, it)
+                    onLongClick(app, it)
                     true
                 }
+                bindFavoriteStar(h.favStar, app)
             }
+        }
+    }
+
+    private fun bindFavoriteStar(star: ImageView, app: AppInfo) {
+        val isFavorite = favoritesStore.isFavorite(app.packageName)
+        applyFavoriteStarState(star, isFavorite)
+        star.setOnClickListener {
+            val nowFavorite = favoritesStore.toggleFavorite(app.packageName)
+            applyFavoriteStarState(star, nowFavorite)
+            onFavoriteToggled(app, nowFavorite)
+        }
+    }
+
+    private fun applyFavoriteStarState(star: ImageView, isFavorite: Boolean) {
+        if (isFavorite) {
+            star.setBackgroundResource(R.drawable.bg_fav_star_on)
+            ImageViewCompat.setImageTintList(
+                star,
+                ColorStateList.valueOf(ContextCompat.getColor(star.context, R.color.fav_star_icon_on))
+            )
+        } else {
+            star.setBackgroundResource(R.drawable.bg_fav_star_off)
+            ImageViewCompat.setImageTintList(
+                star,
+                ColorStateList.valueOf(ContextCompat.getColor(star.context, R.color.fav_star_icon_off))
+            )
         }
     }
 
@@ -155,10 +200,12 @@ class AllAppsAdapter(
     class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val icon: ImageView = view.findViewById(R.id.appIcon)
         val name: TextView = view.findViewById(R.id.appName)
+        val favStar: ImageView = view.findViewById(R.id.favStar)
     }
 
     companion object {
         private const val TYPE_HEADER = 0
         private const val TYPE_ITEM = 1
+        const val FAV_HEADER_LABEL = "Fav. Apps"
     }
 }
