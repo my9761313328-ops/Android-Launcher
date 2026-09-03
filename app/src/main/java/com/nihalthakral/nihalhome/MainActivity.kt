@@ -42,8 +42,10 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var prefs: SharedPreferences
     private lateinit var usageStore: UsageStore
+    private lateinit var favoritesStore: FavoritesStore
 
     private var allApps: List<AppInfo> = emptyList()
+    private var lastCoreApps: List<AppInfo> = emptyList()
     private lateinit var frequentAdapter: FrequentAppsAdapter
     private lateinit var allAppsAdapter: AllAppsAdapter
     private lateinit var coreAppsAdapter: CoreAppsAdapter
@@ -89,6 +91,7 @@ class MainActivity : ComponentActivity() {
 
         prefs = getSharedPreferences("nihal_home_prefs", MODE_PRIVATE)
         usageStore = UsageStore(this)
+        favoritesStore = FavoritesStore(this)
         //MobileAds.initialize(this)
         val params = ConsentRequestParameters.Builder().build()
         val consentInformation = UserMessagingPlatform.getConsentInformation(this)
@@ -346,8 +349,10 @@ class MainActivity : ComponentActivity() {
         frequentRecyclerView.setHasFixedSize(false)
 
         allAppsAdapter = AllAppsAdapter(
+            favoritesStore = favoritesStore,
             onClick = { launchApp(it) },
-            onLongClick = { app, view -> showAppContextMenu(app, view) }
+            onLongClick = { app, view -> showAppContextMenu(app, view) },
+            onFavoriteToggled = { _, _ -> onFavoritesChanged() }
         )
         allAppsRecyclerView.layoutManager = LinearLayoutManager(this)
         allAppsRecyclerView.adapter = allAppsAdapter
@@ -613,8 +618,19 @@ class MainActivity : ComponentActivity() {
         } catch (e: Exception) {
             emptyList()
         }
+        lastCoreApps = coreApps
         updateFrequentApps(coreApps, matchPool)
         updateCoreApps(coreApps)
+    }
+
+    /**
+     * Called whenever a favorite is toggled from the All Apps list.
+     * Rebuilds the Fav. Apps section and makes sure favorited apps
+     * immediately drop out of / never show in Recommended Apps.
+     */
+    private fun onFavoritesChanged() {
+        applyFilter((findViewById<EditText>(R.id.searchInput)).text?.toString().orEmpty())
+        updateFrequentApps(lastCoreApps)
     }
 
     private fun applyFilter(query: String) {
@@ -634,6 +650,9 @@ class MainActivity : ComponentActivity() {
     private fun updateFrequentApps(coreApps: List<AppInfo>, matchPool: List<AppInfo> = allApps) {
         val usedPackages = mutableSetOf<String>()
         usedPackages.addAll(coreApps.map { it.packageName })
+        // Favorited apps live in their own "Fav. Apps" section, so they should
+        // never be suggested again inside Recommended Apps.
+        usedPackages.addAll(favoritesStore.getFavoritePackages())
         val result = mutableListOf<AppInfo>()
 
         val topPackages = usageStore.getTopPackages(UsageStore.MAX_FREQUENT_APPS)
@@ -713,6 +732,7 @@ class MainActivity : ComponentActivity() {
             } catch (e: Exception) {
                 emptyList()
             }
+            lastCoreApps = coreApps
             updateFrequentApps(coreApps, matchPool)
         } catch (e: Exception) {
 
