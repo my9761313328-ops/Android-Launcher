@@ -118,6 +118,7 @@ class MainActivity : ComponentActivity() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 resetUIState()
+                showIdleOverlay()
             }
         })
 
@@ -198,6 +199,7 @@ class MainActivity : ComponentActivity() {
             idleClockHandler.post(idleClockTicker)
             updateSponsoredSection()
             contentScroll?.post { updateStickySearchBarVisibility() }
+            showIdleOverlay()
         }
     }
 
