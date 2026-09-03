@@ -11,6 +11,11 @@
     <color name="ad_cta_text">#FFFFFF</color>
     <color name="shimmer_placeholder">#E4E4E8</color>
 
+    <color name="fav_star_icon_off">#9A9AA3</color>
+    <color name="fav_star_bg_on">#FFE3E3</color>
+    <color name="fav_star_border_on">#E8555F</color>
+    <color name="fav_star_icon_on">#E8555F</color>
+
     <color name="kotetsu_dark_charcoal">#1B1B1D</color>
     <color name="kotetsu_crimson_red">#9E1B32</color>
     <color name="kotetsu_steel_silver">#B8BCC2</color>
