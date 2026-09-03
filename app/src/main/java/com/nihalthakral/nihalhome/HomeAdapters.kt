@@ -111,18 +111,27 @@ class AllAppsAdapter(
         val result = mutableListOf<AppRow>()
 
         val favoritePackages = favoritesStore.getFavoritePackages()
+        var hasFavorites = false
         if (favoritePackages.isNotEmpty()) {
             val favoriteApps = apps
                 .filter { it.packageName in favoritePackages }
                 .sortedBy { it.label.lowercase() }
             if (favoriteApps.isNotEmpty()) {
+                hasFavorites = true
                 result.add(AppRow.Header(FAV_HEADER_LABEL))
                 favoriteApps.forEach { result.add(AppRow.Item(it)) }
             }
         }
 
+        // Exclude favorite apps from the alphabetical list below so they don't appear twice.
+        val remainingApps = apps.filter { it.packageName !in favoritePackages }
+
+        if (hasFavorites) {
+            result.add(AppRow.Header(ALL_APPS_HEADER_LABEL))
+        }
+
         var lastLetter: String? = null
-        for (app in apps) {
+        for (app in remainingApps) {
             val letter = app.label.take(1).uppercase()
             if (letter != lastLetter) {
                 result.add(AppRow.Header(letter))
@@ -207,5 +216,6 @@ class AllAppsAdapter(
         private const val TYPE_HEADER = 0
         private const val TYPE_ITEM = 1
         const val FAV_HEADER_LABEL = "Fav. Apps"
+        const val ALL_APPS_HEADER_LABEL = "All Apps"
     }
 }
