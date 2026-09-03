@@ -87,7 +87,22 @@ class MainActivity : ComponentActivity() {
 
         prefs = getSharedPreferences("nihal_home_prefs", MODE_PRIVATE)
         usageStore = UsageStore(this)
-        MobileAds.initialize(this)
+        //MobileAds.initialize(this)
+        val params = ConsentRequestParameters.Builder().build()
+        val consentInformation = UserMessagingPlatform.getConsentInformation(this)
+        
+        consentInformation.requestConsentInfoUpdate(
+            this,
+            params,
+            {
+                UserMessagingPlatform.loadAndShowConsentFormIfRequired(this) { loadAndShowError ->
+                    MobileAds.initialize(this)
+                }
+            },
+            {
+                MobileAds.initialize(this)
+            }
+        )
 
         // Home/launcher windows are laid out edge-to-edge by the system, so
         // android:statusBarColor / navigationBarColor in the theme are ignored
