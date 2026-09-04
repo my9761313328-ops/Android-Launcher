@@ -274,4 +274,32 @@
         android:background="@android:color/white"
         android:elevation="10dp" />
 
+    <!--
+      Full-screen loading overlay shown while refreshApps() runs its heavy
+      app-scan work on a background thread. Pure black background with a
+      large white spinner so it never reads as "app is slow" - it reads as
+      "app is loading", and disappears the instant the background work is
+      done.
+    -->
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:clickable="true"
+        android:elevation="30dp"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/loadingSpinner"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="@android:color/white"
+            android:indeterminateTintMode="src_in" />
+
+    </FrameLayout>
+
 </FrameLayout>
