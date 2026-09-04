@@ -215,7 +215,7 @@ class AllAppsAdapter(
     companion object {
         private const val TYPE_HEADER = 0
         private const val TYPE_ITEM = 1
-        const val FAV_HEADER_LABEL = "Fav. Apps"
+        const val FAV_HEADER_LABEL = "Favourite Apps"
         const val ALL_APPS_HEADER_LABEL = "All Apps"
     }
 }
