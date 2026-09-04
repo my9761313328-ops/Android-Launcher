@@ -63,6 +63,7 @@ class MainActivity : ComponentActivity() {
     private var coreAppsRecycler: RecyclerView? = null
     private var contentScroll: NestedScrollView? = null
     private var nativeAdManager: NativeAdManager? = null
+    private var loadingOverlay: View? = null
 
     // --- Home-screen-like idle overlay ---
     private var idleOverlay: View? = null
@@ -281,6 +282,8 @@ class MainActivity : ComponentActivity() {
 
     private fun setupHomeScreen() {
         setContentView(R.layout.activity_main)
+
+        loadingOverlay = findViewById(R.id.loadingOverlay)
 
         ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insets ->
             val imeNowVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
@@ -638,30 +641,71 @@ class MainActivity : ComponentActivity() {
         setSearchBarPinned(shouldStick)
     }
 
+    /**
+     * Runs the heavy "scan installed apps" work (multiple PackageManager
+     * queries + matching) on a background thread so the UI thread is never
+     * blocked. A full-screen black loading overlay with a white spinner is
+     * shown for the duration, and swapped away the instant the background
+     * work finishes and the UI has been updated.
+     */
     private fun refreshApps() {
-        allApps = AppRepository.loadApps(this)
-        applyFilter((findViewById<EditText>(R.id.searchInput)).text?.toString().orEmpty())
+        showLoadingOverlay()
 
-        val matchPool = try {
-            AppRepository.loadAllInstalledApps(this)
-        } catch (e: Exception) {
-            allApps
-        }
+        Thread {
+            val loadedApps = try {
+                AppRepository.loadApps(this)
+            } catch (e: Exception) {
+                emptyList()
+            }
 
-        val roleCandidates = try {
-            AppRepository.loadRoleCandidates(this)
-        } catch (e: Exception) {
-            emptyMap()
-        }
+            val matchPool = try {
+                AppRepository.loadAllInstalledApps(this)
+            } catch (e: Exception) {
+                loadedApps
+            }
 
-        val coreApps = try {
-            CoreAppsRepository.detectCoreApps(matchPool, roleCandidates)
-        } catch (e: Exception) {
-            emptyList()
+            val roleCandidates = try {
+                AppRepository.loadRoleCandidates(this)
+            } catch (e: Exception) {
+                emptyMap()
+            }
+
+            val coreApps = try {
+                CoreAppsRepository.detectCoreApps(matchPool, roleCandidates)
+            } catch (e: Exception) {
+                emptyList()
+            }
+
+            runOnUiThread {
+                if (isFinishing || isDestroyed) return@runOnUiThread
+
+                allApps = loadedApps
+                applyFilter((findViewById<EditText>(R.id.searchInput)).text?.toString().orEmpty())
+
+                lastCoreApps = coreApps
+                updateFrequentApps(coreApps, matchPool)
+                updateCoreApps(coreApps)
+
+                hideLoadingOverlay()
+            }
+        }.start()
+    }
+
+    private fun showLoadingOverlay() {
+        loadingOverlay?.let {
+            it.alpha = 1f
+            it.visibility = View.VISIBLE
         }
-        lastCoreApps = coreApps
-        updateFrequentApps(coreApps, matchPool)
-        updateCoreApps(coreApps)
+    }
+
+    private fun hideLoadingOverlay() {
+        val overlay = loadingOverlay ?: return
+        if (overlay.visibility != View.VISIBLE) return
+        overlay.animate()
+            .alpha(0f)
+            .setDuration(120L)
+            .withEndAction { overlay.visibility = View.GONE }
+            .start()
     }
 
     /**
