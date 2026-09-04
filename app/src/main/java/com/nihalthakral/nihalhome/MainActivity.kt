@@ -1,7 +1,9 @@
 package com.nihalthakral.nihalhome
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
@@ -65,6 +67,32 @@ class MainActivity : ComponentActivity() {
     private var nativeAdManager: NativeAdManager? = null
     private var loadingOverlay: View? = null
 
+    // --- In-memory apps cache ---
+    // Holds the result of the last real app-scan for the lifetime of the
+    // process only (RAM, never written to disk). onResume() reuses this
+    // instantly instead of re-scanning. It is only marked dirty (forcing a
+    // real refreshApps() re-scan) when an app is actually installed,
+    // uninstalled or updated - see packageChangeReceiver below.
+    private var cachedAllApps: List<AppInfo>? = null
+    private var cachedMatchPool: List<AppInfo>? = null
+    private var cachedCoreApps: List<AppInfo>? = null
+    private var appsCacheDirty = true
+
+    // Fires on ACTION_PACKAGE_ADDED / _REMOVED / _REPLACED for any package.
+    // This is the *only* thing allowed to invalidate the in-memory cache.
+    private var packageChangeReceiverRegistered = false
+    private val packageChangeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            appsCacheDirty = true
+            // If the launcher is currently on screen, refresh right away so
+            // the change is reflected live. Otherwise just leave the cache
+            // marked dirty - the next onResume() will do the real scan.
+            if (homeScreenReady) {
+                refreshApps()
+            }
+        }
+    }
+
     // --- Home-screen-like idle overlay ---
     private var idleOverlay: View? = null
     private var idleClockText: TextView? = null
@@ -94,6 +122,7 @@ class MainActivity : ComponentActivity() {
         prefs = getSharedPreferences("nihal_home_prefs", MODE_PRIVATE)
         usageStore = UsageStore(this)
         favoritesStore = FavoritesStore(this)
+        registerPackageChangeReceiver()
         //MobileAds.initialize(this)
         val params = ConsentRequestParameters.Builder().build()
         val consentInformation = UserMessagingPlatform.getConsentInformation(this)
@@ -202,12 +231,20 @@ class MainActivity : ComponentActivity() {
             // refreshApps() already runs once inside setupHomeScreen() during
             // onCreate(). Skip that first automatic onResume() call so the
             // heavy "scan all installed apps" process doesn't run twice back
-            // to back on app start. Subsequent resumes (coming back from
-            // another app) still refresh normally.
+            // to back on app start.
+            //
+            // For every subsequent resume (coming back from another app),
+            // do NOT re-scan by default - just re-apply the in-memory cache
+            // from the last real scan, which is instant. A real re-scan only
+            // happens when appsCacheDirty was set to true by
+            // packageChangeReceiver, i.e. an app was actually installed,
+            // uninstalled or updated since the last scan.
             if (isFirstResume) {
                 isFirstResume = false
-            } else {
+            } else if (appsCacheDirty || cachedAllApps == null) {
                 refreshApps()
+            } else {
+                applyCachedApps()
             }
             resetUIState()
             updateIdleClock()
@@ -228,6 +265,34 @@ class MainActivity : ComponentActivity() {
         super.onDestroy()
         idleClockHandler.removeCallbacks(idleClockTicker)
         nativeAdManager?.destroy()
+        unregisterPackageChangeReceiver()
+    }
+
+    private fun registerPackageChangeReceiver() {
+        if (packageChangeReceiverRegistered) return
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_ADDED)
+            addAction(Intent.ACTION_PACKAGE_REMOVED)
+            addAction(Intent.ACTION_PACKAGE_REPLACED)
+            addDataScheme("package")
+        }
+        ContextCompat.registerReceiver(
+            this,
+            packageChangeReceiver,
+            filter,
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+        packageChangeReceiverRegistered = true
+    }
+
+    private fun unregisterPackageChangeReceiver() {
+        if (!packageChangeReceiverRegistered) return
+        try {
+            unregisterReceiver(packageChangeReceiver)
+        } catch (e: IllegalArgumentException) {
+            // Already unregistered - safe to ignore.
+        }
+        packageChangeReceiverRegistered = false
     }
 
     private fun updateSponsoredSection() {
@@ -686,9 +751,35 @@ class MainActivity : ComponentActivity() {
                 updateFrequentApps(coreApps, matchPool)
                 updateCoreApps(coreApps)
 
+                // Save this real scan's result in the in-memory cache so the
+                // next plain onResume() (no install/uninstall/update since)
+                // can reuse it instantly instead of scanning again.
+                cachedAllApps = loadedApps
+                cachedMatchPool = matchPool
+                cachedCoreApps = coreApps
+                appsCacheDirty = false
+
                 hideLoadingOverlay()
             }
         }.start()
+    }
+
+    /**
+     * Re-applies the last cached scan result to the UI instantly, with no
+     * background thread and no loading overlay - used on a plain onResume()
+     * when nothing has actually changed since the last real scan.
+     */
+    private fun applyCachedApps() {
+        val apps = cachedAllApps ?: return
+        val coreApps = cachedCoreApps ?: emptyList()
+        val matchPool = cachedMatchPool ?: apps
+
+        allApps = apps
+        applyFilter((findViewById<EditText>(R.id.searchInput)).text?.toString().orEmpty())
+
+        lastCoreApps = coreApps
+        updateFrequentApps(coreApps, matchPool)
+        updateCoreApps(coreApps)
     }
 
     private fun showLoadingOverlay() {
