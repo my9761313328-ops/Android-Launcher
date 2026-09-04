@@ -333,23 +333,7 @@ class MainActivity : ComponentActivity() {
 
     private fun renderCorrectScreen() {
         val setupDone = prefs.getBoolean(KEY_SETUP_DONE, false)
-
-        // Android tells us HOW this activity was started:
-        //  - Pressed the physical/gesture Home button (or this is already
-        //    the default launcher) -> the incoming intent carries
-        //    CATEGORY_HOME.
-        //  - Tapped this app's icon from inside some OTHER launcher's app
-        //    drawer, like a normal app -> the incoming intent carries
-        //    CATEGORY_LAUNCHER instead (no CATEGORY_HOME).
-        //
-        // So: only show the live home-screen UI when both setup is done
-        // AND we were actually invoked as the home launcher. Otherwise
-        // (first run, or opened like a regular app) show the Easy Setup
-        // screen, whose job is to guide the user to set this as their
-        // default launcher.
-        val launchedAsHome = intent?.hasCategory(Intent.CATEGORY_HOME) == true
-
-        if (setupDone && launchedAsHome) {
+        if (setupDone) {
             setupHomeScreen()
         } else {
             setContentView(R.layout.activity_setup)
