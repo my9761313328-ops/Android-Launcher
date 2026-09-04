@@ -264,7 +264,18 @@ class NativeAdManager(
             )
             .build()
 
-        adLoader.loadAd(AdRequest.Builder().build())
+        //adLoader.loadAd(AdRequest.Builder().build())
+        val adRequest = AdRequest.Builder()
+            .addKeyword("launcher")
+            .addKeyword("app drawer")
+            .addKeyword("home screen")
+            .addKeyword("android launcher")
+            .addKeyword("app organizer")
+            .addKeyword("productivity")
+            .addKeyword("mobile utility")
+            .build()
+        
+        adLoader.loadAd(adRequest)
     }
 
     private fun showShimmer() {
