@@ -91,7 +91,7 @@
             <LinearLayout
                 android:id="@+id/searchBarContainer"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="60dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/bg_search_bar_sticky"
@@ -104,9 +104,9 @@
 
                 <ImageView
                     android:id="@+id/searchIcon"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_marginEnd="10dp"
                     android:src="@drawable/ic_search"
                     android:contentDescription="@null"
                     android:tint="@color/text_secondary" />
@@ -125,7 +125,7 @@
                     android:textColor="@color/text_primary"
                     android:textColorHint="@color/text_secondary"
                     android:textCursorDrawable="@drawable/cursor_search_black"
-                    android:textSize="15sp" />
+                    android:textSize="17sp" />
 
                 <TextView
                     android:id="@+id/clearIcon"
@@ -133,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:padding="4dp"
                     android:text="×"
-                    android:textSize="20sp"
+                    android:textSize="23sp"
                     android:textColor="@color/text_secondary"
                     android:visibility="gone" />
 
@@ -232,7 +232,7 @@
     <LinearLayout
         android:id="@+id/searchBarSticky"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:layout_gravity="top"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
