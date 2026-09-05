@@ -353,9 +353,8 @@ class NativeAdManager(
 
         if (nativeAd.mediaContent != null) {
             // Registering the MediaView is what makes the SDK render the
-            // ad's image/video into it. A transparent view sits on top of
-            // it in the layout (ad_media_click_blocker) so taps on the
-            // media are absorbed there instead of triggering the ad click.
+            // ad's image/video into it and lets taps on the media itself
+            // register as ad clicks.
             mediaView.visibility = View.VISIBLE
             mediaFallbackText.visibility = View.GONE
             mediaView.setImageScaleType(ImageView.ScaleType.FIT_CENTER)
