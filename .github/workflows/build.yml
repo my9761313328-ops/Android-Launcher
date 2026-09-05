@@ -17,7 +17,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # Caches Gradle wrapper, dependencies AND build outputs (incremental builds)
       - name: Setup Gradle (with cache)
         uses: gradle/actions/setup-gradle@v3
         with:
