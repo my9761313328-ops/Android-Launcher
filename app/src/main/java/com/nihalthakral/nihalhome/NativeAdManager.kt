@@ -352,16 +352,15 @@ class NativeAdManager(
         val ctaView = adView.findViewById<Button>(R.id.ad_call_to_action)
 
         if (nativeAd.mediaContent != null) {
-            // mediaContent is set so the SDK renders the image/video into
-            // the MediaView. We intentionally do NOT call adView.mediaView =
-            // mediaView — registering it would make the entire media area a
-            // click target. By leaving it unregistered, the SDK only tracks
-            // clicks on the CTA button (the sole registered asset below),
-            // which is the official AdMob way to restrict ad clicks.
+            // Registering the MediaView is what makes the SDK render the
+            // ad's image/video into it. A transparent view sits on top of
+            // it in the layout (ad_media_click_blocker) so taps on the
+            // media are absorbed there instead of triggering the ad click.
             mediaView.visibility = View.VISIBLE
             mediaFallbackText.visibility = View.GONE
             mediaView.setImageScaleType(ImageView.ScaleType.FIT_CENTER)
             mediaView.mediaContent = nativeAd.mediaContent
+            adView.mediaView = mediaView
 
             // MediaView's own wrap_content measurement doesn't reliably
             // hug the real media size — Google's SDK doesn't expose the
@@ -388,8 +387,7 @@ class NativeAdManager(
         } else {
             headlineView.visibility = View.GONE
         }
-        // Not registered — unregistered views display normally but are not
-        // click targets, so the SDK won't open the ad when they are tapped.
+        adView.headlineView = headlineView
 
         // App icon — bound independently from the MediaView so it never
         // shows up composited inside the image/video area. If the ad has
@@ -402,7 +400,7 @@ class NativeAdManager(
         } else {
             iconView.visibility = View.GONE
         }
-        // Not registered — see headlineView comment above.
+        adView.iconView = iconView
 
         if (!nativeAd.body.isNullOrEmpty()) {
             bodyView.text = nativeAd.body
@@ -410,7 +408,7 @@ class NativeAdManager(
         } else {
             bodyView.visibility = View.GONE
         }
-        // Not registered — see headlineView comment above.
+        adView.bodyView = bodyView
 
         if (!nativeAd.advertiser.isNullOrEmpty()) {
             advertiserView.text = nativeAd.advertiser
@@ -418,7 +416,7 @@ class NativeAdManager(
         } else {
             advertiserView.visibility = View.GONE
         }
-        // Not registered — see headlineView comment above.
+        adView.advertiserView = advertiserView
 
         val starRating = nativeAd.starRating
         if (starRating != null) {
@@ -427,7 +425,7 @@ class NativeAdManager(
         } else {
             starRatingView.visibility = View.GONE
         }
-        // Not registered — see headlineView comment above.
+        adView.starRatingView = starRatingView
 
         if (!nativeAd.price.isNullOrEmpty()) {
             priceView.text = nativeAd.price
@@ -435,7 +433,7 @@ class NativeAdManager(
         } else {
             priceView.visibility = View.GONE
         }
-        // Not registered — see headlineView comment above.
+        adView.priceView = priceView
 
         if (!nativeAd.store.isNullOrEmpty()) {
             storeView.text = nativeAd.store
@@ -443,7 +441,7 @@ class NativeAdManager(
         } else {
             storeView.visibility = View.GONE
         }
-        // Not registered — see headlineView comment above.
+        adView.storeView = storeView
 
         if (!nativeAd.callToAction.isNullOrEmpty()) {
             ctaView.text = nativeAd.callToAction
