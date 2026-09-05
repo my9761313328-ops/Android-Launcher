@@ -34,6 +34,18 @@
                 android:textStyle="bold"
                 android:visibility="gone" />
 
+            <!-- Sits above the media view so a tap on the image/video is
+                 swallowed here instead of reaching it — avoids accidental
+                 clicks on the media itself; the CTA button below stays
+                 tappable and is what actually opens the ad. -->
+            <View
+                android:id="@+id/ad_media_click_blocker"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:focusable="true" />
+
         </FrameLayout>
 
         <LinearLayout
