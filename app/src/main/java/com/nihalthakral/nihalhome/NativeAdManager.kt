@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -315,6 +316,7 @@ class NativeAdManager(
         val priceView = adView.findViewById<TextView>(R.id.ad_price)
         val storeView = adView.findViewById<TextView>(R.id.ad_store)
         val ctaView = adView.findViewById<Button>(R.id.ad_call_to_action)
+        val contentRow = adView.findViewById<LinearLayout>(R.id.ad_content_row)
 
         if (nativeAd.mediaContent != null) {
             
@@ -420,6 +422,7 @@ class NativeAdManager(
         starRatingView.setOnTouchListener(blockTouchListener)
         priceView.setOnTouchListener(blockTouchListener)
         storeView.setOnTouchListener(blockTouchListener)
+        contentRow.setOnTouchListener(blockTouchListener)
 
         // Sirf CTA button normal/active rahe taaki ad click sirf yahin se trigger ho
         ctaView.setOnTouchListener(null)
