@@ -12,23 +12,22 @@
         <FrameLayout
             android:id="@+id/ad_media_container"
             android:layout_width="match_parent"
-            android:layout_height="170dp"
-            android:paddingTop="@dimen/sponsored_media_vertical_gap"
-            android:clipToPadding="true"
+            android:layout_height="wrap_content"
             android:background="@color/sponsored_background">
 
             <com.google.android.gms.ads.nativead.MediaView
                 android:id="@+id/ad_media_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content" />
 
             <!-- Shown instead of the MediaView when the ad has no
                  image/video content at all. -->
             <TextView
                 android:id="@+id/ad_media_fallback_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="170dp"
                 android:layout_gravity="center"
+                android:gravity="center"
                 android:text="Sponsored"
                 android:textColor="@color/text_secondary"
                 android:textSize="24sp"
