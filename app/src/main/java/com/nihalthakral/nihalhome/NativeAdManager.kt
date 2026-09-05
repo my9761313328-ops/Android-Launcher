@@ -403,64 +403,26 @@ class NativeAdManager(
         }
         adView.callToActionView = ctaView
 
-        // Step 1: CTA ke ilawa sabhi registered views se clickability/focusability hataiye
-        // taaki SDK unhe automatically clickable na bana de.
-        headlineView.isClickable = false
-        headlineView.isFocusable = false
-
-        iconView.isClickable = false
-        iconView.isFocusable = false
-
-        bodyView.isClickable = false
-        bodyView.isFocusable = false
-
-        mediaView.isClickable = false
-        mediaView.isFocusable = false
-
-        advertiserView.isClickable = false
-        advertiserView.isFocusable = false
-
-        starRatingView.isClickable = false
-        starRatingView.isFocusable = false
-
-        priceView.isClickable = false
-        priceView.isFocusable = false
-
-        storeView.isClickable = false
-        storeView.isFocusable = false
-
-        // Sirf CTA button clickable rahe
-        ctaView.isClickable = true
-        ctaView.isFocusable = true
-
         adView.setNativeAd(nativeAd)
 
-        // Step: setNativeAd() ke baad SDK dobara in views par clickability set kar sakta hai,
-        // isliye yahan explicitly override karein taaki sirf CTA hi clickable rahe.
-        headlineView.isClickable = false
-        headlineView.isFocusable = false
+        // AdMob SDK setNativeAd() ke andar internally in registered views (headline, icon,
+        // body, media, advertiser, rating, price, store) par apna khud ka click/touch
+        // listener attach kar deta hai — sirf isClickable = false karne se ye override nahi
+        // hota. Isliye har non-CTA view par touch event ko consume karke block karte hain
+        // taaki touch signal parent AdView tak na pahunche aur ad-click trigger na ho.
+        val blockTouchListener = View.OnTouchListener { _, _ -> true }
 
-        iconView.isClickable = false
-        iconView.isFocusable = false
+        headlineView.setOnTouchListener(blockTouchListener)
+        iconView.setOnTouchListener(blockTouchListener)
+        bodyView.setOnTouchListener(blockTouchListener)
+        mediaView.setOnTouchListener(blockTouchListener)
+        advertiserView.setOnTouchListener(blockTouchListener)
+        starRatingView.setOnTouchListener(blockTouchListener)
+        priceView.setOnTouchListener(blockTouchListener)
+        storeView.setOnTouchListener(blockTouchListener)
 
-        bodyView.isClickable = false
-        bodyView.isFocusable = false
-
-        mediaView.isClickable = false
-        mediaView.isFocusable = false
-
-        advertiserView.isClickable = false
-        advertiserView.isFocusable = false
-
-        starRatingView.isClickable = false
-        starRatingView.isFocusable = false
-
-        priceView.isClickable = false
-        priceView.isFocusable = false
-
-        storeView.isClickable = false
-        storeView.isFocusable = false
-
+        // Sirf CTA button normal/active rahe taaki ad click sirf yahin se trigger ho
+        ctaView.setOnTouchListener(null)
         ctaView.isClickable = true
         ctaView.isFocusable = true
 
