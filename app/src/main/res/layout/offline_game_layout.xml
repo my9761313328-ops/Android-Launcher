@@ -5,6 +5,7 @@
     android:orientation="vertical">
 
     <FrameLayout
+        android:id="@+id/offlineGameMediaContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -31,30 +32,66 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="top"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="@dimen/sponsored_media_vertical_gap">
+
+        <ImageView
+            android:id="@+id/offlineGameIcon"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="10dp"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:background="@drawable/bg_offline_game_icon"
+            android:src="@drawable/ic_offline_game"
+            android:clipToOutline="true"
+            android:contentDescription="@null" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/offlineGameName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Offline Game"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/offlineGameDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Most Challenging Game"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        android:paddingTop="@dimen/sponsored_media_vertical_gap"
+        android:paddingTop="10dp"
         android:paddingBottom="12dp">
-
-        <TextView
-            android:id="@+id/offlineGameName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Offline Game"
-            android:textColor="@color/text_primary"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end" />
 
         <Button
             android:id="@+id/offlineGamePlayButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="46dp"
-            android:layout_marginStart="14dp"
             android:minWidth="0dp"
             android:minHeight="0dp"
             android:paddingStart="20dp"
