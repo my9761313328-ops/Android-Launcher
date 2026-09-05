@@ -17,16 +17,6 @@
             android:src="@drawable/offline_game_media"
             android:contentDescription="@null" />
 
-        <!-- Blocks taps on the game artwork so only the Play button below
-             is actionable, matching the sponsored ad media behaviour. -->
-        <View
-            android:id="@+id/offlineGameMediaClickBlocker"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:clickable="true"
-            android:focusable="true" />
-
     </FrameLayout>
 
     <LinearLayout
