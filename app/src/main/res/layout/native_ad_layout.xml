@@ -52,12 +52,25 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
+            android:gravity="top"
             android:orientation="horizontal"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
-            android:paddingTop="@dimen/sponsored_media_vertical_gap"
-            android:paddingBottom="12dp">
+            android:paddingTop="@dimen/sponsored_media_vertical_gap">
+
+            <!-- App icon, kept separate from the MediaView. MediaView only
+                 ever renders the ad's main image/video content; the icon is
+                 bound independently via NativeAd.icon / adView.iconView so
+                 it never gets composited into the media area. -->
+            <ImageView
+                android:id="@+id/ad_app_icon"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="10dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/bg_ad_icon"
+                android:clipToOutline="true"
+                android:contentDescription="@null" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -79,11 +92,67 @@
                     app:autoSizeMaxTextSize="16sp"
                     app:autoSizeStepGranularity="1sp" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/ad_advertiser"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:maxLines="1"
+                        android:ellipsize="end" />
+
+                    <RatingBar
+                        android:id="@+id/ad_star_rating"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:isIndicator="true"
+                        android:numStars="5"
+                        android:stepSize="0.1" />
+
+                    <TextView
+                        android:id="@+id/ad_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:maxLines="1" />
+
+                    <TextView
+                        android:id="@+id/ad_store"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:maxLines="1" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/ad_body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
+
                 <TextView
                     android:id="@+id/ad_badge"
                     android:layout_width="wrap_content"
                     android:layout_height="16dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="6dp"
                     android:paddingStart="6dp"
                     android:paddingEnd="6dp"
                     android:gravity="center"
@@ -95,11 +164,22 @@
                     android:textAllCaps="false" />
             </LinearLayout>
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="12dp">
+
             <Button
                 android:id="@+id/ad_call_to_action"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="46dp"
-                android:layout_marginStart="14dp"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
                 android:paddingStart="20dp"
