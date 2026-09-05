@@ -325,9 +325,31 @@ class NativeAdManager(
             mediaView.mediaContent = nativeAd.mediaContent
             adView.mediaView = mediaView
 
-            // The image/video may not fill the box (different aspect
-            // ratio), leaving empty strips around it. Fill those with a
-            // fixed neutral background so it never looks "empty".
+            // MediaView's own wrap_content measurement doesn't reliably
+            // hug the real media size — Google's SDK doesn't expose the
+            // media's true intrinsic dimensions to the layout system, so
+            // a plain wrap_content height leaves extra blank space above
+            // and below the image/video. The ad does expose its actual
+            // aspect ratio though, so once we know the container's width
+            // (available only after layout) we compute the exact pixel
+            // height that matches that ratio and apply it directly — the
+            // box then hugs the media with zero leftover gap regardless
+            // of what size or aspect ratio the ad content is.
+            val aspectRatio = nativeAd.mediaContent?.aspectRatio ?: 0f
+            if (aspectRatio > 0f) {
+                mediaContainer.post {
+                    val width = mediaContainer.width
+                    if (width > 0) {
+                        val exactHeight = (width / aspectRatio).toInt().coerceAtLeast(1)
+                        val params = mediaView.layoutParams
+                        if (params.height != exactHeight) {
+                            params.height = exactHeight
+                            mediaView.layoutParams = params
+                        }
+                    }
+                }
+            }
+
             mediaContainer.setBackgroundColor(
                 ContextCompat.getColor(appContext, R.color.sponsored_background)
             )
