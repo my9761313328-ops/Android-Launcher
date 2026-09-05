@@ -20,8 +20,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <!-- Shown instead of the MediaView when the ad has no
-                 image/video content at all. -->
             <TextView
                 android:id="@+id/ad_media_fallback_text"
                 android:layout_width="wrap_content"
@@ -45,10 +43,6 @@
             android:paddingEnd="12dp"
             android:paddingTop="@dimen/sponsored_media_vertical_gap">
 
-            <!-- App icon, kept separate from the MediaView. MediaView only
-                 ever renders the ad's main image/video content; the icon is
-                 bound independently via NativeAd.icon / adView.iconView so
-                 it never gets composited into the media area. -->
             <ImageView
                 android:id="@+id/ad_app_icon"
                 android:layout_width="44dp"
