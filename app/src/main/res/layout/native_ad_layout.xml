@@ -84,13 +84,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    app:autoSizeTextType="uniform"
-                    app:autoSizeMinTextSize="12sp"
-                    app:autoSizeMaxTextSize="16sp"
-                    app:autoSizeStepGranularity="1sp" />
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -144,9 +138,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:textColor="@color/text_secondary"
-                    android:textSize="13sp"
-                    android:maxLines="2"
-                    android:ellipsize="end" />
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/ad_badge"
