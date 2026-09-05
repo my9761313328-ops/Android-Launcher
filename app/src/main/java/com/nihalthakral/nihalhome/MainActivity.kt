@@ -576,6 +576,8 @@ class MainActivity : ComponentActivity() {
         val searchIcon = findViewById<View>(R.id.searchIcon)
         this.searchIcon = searchIcon
         val normalContent = findViewById<View>(R.id.normalContent)
+        val sponsoredLabel = findViewById<View>(R.id.sponsoredLabel)
+        val sponsoredContainer = findViewById<View>(R.id.sponsoredContainer)
         val searchBarContainer = findViewById<ViewGroup>(R.id.searchBarContainer)
         this.searchBarContainer = searchBarContainer
 
@@ -605,6 +607,8 @@ class MainActivity : ComponentActivity() {
                 val query = s?.toString().orEmpty()
                 clearIcon.visibility = if (query.isEmpty()) View.GONE else View.VISIBLE
                 normalContent.visibility = if (query.isEmpty()) View.VISIBLE else View.GONE
+                sponsoredLabel.visibility = if (query.isEmpty()) View.VISIBLE else View.GONE
+                sponsoredContainer.visibility = if (query.isEmpty()) View.VISIBLE else View.GONE
                 applyFilter(query)
             }
         })
