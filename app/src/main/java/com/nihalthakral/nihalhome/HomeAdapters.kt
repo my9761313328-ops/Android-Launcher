@@ -123,7 +123,6 @@ class AllAppsAdapter(
             }
         }
 
-        // Exclude favorite apps from the alphabetical list below so they don't appear twice.
         val remainingApps = apps.filter { it.packageName !in favoritePackages }
 
         if (hasFavorites) {
