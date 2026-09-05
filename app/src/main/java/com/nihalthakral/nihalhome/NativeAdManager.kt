@@ -123,6 +123,32 @@ class NativeAdManager(
         showGameFallbackCard(AD_FALLBACK_TAG)
     }
 
+    /**
+     * Resizes [mediaView] so it hugs [aspectRatio] (width / height) exactly,
+     * once [container]'s width is known post-layout — leaving zero empty
+     * space above or below regardless of the media's own size or shape.
+     *
+     * This is the single, universal fix for every media surface in the
+     * app (sponsored ad images/videos, the offline game promo image, and
+     * any future placement) so a new gap never needs a one-off tweak: any
+     * ImageView, MediaView, or similar just needs its aspect ratio passed
+     * in here.
+     */
+    private fun fitMediaToAspectRatio(container: View, mediaView: View, aspectRatio: Float) {
+        if (aspectRatio <= 0f) return
+        container.post {
+            val width = container.width
+            if (width > 0) {
+                val exactHeight = (width / aspectRatio).toInt().coerceAtLeast(1)
+                val params = mediaView.layoutParams
+                if (params.height != exactHeight) {
+                    params.height = exactHeight
+                    mediaView.layoutParams = params
+                }
+            }
+        }
+    }
+
     private fun showGameFallbackCard(tag: String) {
         if (isDestroyed) return
         displayedNativeAd?.destroy()
@@ -138,6 +164,17 @@ class NativeAdManager(
         val view = LayoutInflater.from(appContext)
             .inflate(R.layout.offline_game_layout, container, false)
         view.tag = tag
+
+        val mediaContainer = view.findViewById<FrameLayout>(R.id.offlineGameMediaContainer)
+        val mediaView = view.findViewById<ImageView>(R.id.offlineGameMedia)
+        val drawable = mediaView.drawable
+        val aspectRatio = if (drawable != null && drawable.intrinsicHeight > 0) {
+            drawable.intrinsicWidth.toFloat() / drawable.intrinsicHeight.toFloat()
+        } else {
+            0f
+        }
+        fitMediaToAspectRatio(mediaContainer, mediaView, aspectRatio)
+
         view.findViewById<Button>(R.id.offlineGamePlayButton).setOnClickListener {
             val intent = Intent(appContext, OfflineGameActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -329,26 +366,9 @@ class NativeAdManager(
             // hug the real media size — Google's SDK doesn't expose the
             // media's true intrinsic dimensions to the layout system, so
             // a plain wrap_content height leaves extra blank space above
-            // and below the image/video. The ad does expose its actual
-            // aspect ratio though, so once we know the container's width
-            // (available only after layout) we compute the exact pixel
-            // height that matches that ratio and apply it directly — the
-            // box then hugs the media with zero leftover gap regardless
-            // of what size or aspect ratio the ad content is.
-            val aspectRatio = nativeAd.mediaContent?.aspectRatio ?: 0f
-            if (aspectRatio > 0f) {
-                mediaContainer.post {
-                    val width = mediaContainer.width
-                    if (width > 0) {
-                        val exactHeight = (width / aspectRatio).toInt().coerceAtLeast(1)
-                        val params = mediaView.layoutParams
-                        if (params.height != exactHeight) {
-                            params.height = exactHeight
-                            mediaView.layoutParams = params
-                        }
-                    }
-                }
-            }
+            // and below the image/video. See fitMediaToAspectRatio() for
+            // the universal fix used by every media surface in the app.
+            fitMediaToAspectRatio(mediaContainer, mediaView, nativeAd.mediaContent?.aspectRatio ?: 0f)
 
             mediaContainer.setBackgroundColor(
                 ContextCompat.getColor(appContext, R.color.sponsored_background)
