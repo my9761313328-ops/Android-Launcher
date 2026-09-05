@@ -8,17 +8,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Media placeholder. Real media sizes itself to the ad's own
-             aspect ratio once loaded, so this is just a sensible default
-             height for the loading state — no gap either way since both
-             this and the real media container start flush with no
-             padding. -->
         <View
             android:layout_width="match_parent"
             android:layout_height="170dp"
             android:background="@drawable/bg_shimmer_bar" />
 
-        <!-- Icon + headline/advertiser column, mirroring the real ad row. -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,8 +45,6 @@
                     android:layout_marginTop="6dp"
                     android:background="@drawable/bg_shimmer_bar" />
 
-                <!-- Body placeholder, two lines like the real ad's body
-                     text so the loaded card doesn't jump in height. -->
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="12dp"
@@ -69,8 +61,6 @@
 
         </LinearLayout>
 
-        <!-- Full-width CTA placeholder, matching the real button's size
-             and position instead of a small side-by-side box. -->
         <View
             android:layout_width="match_parent"
             android:layout_height="46dp"
