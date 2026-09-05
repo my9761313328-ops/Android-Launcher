@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.AdListener
@@ -308,7 +309,13 @@ class NativeAdManager(
         val mediaContainer = adView.findViewById<FrameLayout>(R.id.ad_media_container)
         val mediaView = adView.findViewById<MediaView>(R.id.ad_media_view)
         val mediaFallbackText = adView.findViewById<TextView>(R.id.ad_media_fallback_text)
+        val iconView = adView.findViewById<ImageView>(R.id.ad_app_icon)
         val headlineView = adView.findViewById<TextView>(R.id.ad_headline)
+        val bodyView = adView.findViewById<TextView>(R.id.ad_body)
+        val advertiserView = adView.findViewById<TextView>(R.id.ad_advertiser)
+        val starRatingView = adView.findViewById<RatingBar>(R.id.ad_star_rating)
+        val priceView = adView.findViewById<TextView>(R.id.ad_price)
+        val storeView = adView.findViewById<TextView>(R.id.ad_store)
         val ctaView = adView.findViewById<Button>(R.id.ad_call_to_action)
 
         if (nativeAd.mediaContent != null) {
@@ -352,6 +359,60 @@ class NativeAdManager(
             headlineView.visibility = View.GONE
         }
         adView.headlineView = headlineView
+
+        // App icon — bound independently from the MediaView so it never
+        // shows up composited inside the image/video area. If the ad has
+        // no icon, the whole icon slot collapses rather than showing an
+        // empty box.
+        val icon = nativeAd.icon
+        if (icon?.drawable != null) {
+            iconView.setImageDrawable(icon.drawable)
+            iconView.visibility = View.VISIBLE
+        } else {
+            iconView.visibility = View.GONE
+        }
+        adView.iconView = iconView
+
+        if (!nativeAd.body.isNullOrEmpty()) {
+            bodyView.text = nativeAd.body
+            bodyView.visibility = View.VISIBLE
+        } else {
+            bodyView.visibility = View.GONE
+        }
+        adView.bodyView = bodyView
+
+        if (!nativeAd.advertiser.isNullOrEmpty()) {
+            advertiserView.text = nativeAd.advertiser
+            advertiserView.visibility = View.VISIBLE
+        } else {
+            advertiserView.visibility = View.GONE
+        }
+        adView.advertiserView = advertiserView
+
+        val starRating = nativeAd.starRating
+        if (starRating != null) {
+            starRatingView.rating = starRating.toFloat()
+            starRatingView.visibility = View.VISIBLE
+        } else {
+            starRatingView.visibility = View.GONE
+        }
+        adView.starRatingView = starRatingView
+
+        if (!nativeAd.price.isNullOrEmpty()) {
+            priceView.text = nativeAd.price
+            priceView.visibility = View.VISIBLE
+        } else {
+            priceView.visibility = View.GONE
+        }
+        adView.priceView = priceView
+
+        if (!nativeAd.store.isNullOrEmpty()) {
+            storeView.text = nativeAd.store
+            storeView.visibility = View.VISIBLE
+        } else {
+            storeView.visibility = View.GONE
+        }
+        adView.storeView = storeView
 
         if (!nativeAd.callToAction.isNullOrEmpty()) {
             ctaView.text = nativeAd.callToAction
