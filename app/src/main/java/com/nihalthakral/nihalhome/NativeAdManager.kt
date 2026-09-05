@@ -2,10 +2,6 @@ package com.nihalthakral.nihalhome
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -331,19 +327,10 @@ class NativeAdManager(
 
             // The image/video may not fill the box (different aspect
             // ratio), leaving empty strips around it. Fill those with a
-            // color sampled from the media itself so it never looks
-            // "empty" — falls back to a neutral tone while nothing has
-            // loaded yet or for video content with no still image.
+            // fixed neutral background so it never looks "empty".
             mediaContainer.setBackgroundColor(
                 ContextCompat.getColor(appContext, R.color.sponsored_background)
             )
-            val sampleDrawable = nativeAd.images.firstOrNull()?.drawable
-            if (sampleDrawable != null) {
-                val ambientColor = ambientColorFrom(sampleDrawable)
-                if (ambientColor != null) {
-                    mediaContainer.setBackgroundColor(ambientColor)
-                }
-            }
         } else {
             mediaView.visibility = View.GONE
             mediaFallbackText.visibility = View.VISIBLE
@@ -426,43 +413,6 @@ class NativeAdManager(
 
         container.addView(adView)
         onDisplayChanged()
-    }
-
-    /**
-     * Downsamples the drawable to a single pixel and reads its color — a
-     * cheap way to get an "ambient" average color from an ad image so it
-     * can be used as a letterbox fill behind the MediaView, without pulling
-     * in a Palette dependency.
-     */
-    private fun ambientColorFrom(drawable: Drawable): Int? {
-        return try {
-            val bitmap: Bitmap = if (drawable is BitmapDrawable && drawable.bitmap != null) {
-                drawable.bitmap
-            } else {
-                val width = drawable.intrinsicWidth.coerceAtLeast(1)
-                val height = drawable.intrinsicHeight.coerceAtLeast(1)
-                val bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-                val canvas = android.graphics.Canvas(bmp)
-                drawable.setBounds(0, 0, canvas.width, canvas.height)
-                drawable.draw(canvas)
-                bmp
-            }
-
-            val scaled = Bitmap.createScaledBitmap(bitmap, 1, 1, true)
-            val pixel = scaled.getPixel(0, 0)
-            if (scaled !== bitmap) {
-                scaled.recycle()
-            }
-
-            // Soften it slightly toward the ad card's white background so
-            // it reads as an ambient tint rather than a jarring solid block.
-            val r = (Color.red(pixel) * 0.82f + 255 * 0.18f).toInt().coerceIn(0, 255)
-            val g = (Color.green(pixel) * 0.82f + 255 * 0.18f).toInt().coerceIn(0, 255)
-            val b = (Color.blue(pixel) * 0.82f + 255 * 0.18f).toInt().coerceIn(0, 255)
-            Color.rgb(r, g, b)
-        } catch (e: Exception) {
-            null
-        }
     }
 
     fun destroy() {
