@@ -403,7 +403,66 @@ class NativeAdManager(
         }
         adView.callToActionView = ctaView
 
+        // Step 1: CTA ke ilawa sabhi registered views se clickability/focusability hataiye
+        // taaki SDK unhe automatically clickable na bana de.
+        headlineView.isClickable = false
+        headlineView.isFocusable = false
+
+        iconView.isClickable = false
+        iconView.isFocusable = false
+
+        bodyView.isClickable = false
+        bodyView.isFocusable = false
+
+        mediaView.isClickable = false
+        mediaView.isFocusable = false
+
+        advertiserView.isClickable = false
+        advertiserView.isFocusable = false
+
+        starRatingView.isClickable = false
+        starRatingView.isFocusable = false
+
+        priceView.isClickable = false
+        priceView.isFocusable = false
+
+        storeView.isClickable = false
+        storeView.isFocusable = false
+
+        // Sirf CTA button clickable rahe
+        ctaView.isClickable = true
+        ctaView.isFocusable = true
+
         adView.setNativeAd(nativeAd)
+
+        // Step: setNativeAd() ke baad SDK dobara in views par clickability set kar sakta hai,
+        // isliye yahan explicitly override karein taaki sirf CTA hi clickable rahe.
+        headlineView.isClickable = false
+        headlineView.isFocusable = false
+
+        iconView.isClickable = false
+        iconView.isFocusable = false
+
+        bodyView.isClickable = false
+        bodyView.isFocusable = false
+
+        mediaView.isClickable = false
+        mediaView.isFocusable = false
+
+        advertiserView.isClickable = false
+        advertiserView.isFocusable = false
+
+        starRatingView.isClickable = false
+        starRatingView.isFocusable = false
+
+        priceView.isClickable = false
+        priceView.isFocusable = false
+
+        storeView.isClickable = false
+        storeView.isFocusable = false
+
+        ctaView.isClickable = true
+        ctaView.isFocusable = true
 
         container.addView(adView)
         onDisplayChanged()
