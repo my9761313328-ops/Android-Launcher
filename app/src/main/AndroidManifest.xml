@@ -38,6 +38,11 @@
             android:exported="false"
             android:theme="@style/Theme.NihalHome" />
 
+        <activity
+            android:name=".ChooseLauncherActivity"
+            android:exported="false"
+            android:theme="@style/Theme.NihalHome" />
+
     </application>
 
 </manifest>
