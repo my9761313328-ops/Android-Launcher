@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class MainActivity : ComponentActivity() {
@@ -114,6 +115,17 @@ class MainActivity : ComponentActivity() {
 
             LauncherUtils.launchSelected(this, chosen.packageName, chosen.activityName)
             dialog.dismiss()
+        }
+
+        dialog.setOnShowListener {
+            val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            if (bottomSheet != null) {
+                val behavior = BottomSheetBehavior.from(bottomSheet)
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                behavior.skipCollapsed = true
+                behavior.peekHeight = 0
+                bottomSheet.layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+            }
         }
 
         dialog.show()
