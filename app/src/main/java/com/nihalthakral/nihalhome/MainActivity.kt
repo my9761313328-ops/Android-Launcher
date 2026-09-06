@@ -67,22 +67,33 @@ class MainActivity : ComponentActivity() {
     private var nativeAdManager: NativeAdManager? = null
     private var loadingOverlay: View? = null
 
+    // --- In-memory apps cache ---
+    // Holds the result of the last real app-scan for the lifetime of the
+    // process only (RAM, never written to disk). onResume() reuses this
+    // instantly instead of re-scanning. It is only marked dirty (forcing a
+    // real refreshApps() re-scan) when an app is actually installed,
+    // uninstalled or updated - see packageChangeReceiver below.
     private var cachedAllApps: List<AppInfo>? = null
     private var cachedMatchPool: List<AppInfo>? = null
     private var cachedCoreApps: List<AppInfo>? = null
     private var appsCacheDirty = true
 
+    // Fires on ACTION_PACKAGE_ADDED / _REMOVED / _REPLACED for any package.
+    // This is the *only* thing allowed to invalidate the in-memory cache.
     private var packageChangeReceiverRegistered = false
     private val packageChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             appsCacheDirty = true
-            
+            // If the launcher is currently on screen, refresh right away so
+            // the change is reflected live. Otherwise just leave the cache
+            // marked dirty - the next onResume() will do the real scan.
             if (homeScreenReady) {
                 refreshApps()
             }
         }
     }
 
+    // --- Home-screen-like idle overlay ---
     private var idleOverlay: View? = null
     private var idleClockText: TextView? = null
     private var idleDateText: TextView? = null
@@ -112,7 +123,7 @@ class MainActivity : ComponentActivity() {
         usageStore = UsageStore(this)
         favoritesStore = FavoritesStore(this)
         registerPackageChangeReceiver()
-        
+        //MobileAds.initialize(this)
         val params = ConsentRequestParameters.Builder().build()
         val consentInformation = UserMessagingPlatform.getConsentInformation(this)
         
@@ -129,6 +140,10 @@ class MainActivity : ComponentActivity() {
             }
         )
 
+        // Home/launcher windows are laid out edge-to-edge by the system, so
+        // android:statusBarColor / navigationBarColor in the theme are ignored
+        // on modern Android. Make it explicit and draw our own solid white
+        // bars via scrim views instead (set up in setupHomeScreen()).
         WindowCompat.setDecorFitsSystemWindows(window, false)
         val insetsController = WindowInsetsControllerCompat(window, window.decorView)
         insetsController.isAppearanceLightStatusBars = true
@@ -213,7 +228,17 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         if (prefs.getBoolean(KEY_SETUP_DONE, false)) {
-            
+            // refreshApps() already runs once inside setupHomeScreen() during
+            // onCreate(). Skip that first automatic onResume() call so the
+            // heavy "scan all installed apps" process doesn't run twice back
+            // to back on app start.
+            //
+            // For every subsequent resume (coming back from another app),
+            // do NOT re-scan by default - just re-apply the in-memory cache
+            // from the last real scan, which is instant. A real re-scan only
+            // happens when appsCacheDirty was set to true by
+            // packageChangeReceiver, i.e. an app was actually installed,
+            // uninstalled or updated since the last scan.
             if (isFirstResume) {
                 isFirstResume = false
             } else if (appsCacheDirty || cachedAllApps == null) {
@@ -265,7 +290,7 @@ class MainActivity : ComponentActivity() {
         try {
             unregisterReceiver(packageChangeReceiver)
         } catch (e: IllegalArgumentException) {
-            
+            // Already unregistered - safe to ignore.
         }
         packageChangeReceiverRegistered = false
     }
@@ -339,6 +364,11 @@ class MainActivity : ComponentActivity() {
             insets
         }
 
+        // Keep the status bar and navigation bar solid white, never letting
+        // the wallpaper show through behind them. Since the window is
+        // edge-to-edge, we draw our own opaque bars sized to the system bar
+        // insets, and pad the scrollable/idle content so nothing sits under
+        // them.
         val statusBarScrim = findViewById<View>(R.id.statusBarScrim)
         val navBarScrim = findViewById<View>(R.id.navBarScrim)
         val rootContainer = findViewById<View>(R.id.rootContainer)
@@ -554,6 +584,14 @@ class MainActivity : ComponentActivity() {
         val searchBarSticky = findViewById<ViewGroup>(R.id.searchBarSticky)
         this.searchBarSticky = searchBarSticky
 
+        // There is only ONE search icon / EditText / clear icon in the whole
+        // screen. "searchBarContainer" (inline, inside the scrolling content)
+        // and "searchBarSticky" (an empty overlay docked at the top) are just
+        // two differently-styled shells. When the user scrolls past the inline
+        // bar, the same three child views are physically moved into the sticky
+        // shell instead of being duplicated/synced, so there is exactly one
+        // cursor, one focus state and one text buffer at all times - no more
+        // keeping two EditTexts in sync.
         val clickToFocus = View.OnClickListener {
             searchInput.requestFocus()
             val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -584,16 +622,20 @@ class MainActivity : ComponentActivity() {
                 actionId == EditorInfo.IME_ACTION_DONE ||
                 actionId == EditorInfo.IME_ACTION_UNSPECIFIED
             ) {
-                
+                // Always clear focus and hide the keyboard - previously the
+                // keyboard stayed visible after pressing Enter even though
+                // focus had already left the field.
                 searchInput.clearFocus()
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
                 imm?.hideSoftInputFromWindow(searchInput.windowToken, 0)
 
                 if (searchInput.text.isNullOrEmpty()) {
-                    
+                    // Same as pressing the back button, except we don't want
+                    // to bring back the idle overlay (with the Kōtetsu
+                    // capsule) in this case - only back press should do that.
                     resetUIState()
                 } else {
-                    
+                    // Open the top app from the current search results, if any.
                     currentFilteredApps.firstOrNull()?.let { topApp ->
                         launchApp(topApp)
                     }
@@ -609,6 +651,15 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Moves the search icon / EditText / clear icon between the inline shell
+     * (searchBarContainer, inside the scrolling content) and the pinned shell
+     * (searchBarSticky, an overlay docked to the top) based on scroll
+     * position. Because these are the *same* View instances every time
+     * (nothing is duplicated or text-synced), focus, cursor position and the
+     * IME input connection all move with them automatically - there is no
+     * separate "sticky EditText" that can fall out of sync.
+     */
     private fun setSearchBarPinned(pinned: Boolean) {
         if (pinned == isSearchBarPinned) return
         val icon = searchIcon ?: return
@@ -617,6 +668,9 @@ class MainActivity : ComponentActivity() {
         val inlineShell = searchBarContainer ?: return
         val stickyShell = searchBarSticky ?: return
 
+        // Reparenting an EditText clears its focus/IME connection for a
+        // moment; remember the state so we can seamlessly restore it and the
+        // user never notices (and never has to tap the field again).
         val hadFocus = input.hasFocus()
 
         val fromShell = if (pinned) inlineShell else stickyShell
@@ -629,6 +683,8 @@ class MainActivity : ComponentActivity() {
         toShell.addView(input)
         toShell.addView(clear)
 
+        // Keep the inline shell occupying its normal space (INVISIBLE, not
+        // GONE) so the rest of the list doesn't jump when it's emptied out.
         inlineShell.visibility = if (pinned) View.INVISIBLE else View.VISIBLE
         stickyShell.visibility = if (pinned) View.VISIBLE else View.GONE
         isSearchBarPinned = pinned
@@ -654,6 +710,13 @@ class MainActivity : ComponentActivity() {
         setSearchBarPinned(shouldStick)
     }
 
+    /**
+     * Runs the heavy "scan installed apps" work (multiple PackageManager
+     * queries + matching) on a background thread so the UI thread is never
+     * blocked. A full-screen black loading overlay with a white spinner is
+     * shown for the duration, and swapped away the instant the background
+     * work finishes and the UI has been updated.
+     */
     private fun refreshApps() {
         showLoadingOverlay()
 
@@ -692,6 +755,9 @@ class MainActivity : ComponentActivity() {
                 updateFrequentApps(coreApps, matchPool)
                 updateCoreApps(coreApps)
 
+                // Save this real scan's result in the in-memory cache so the
+                // next plain onResume() (no install/uninstall/update since)
+                // can reuse it instantly instead of scanning again.
                 cachedAllApps = loadedApps
                 cachedMatchPool = matchPool
                 cachedCoreApps = coreApps
@@ -702,6 +768,11 @@ class MainActivity : ComponentActivity() {
         }.start()
     }
 
+    /**
+     * Re-applies the last cached scan result to the UI instantly, with no
+     * background thread and no loading overlay - used on a plain onResume()
+     * when nothing has actually changed since the last real scan.
+     */
     private fun applyCachedApps() {
         val apps = cachedAllApps ?: return
         val coreApps = cachedCoreApps ?: emptyList()
@@ -732,6 +803,11 @@ class MainActivity : ComponentActivity() {
             .start()
     }
 
+    /**
+     * Called whenever a favorite is toggled from the All Apps list.
+     * Rebuilds the Fav. Apps section. Favorite apps are still allowed
+     * to appear in Recommended Apps.
+     */
     private fun onFavoritesChanged() {
         applyFilter((findViewById<EditText>(R.id.searchInput)).text?.toString().orEmpty())
         updateFrequentApps(lastCoreApps)
@@ -757,7 +833,7 @@ class MainActivity : ComponentActivity() {
     private fun updateFrequentApps(coreApps: List<AppInfo>, matchPool: List<AppInfo> = allApps) {
         val usedPackages = mutableSetOf<String>()
         usedPackages.addAll(coreApps.map { it.packageName })
-        
+        // Favorite apps are now allowed to also appear in Recommended Apps.
         val result = mutableListOf<AppInfo>()
 
         val topPackages = usageStore.getTopPackages(UsageStore.MAX_FREQUENT_APPS)
