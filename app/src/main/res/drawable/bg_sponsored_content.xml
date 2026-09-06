@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<!-- Background for the content box (headline/badge/CTA) of the sponsored
+     ad, now that it's a separate box from the media view above it. Same
+     look the combined card used to have (bg_sponsored_placeholder): 4/4
+     rounded corners, border, solid fill. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <solid android:color="@color/screen_background" />
