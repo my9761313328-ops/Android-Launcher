@@ -26,12 +26,8 @@ class MainActivity : ComponentActivity() {
 
         setContentView(R.layout.activity_main)
 
-        // On the launcher's home screen, back press should do nothing
-        // (prevents falling through to any other/background launcher).
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                // Intentionally do nothing.
-            }
+            override fun handleOnBackPressed() {}
         })
     }
 }
