@@ -1,10 +1,14 @@
 package com.nihalthakral.nihalhome
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -44,6 +48,18 @@ class NativeAdManager(
     private var isDestroyed = false
     private var lastErrorMessage: String? = null
 
+    private var autoResizeHandler: Handler? = null
+    private var autoResizeRunnable: Runnable? = null
+    private var mediaDrawListener: ViewTreeObserver.OnDrawListener? = null
+    private var lastMediaDrawAtMs: Long = 0L
+    private var currentMediaHeightPx: Int = 0
+    private var fullMediaHeightPx: Int = 0
+    private var minMediaHeightPx: Int = 0
+    private var isMediaFullViewOpen: Boolean = false
+    private var fullViewDialog: Dialog? = null
+    private var currentMediaView: MediaView? = null
+    private var currentMediaContainer: FrameLayout? = null
+
     companion object {
         private const val TAG = "NativeAdManager"
 
@@ -59,6 +75,11 @@ class NativeAdManager(
         private const val OFFLINE_FALLBACK_TAG = "offline_fallback"
         private const val AD_FALLBACK_TAG = "ad_fallback"
         private const val SHIMMER_TAG = "shimmer_loading"
+
+        private const val RENDER_ACTIVE_WINDOW_MS = 150L
+        private const val RESIZE_TICK_MS = 40L
+        private const val RESIZE_STEP_PX = 6
+        private const val MIN_MEDIA_SIZE_DP = 52f
     }
 
     fun refresh() {
@@ -125,8 +146,142 @@ class NativeAdManager(
         }
     }
 
+    private fun appIconSizePx(): Int {
+        val density = appContext.resources.displayMetrics.density
+        return (MIN_MEDIA_SIZE_DP * density).toInt().coerceAtLeast(1)
+    }
+
+    private fun setupMediaAutoResize(container: FrameLayout, mediaView: MediaView, aspectRatio: Float) {
+        stopAutoResizeLoop()
+        if (aspectRatio <= 0f) return
+
+        container.post {
+            if (isDestroyed) return@post
+            val width = container.width
+            if (width <= 0) return@post
+
+            val fullHeight = (width / aspectRatio).toInt().coerceAtLeast(1)
+            val minHeight = appIconSizePx().coerceAtMost(fullHeight)
+
+            fullMediaHeightPx = fullHeight
+            minMediaHeightPx = minHeight
+            currentMediaHeightPx = fullHeight
+
+            val params = mediaView.layoutParams
+            params.height = fullHeight
+            mediaView.layoutParams = params
+
+            currentMediaView = mediaView
+            currentMediaContainer = container
+            lastMediaDrawAtMs = System.currentTimeMillis()
+
+            val listener = ViewTreeObserver.OnDrawListener {
+                lastMediaDrawAtMs = System.currentTimeMillis()
+            }
+            mediaDrawListener = listener
+            mediaView.viewTreeObserver.addOnDrawListener(listener)
+
+            startAutoResizeLoop(mediaView)
+        }
+    }
+
+    private fun startAutoResizeLoop(mediaView: MediaView) {
+        val handler = Handler(Looper.getMainLooper())
+        autoResizeHandler = handler
+
+        val runnable = object : Runnable {
+            override fun run() {
+                if (isDestroyed) return
+
+                if (!isMediaFullViewOpen) {
+                    val now = System.currentTimeMillis()
+                    val isRendering = (now - lastMediaDrawAtMs) <= RENDER_ACTIVE_WINDOW_MS
+
+                    val newHeight = if (isRendering) {
+                        (currentMediaHeightPx - RESIZE_STEP_PX).coerceAtLeast(minMediaHeightPx)
+                    } else {
+                        (currentMediaHeightPx + RESIZE_STEP_PX).coerceAtMost(fullMediaHeightPx)
+                    }
+
+                    if (newHeight != currentMediaHeightPx) {
+                        currentMediaHeightPx = newHeight
+                        val params = mediaView.layoutParams
+                        params.height = newHeight
+                        mediaView.layoutParams = params
+                    }
+                }
+
+                autoResizeHandler?.postDelayed(this, RESIZE_TICK_MS)
+            }
+        }
+        autoResizeRunnable = runnable
+        handler.postDelayed(runnable, RESIZE_TICK_MS)
+    }
+
+    private fun stopAutoResizeLoop() {
+        autoResizeRunnable?.let { autoResizeHandler?.removeCallbacks(it) }
+        autoResizeRunnable = null
+        autoResizeHandler = null
+
+        currentMediaView?.let { mv ->
+            mediaDrawListener?.let { listener ->
+                mv.viewTreeObserver.removeOnDrawListener(listener)
+            }
+        }
+        mediaDrawListener = null
+        currentMediaView = null
+        currentMediaContainer = null
+    }
+
+    private fun dismissFullViewIfOpen() {
+        fullViewDialog?.dismiss()
+        fullViewDialog = null
+        isMediaFullViewOpen = false
+    }
+
+    private fun openMediaFullView(originalContainer: FrameLayout, mediaView: MediaView) {
+        if (isDestroyed || isMediaFullViewOpen) return
+        isMediaFullViewOpen = true
+
+        val dialog = Dialog(appContext, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+        val dialogView = LayoutInflater.from(appContext)
+            .inflate(R.layout.dialog_media_fullview, null, false)
+
+        val fullHost = dialogView.findViewById<FrameLayout>(R.id.full_media_host)
+        val closeButton = dialogView.findViewById<TextView>(R.id.full_media_close_button)
+
+        originalContainer.removeView(mediaView)
+        val expandedParams = mediaView.layoutParams
+        expandedParams.width = FrameLayout.LayoutParams.MATCH_PARENT
+        expandedParams.height = fullMediaHeightPx
+        mediaView.layoutParams = expandedParams
+        fullHost.addView(mediaView)
+
+        closeButton.setOnClickListener { dialog.dismiss() }
+
+        dialog.setContentView(dialogView)
+        dialog.setCancelable(true)
+        dialog.setOnDismissListener {
+            isMediaFullViewOpen = false
+            fullViewDialog = null
+            if (mediaView.parent === fullHost) {
+                fullHost.removeView(mediaView)
+                val restoredParams = mediaView.layoutParams
+                restoredParams.width = FrameLayout.LayoutParams.MATCH_PARENT
+                restoredParams.height = currentMediaHeightPx
+                mediaView.layoutParams = restoredParams
+                originalContainer.addView(mediaView)
+            }
+        }
+
+        fullViewDialog = dialog
+        dialog.show()
+    }
+
     private fun showGameFallbackCard(tag: String) {
         if (isDestroyed) return
+        stopAutoResizeLoop()
+        dismissFullViewIfOpen()
         displayedNativeAd?.destroy()
         displayedNativeAd = null
         
@@ -279,6 +434,8 @@ class NativeAdManager(
     }
 
     private fun showShimmer() {
+        stopAutoResizeLoop()
+        dismissFullViewIfOpen()
         container.removeAllViews()
         val view = LayoutInflater.from(appContext)
             .inflate(R.layout.native_ad_shimmer_layout, container, false) as ShimmerFrameLayout
@@ -295,6 +452,9 @@ class NativeAdManager(
     }
 
     private fun showOnScreen(nativeAd: NativeAd) {
+
+        stopAutoResizeLoop()
+        dismissFullViewIfOpen()
 
         val previous = displayedNativeAd
         displayedNativeAd = nativeAd
@@ -317,6 +477,7 @@ class NativeAdManager(
         val storeView = adView.findViewById<TextView>(R.id.ad_store)
         val ctaView = adView.findViewById<Button>(R.id.ad_call_to_action)
         val contentRow = adView.findViewById<LinearLayout>(R.id.ad_content_row)
+        val mediaViewButton = adView.findViewById<TextView>(R.id.ad_media_view_button)
 
         if (nativeAd.mediaContent != null) {
             
@@ -326,14 +487,21 @@ class NativeAdManager(
             mediaView.mediaContent = nativeAd.mediaContent
             adView.mediaView = mediaView
 
-            fitMediaToAspectRatio(mediaContainer, mediaView, nativeAd.mediaContent?.aspectRatio ?: 0f)
+            val aspectRatio = nativeAd.mediaContent?.aspectRatio ?: 0f
+            setupMediaAutoResize(mediaContainer, mediaView, aspectRatio)
 
             mediaContainer.setBackgroundColor(
                 ContextCompat.getColor(appContext, R.color.sponsored_background)
             )
+
+            mediaViewButton.visibility = View.VISIBLE
+            mediaViewButton.setOnClickListener {
+                openMediaFullView(mediaContainer, mediaView)
+            }
         } else {
             mediaView.visibility = View.GONE
             mediaFallbackText.visibility = View.VISIBLE
+            mediaViewButton.visibility = View.GONE
             mediaContainer.setBackgroundColor(
                 ContextCompat.getColor(appContext, R.color.sponsored_background)
             )
@@ -429,12 +597,18 @@ class NativeAdManager(
         ctaView.isClickable = true
         ctaView.isFocusable = true
 
+        mediaViewButton.setOnTouchListener(null)
+        mediaViewButton.isClickable = true
+        mediaViewButton.isFocusable = true
+
         container.addView(adView)
         onDisplayChanged()
     }
 
     fun destroy() {
         isDestroyed = true
+        stopAutoResizeLoop()
+        dismissFullViewIfOpen()
         displayedNativeAd?.destroy()
         displayedNativeAd = null
         cachedNativeAd?.destroy()
