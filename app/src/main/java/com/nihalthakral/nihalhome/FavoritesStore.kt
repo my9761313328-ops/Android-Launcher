@@ -9,6 +9,12 @@ class FavoritesStore(context: Context) {
     fun isFavorite(packageName: String): Boolean =
         readOrderedFavorites().contains(packageName)
 
+    /**
+     * Toggles the favorite state of [packageName].
+     * Favorites are kept in the order they were added (oldest first),
+     * NOT alphabetically - newly favorited apps are appended to the end.
+     * @return true if the app is now a favorite, false if it was removed.
+     */
     fun toggleFavorite(packageName: String): Boolean {
         val current = readOrderedFavorites().toMutableList()
         val nowFavorite = if (current.contains(packageName)) {
@@ -24,6 +30,10 @@ class FavoritesStore(context: Context) {
 
     fun getFavoritePackages(): Set<String> = readOrderedFavorites().toSet()
 
+    /**
+     * Same favorites as [getFavoritePackages] but preserving the order in
+     * which they were added (oldest favorited first).
+     */
     fun getFavoritePackagesOrdered(): List<String> = readOrderedFavorites()
 
     private fun readOrderedFavorites(): List<String> {
@@ -32,6 +42,8 @@ class FavoritesStore(context: Context) {
             return if (stored.isEmpty()) emptyList() else stored.split(DELIMITER)
         }
 
+        // Migrate from the old unordered Set-based storage (no ordering info
+        // available yet, so fall back to whatever order the Set gives us).
         val legacySet = prefs.getStringSet(KEY_FAVORITES_LEGACY, null)
         val migrated = legacySet?.toList() ?: emptyList()
         writeOrderedFavorites(migrated)
