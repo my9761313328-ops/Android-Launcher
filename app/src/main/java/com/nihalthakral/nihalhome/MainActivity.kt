@@ -3,6 +3,7 @@ package com.nihalthakral.nihalhome
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,5 +25,13 @@ class MainActivity : ComponentActivity() {
         }
 
         setContentView(R.layout.activity_main)
+
+        // On the launcher's home screen, back press should do nothing
+        // (prevents falling through to any other/background launcher).
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Intentionally do nothing.
+            }
+        })
     }
 }
