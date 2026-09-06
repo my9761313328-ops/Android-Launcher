@@ -247,6 +247,15 @@
         android:paddingRight="16dp"
         android:visibility="gone">
 
+        <!--
+          Intentionally empty. This is only a differently-styled "dock": when
+          the inline search bar (searchBarContainer) scrolls past the top,
+          MainActivity moves its search icon / EditText / clear icon views
+          into this container instead of creating duplicate ones, so there is
+          always exactly one search field, one cursor and one focus/IME
+          state on screen.
+        -->
+
     </LinearLayout>
 
     <View
@@ -265,6 +274,13 @@
         android:background="@android:color/white"
         android:elevation="10dp" />
 
+    <!--
+      Full-screen loading overlay shown while refreshApps() runs its heavy
+      app-scan work on a background thread. Pure black background with a
+      large white spinner so it never reads as "app is slow" - it reads as
+      "app is loading", and disappears the instant the background work is
+      done.
+    -->
     <FrameLayout
         android:id="@+id/loadingOverlay"
         android:layout_width="match_parent"
