@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/onboarding_background"
+    android:padding="32dp">
+
+    <TextView
+        android:id="@+id/textChooseLanguage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="48dp"
+        android:text="@string/choose_language_title"
+        android:textColor="@color/onboarding_heading"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/buttonEnglish"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/onboarding_button_unselected"
+            android:text="@string/language_english"
+            android:textColor="@color/onboarding_heading"
+            android:textAllCaps="false"
+            android:elevation="0dp" />
+
+        <Button
+            android:id="@+id/buttonHindiUrdu"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginHorizontal="8dp"
+            android:background="@color/onboarding_button_unselected"
+            android:text="@string/language_hindi_urdu"
+            android:textColor="@color/onboarding_heading"
+            android:textAllCaps="false"
+            android:elevation="0dp" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonNext"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginBottom="24dp"
+        android:background="@color/onboarding_button_unselected"
+        android:enabled="false"
+        android:text="@string/action_next"
+        android:textColor="@color/onboarding_button_text"
+        android:textAllCaps="false"
+        android:elevation="0dp" />
+
+</LinearLayout>
