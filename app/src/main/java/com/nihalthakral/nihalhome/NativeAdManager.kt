@@ -20,6 +20,7 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.VideoController
 import com.google.android.gms.ads.nativead.MediaView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
@@ -59,6 +60,8 @@ class NativeAdManager(
     private var fullViewDialog: Dialog? = null
     private var currentMediaView: MediaView? = null
     private var currentMediaContainer: FrameLayout? = null
+    private var hasVideoContent: Boolean = false
+    private var isVideoActive: Boolean = false
 
     companion object {
         private const val TAG = "NativeAdManager"
@@ -151,9 +154,35 @@ class NativeAdManager(
         return (MIN_MEDIA_SIZE_DP * density).toInt().coerceAtLeast(1)
     }
 
-    private fun setupMediaAutoResize(container: FrameLayout, mediaView: MediaView, aspectRatio: Float) {
+    private fun setupMediaAutoResize(container: FrameLayout, mediaView: MediaView, nativeAd: NativeAd) {
         stopAutoResizeLoop()
+        val mediaContent = nativeAd.mediaContent
+        val aspectRatio = mediaContent?.aspectRatio ?: 0f
         if (aspectRatio <= 0f) return
+
+        hasVideoContent = mediaContent?.hasVideoContent() == true
+        isVideoActive = hasVideoContent
+
+        if (hasVideoContent) {
+            mediaContent?.videoController?.videoLifecycleCallbacks =
+                object : VideoController.VideoLifecycleCallbacks() {
+                    override fun onVideoStart() {
+                        isVideoActive = true
+                    }
+
+                    override fun onVideoPlay() {
+                        isVideoActive = true
+                    }
+
+                    override fun onVideoPause() {
+                        isVideoActive = false
+                    }
+
+                    override fun onVideoEnd() {
+                        isVideoActive = false
+                    }
+                }
+        }
 
         container.post {
             if (isDestroyed) return@post
@@ -194,8 +223,12 @@ class NativeAdManager(
                 if (isDestroyed) return
 
                 if (!isMediaFullViewOpen) {
-                    val now = System.currentTimeMillis()
-                    val isRendering = (now - lastMediaDrawAtMs) <= RENDER_ACTIVE_WINDOW_MS
+                    val isRendering = if (hasVideoContent) {
+                        isVideoActive
+                    } else {
+                        val now = System.currentTimeMillis()
+                        (now - lastMediaDrawAtMs) <= RENDER_ACTIVE_WINDOW_MS
+                    }
 
                     val newHeight = if (isRendering) {
                         (currentMediaHeightPx - RESIZE_STEP_PX).coerceAtLeast(minMediaHeightPx)
@@ -231,6 +264,8 @@ class NativeAdManager(
         mediaDrawListener = null
         currentMediaView = null
         currentMediaContainer = null
+        hasVideoContent = false
+        isVideoActive = false
     }
 
     private fun dismissFullViewIfOpen() {
@@ -487,8 +522,7 @@ class NativeAdManager(
             mediaView.mediaContent = nativeAd.mediaContent
             adView.mediaView = mediaView
 
-            val aspectRatio = nativeAd.mediaContent?.aspectRatio ?: 0f
-            setupMediaAutoResize(mediaContainer, mediaView, aspectRatio)
+            setupMediaAutoResize(mediaContainer, mediaView, nativeAd)
 
             mediaContainer.setBackgroundColor(
                 ContextCompat.getColor(appContext, R.color.sponsored_background)
