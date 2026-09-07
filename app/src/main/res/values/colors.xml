@@ -12,4 +12,6 @@
     <color name="onboarding_accent">#7DD3FC</color>
     <color name="onboarding_heading">#E2E8F0</color>
     <color name="onboarding_button_unselected">#2E3A52</color>
+    <color name="protected_capsule_background">#2A3650</color>
+    <color name="protected_capsule_border">#3D4C6B</color>
 </resources>
