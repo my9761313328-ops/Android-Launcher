@@ -14,4 +14,21 @@
     <color name="onboarding_button_unselected">#2E3A52</color>
     <color name="protected_capsule_background">#2A3650</color>
     <color name="protected_capsule_border">#3D4C6B</color>
+
+    <color name="terminal_background">#161D2B</color>
+    <color name="terminal_border">#2E3A52</color>
+    <color name="terminal_text">#7DD3FC</color>
+    <color name="terminal_text_dim">#4C7A9C</color>
+
+    <color name="scan_card_background">#1B2438</color>
+    <color name="scan_card_border">#2E3A52</color>
+
+    <color name="risk_row_background">#26314A</color>
+    <color name="risk_row_border">#3D4C6B</color>
+
+    <color name="high_risk_background">#3A1E22</color>
+    <color name="high_risk_border">#7A2E36</color>
+    <color name="high_risk_text">#F87171</color>
+
+    <color name="safe_state_icon">#4ADE80</color>
 </resources>
