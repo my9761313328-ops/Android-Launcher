@@ -10,4 +10,6 @@
     <string name="choose_favourite_launcher_title">Choose Your Favourite Launcher</string>
     <string name="dont_ask_me_again">Don\'t Ask me Again</string>
     <string name="action_launch_it">Launch It</string>
+    <string name="safety_first_title">Safety First</string>
+    <string name="protected_label">Protected</string>
 </resources>
