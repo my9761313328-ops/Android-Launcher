@@ -12,4 +12,11 @@
     <string name="action_launch_it">Launch It</string>
     <string name="safety_first_title">Safety First</string>
     <string name="protected_label">Protected</string>
+
+    <string name="scan_title">Accessibility Scan</string>
+    <string name="scan_subtitle_running">Scanning installed apps…</string>
+    <string name="scan_subtitle_done">%1$d apps scanned</string>
+    <string name="high_risk_label">High Risk</string>
+    <string name="no_issues_found_title">No Issues Found</string>
+    <string name="no_issues_found_subtitle">No third-party apps with Accessibility access</string>
 </resources>
