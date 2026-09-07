@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/onboarding_background">
 
     <LinearLayout
         android:id="@+id/topStatusBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingStart="24dp"
@@ -72,11 +72,41 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/middleContentArea"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/containerFirstPart"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="35"
+            android:padding="16dp">
+
+            <View
+                android:id="@+id/boxFirstPart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_box_outline" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/containerSecondPart"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="65"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/buttonGo"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_gravity="bottom"
         android:layout_margin="24dp"
         android:background="@color/onboarding_accent"
         android:text="@string/action_go"
@@ -84,4 +114,4 @@
         android:textAllCaps="false"
         android:elevation="0dp" />
 
-</FrameLayout>
+</LinearLayout>
