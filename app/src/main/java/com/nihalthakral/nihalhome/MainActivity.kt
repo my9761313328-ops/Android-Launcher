@@ -155,7 +155,7 @@ class MainActivity : ComponentActivity() {
             row.findViewById<TextView>(R.id.textRiskAppPackage).text = app.packageName
 
             row.setOnClickListener {
-                openAppInfo(app.packageName)
+                openAccessibilityServiceSettings(app.packageName, app.serviceClassName)
             }
 
             container.addView(row)
@@ -166,14 +166,34 @@ class MainActivity : ComponentActivity() {
         findViewById<View>(R.id.scrollResults).visibility = View.VISIBLE
     }
 
-    private fun openAppInfo(packageName: String) {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = Uri.parse("package:$packageName")
+    /**
+     * Opens the specific Accessibility Service's own settings screen
+     * (the page with the ON/OFF toggle for that service) so the user
+     * can turn it off directly, instead of opening generic App Info.
+     *
+     * On Android 12+ (API 31+) this deep-links straight to that service's
+     * detail page. On older versions, or if the deep-link isn't supported
+     * by the device's OEM, it falls back to the general Accessibility
+     * Settings list where the user can find and disable it manually.
+     */
+    private fun openAccessibilityServiceSettings(packageName: String, serviceClassName: String) {
+        if (android.os.Build.VERSION.SDK_INT >= 31) {
+            try {
+                val componentName = android.content.ComponentName(packageName, serviceClassName)
+                val detailIntent = Intent(Settings.ACTION_ACCESSIBILITY_DETAILS_SETTINGS).apply {
+                    putExtra(Intent.EXTRA_COMPONENT_NAME, componentName)
+                }
+                startActivity(detailIntent)
+                return
+            } catch (e: Exception) {
+                // Fall through to the general list below.
+            }
         }
+
         try {
-            startActivity(intent)
+            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         } catch (e: Exception) {
-            // No app info screen available on this device/OEM — ignore silently.
+            // No accessibility settings screen available — ignore silently.
         }
     }
 
