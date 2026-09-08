@@ -18,4 +18,13 @@
     <string name="high_risk_label">Flagged</string>
     <string name="no_issues_found_title">No Issues Found</string>
     <string name="no_issues_found_subtitle">No Apps Found that can control your screen</string>
+
+    <string name="feature_uninstall_title">Uninstall Apps</string>
+    <string name="feature_uninstall_subtitle">Remove Unwanted apps</string>
+    <string name="feature_otp_sms_title">OTP / SMS</string>
+    <string name="feature_otp_sms_subtitle">Apps can read SMS/OTP</string>
+    <string name="feature_social_scams_title">Social Scams</string>
+    <string name="feature_social_scams_subtitle">e.g. Whatsapp/Instagram</string>
+    <string name="feature_see_more_title">See More</string>
+    <string name="feature_see_more_subtitle">Discover more for safety</string>
 </resources>
