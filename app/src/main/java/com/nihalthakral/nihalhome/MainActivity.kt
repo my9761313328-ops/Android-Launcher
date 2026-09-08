@@ -56,6 +56,22 @@ class MainActivity : ComponentActivity() {
             onGoClicked()
         }
 
+        findViewById<View>(R.id.cardUninstallApps).setOnClickListener {
+            startActivity(Intent(this, UninstallAppsActivity::class.java))
+        }
+
+        findViewById<View>(R.id.cardOtpSms).setOnClickListener {
+            startActivity(Intent(this, OtpSmsActivity::class.java))
+        }
+
+        findViewById<View>(R.id.cardSocialScams).setOnClickListener {
+            startActivity(Intent(this, SocialScamsActivity::class.java))
+        }
+
+        findViewById<View>(R.id.cardSeeMore).setOnClickListener {
+            startActivity(Intent(this, SeeMoreActivity::class.java))
+        }
+
         isMainContentReady = true
     }
 
