@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- "No Issues Found" shield icon size — scales up on larger screens
+         via the values-sw400dp / values-sw600dp overrides below. -->
+    <dimen name="no_issues_icon_size">28dp</dimen>
+</resources>
