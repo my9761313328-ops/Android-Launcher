@@ -21,6 +21,13 @@ class MainActivity : ComponentActivity() {
 
     private val mainHandler = Handler(Looper.getMainLooper())
 
+    // True once setContentView + view setup has run for this Activity
+    // instance. Used so onResume knows whether it's safe to run the scan
+    // (it isn't, on the very first onCreate call that redirects away to
+    // language selection / default launcher setup, since no layout is
+    // inflated in that case).
+    private var isMainContentReady = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -49,15 +56,28 @@ class MainActivity : ComponentActivity() {
             onGoClicked()
         }
 
-        startAccessibilityScan()
+        isMainContentReady = true
     }
 
     // ---------------------------------------------------------------
-    // Accessibility scan: runs automatically, shows a terminal-style
-    // feed of every app being checked, then reveals the results.
+    // Accessibility scan: runs automatically every time the launcher
+    // comes to the foreground (fresh launch, Home button press, back
+    // from another app, etc.) — never just once on first create.
     // ---------------------------------------------------------------
 
+    override fun onResume() {
+        super.onResume()
+        if (isMainContentReady) {
+            startAccessibilityScan()
+        }
+    }
+
     private fun startAccessibilityScan() {
+        // Cancel any in-progress scan animation from a previous visit
+        // before starting a fresh one.
+        mainHandler.removeCallbacksAndMessages(null)
+        resetScanUi()
+
         val terminalLog = findViewById<TextView>(R.id.textTerminalLog)
         val subtitle = findViewById<TextView>(R.id.textScanSubtitle)
 
@@ -76,6 +96,21 @@ class MainActivity : ComponentActivity() {
                 animateTerminalScan(terminalLog, subtitle, result)
             }
         }
+    }
+
+    /**
+     * Puts the screen back into the "scanning…" visual state — hides
+     * whatever result view (No Issues / Flagged list) was showing from
+     * the previous visit, clears the old terminal text, and shows the
+     * terminal feed again so the scan animation can restart cleanly.
+     */
+    private fun resetScanUi() {
+        findViewById<TextView>(R.id.textTerminalLog).text = ""
+        findViewById<TextView>(R.id.textScanSubtitle).text = getString(R.string.scan_subtitle_running)
+
+        findViewById<View>(R.id.scrollResults).visibility = View.GONE
+        findViewById<View>(R.id.containerNoIssues).visibility = View.GONE
+        findViewById<View>(R.id.scrollTerminal).visibility = View.VISIBLE
     }
 
     private fun animateTerminalScan(
