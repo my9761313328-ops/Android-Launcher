@@ -180,8 +180,8 @@ class MainActivity : ComponentActivity() {
         if (android.os.Build.VERSION.SDK_INT >= 31) {
             try {
                 val componentName = android.content.ComponentName(packageName, serviceClassName)
-                val detailIntent = Intent(Settings.ACTION_ACCESSIBILITY_DETAILS_SETTINGS).apply {
-                    putExtra(Intent.EXTRA_COMPONENT_NAME, componentName)
+                val detailIntent = Intent("android.settings.ACCESSIBILITY_DETAILS_SETTINGS").apply {
+                    putExtra("android.intent.extra.COMPONENT_NAME", componentName)
                 }
                 startActivity(detailIntent)
                 return
