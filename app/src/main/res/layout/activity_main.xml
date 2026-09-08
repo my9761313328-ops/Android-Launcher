@@ -410,6 +410,35 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/containerAskNihalAi"
+                android:layout_width="wrap_content"
+                android:layout_height="56dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@drawable/bg_capsule_protected"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="16dp"
+                android:paddingEnd="18dp">
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_sparkles" />
+
+                <TextView
+                    android:text="@string/ask_nihal_ai_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/onboarding_accent"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
