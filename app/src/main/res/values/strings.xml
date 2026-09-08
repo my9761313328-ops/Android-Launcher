@@ -16,7 +16,7 @@
     <string name="scan_title">Scanning apps that can control your screen</string>
     <string name="scan_subtitle_running">Scanning installed apps…</string>
     <string name="scan_subtitle_done">%1$d apps scanned</string>
-    <string name="high_risk_label">High Risk</string>
+    <string name="high_risk_label">Flagged</string>
     <string name="no_issues_found_title">No Issues Found</string>
     <string name="no_issues_found_subtitle">No Apps Found that can control your screen</string>
 </resources>
