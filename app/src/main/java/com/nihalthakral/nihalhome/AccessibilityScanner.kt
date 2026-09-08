@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.view.accessibility.AccessibilityManager
+import android.accessibilityservice.AccessibilityServiceInfo
 
 /**
  * A single app that will be printed to the terminal-style log while scanning.
@@ -15,14 +16,15 @@ data class ScannedAppEntry(
 )
 
 /**
- * An app that declares an Accessibility Service, is not a system app/service,
- * and is therefore flagged as High Risk regardless of whether the service is
- * currently enabled or disabled by the user.
+ * An app that has an Accessibility Service currently ENABLED by the user,
+ * and is not a system app/service — flagged so the user can review and
+ * turn it off if it's not something they trust.
  */
 data class FlaggedAccessibilityApp(
     val packageName: String,
     val label: String,
-    val icon: Drawable
+    val icon: Drawable,
+    val serviceClassName: String
 )
 
 data class ScanResult(
@@ -56,26 +58,34 @@ object AccessibilityScanner {
             }
             .sortedBy { it.packageName }
 
-        // 2. All apps/services that declare an Accessibility Service,
-        // whether the user currently has it enabled or disabled.
+        // 2. Only apps/services whose Accessibility Service is CURRENTLY
+        // ENABLED by the user. Services that are merely installed/declared
+        // but switched off are not flagged.
         val accessibilityManager =
             context.getSystemService(Context.ACCESSIBILITY_SERVICE) as? AccessibilityManager
 
-        val declaredServices = try {
-            accessibilityManager?.installedAccessibilityServiceList.orEmpty()
+        val enabledServices = try {
+            accessibilityManager
+                ?.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
+                .orEmpty()
         } catch (e: Exception) {
             emptyList()
         }
 
-        val flaggedApps = declaredServices
-            .mapNotNull { serviceInfo -> serviceInfo.resolveInfo?.serviceInfo?.applicationInfo }
-            .distinctBy { it.packageName }
-            .filterNot { isSystemApp(it) }
-            .map { appInfo ->
+        val flaggedApps = enabledServices
+            .mapNotNull { serviceInfo ->
+                val resolvedServiceInfo = serviceInfo.resolveInfo?.serviceInfo ?: return@mapNotNull null
+                val appInfo = resolvedServiceInfo.applicationInfo ?: return@mapNotNull null
+                Pair(appInfo, resolvedServiceInfo.name)
+            }
+            .distinctBy { it.first.packageName }
+            .filterNot { isSystemApp(it.first) }
+            .map { (appInfo, serviceClassName) ->
                 FlaggedAccessibilityApp(
                     packageName = appInfo.packageName,
                     label = safeLabel(packageManager, appInfo),
-                    icon = safeIcon(packageManager, appInfo)
+                    icon = safeIcon(packageManager, appInfo),
+                    serviceClassName = serviceClassName
                 )
             }
             .sortedBy { it.label.lowercase() }
