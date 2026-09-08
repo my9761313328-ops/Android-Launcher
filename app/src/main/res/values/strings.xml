@@ -22,7 +22,7 @@
     <string name="feature_uninstall_title">Uninstall Apps</string>
     <string name="feature_uninstall_subtitle">Remove Unwanted apps</string>
     <string name="feature_otp_sms_title">OTP / SMS</string>
-    <string name="feature_otp_sms_subtitle">Apps can read SMS/OTP</string>
+    <string name="feature_otp_sms_subtitle">Apps that can read or send your SMS/OTP</string>
     <string name="feature_social_scams_title">Social Scams</string>
     <string name="feature_social_scams_subtitle">e.g. Whatsapp/Instagram</string>
     <string name="feature_see_more_title">See More</string>
