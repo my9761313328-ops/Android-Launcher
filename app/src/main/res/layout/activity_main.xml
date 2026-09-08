@@ -32,12 +32,17 @@
 
             <TextView
                 android:id="@+id/textSafetyFirst"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/safety_first_title"
                 android:textColor="@color/onboarding_heading"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeMaxTextSize="13sp"
+                android:autoSizeStepGranularity="1sp" />
 
         </LinearLayout>
 
@@ -115,19 +120,29 @@
 
                         <TextView
                             android:text="@string/scan_title"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColor="@color/onboarding_heading"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:autoSizeTextType="uniform"
+                            android:autoSizeMinTextSize="7sp"
+                            android:autoSizeMaxTextSize="13sp"
+                            android:autoSizeStepGranularity="1sp" />
 
                         <TextView
                             android:id="@+id/textScanSubtitle"
                             android:text="@string/scan_subtitle_running"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColor="@color/terminal_text_dim"
-                            android:textSize="10.5sp" />
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:autoSizeTextType="uniform"
+                            android:autoSizeMinTextSize="6sp"
+                            android:autoSizeMaxTextSize="10.5sp"
+                            android:autoSizeStepGranularity="1sp" />
 
                     </LinearLayout>
 
@@ -267,19 +282,29 @@
 
                     <TextView
                         android:text="@string/feature_uninstall_title"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/onboarding_heading"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="8sp"
+                        android:autoSizeMaxTextSize="13sp"
+                        android:autoSizeStepGranularity="1sp" />
 
                     <TextView
                         android:text="@string/feature_uninstall_subtitle"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:textColor="@color/terminal_text_dim"
-                        android:textSize="10.5sp" />
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="7sp"
+                        android:autoSizeMaxTextSize="10.5sp"
+                        android:autoSizeStepGranularity="1sp" />
 
                 </LinearLayout>
 
@@ -306,19 +331,29 @@
 
                     <TextView
                         android:text="@string/feature_otp_sms_title"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/onboarding_heading"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="8sp"
+                        android:autoSizeMaxTextSize="13sp"
+                        android:autoSizeStepGranularity="1sp" />
 
                     <TextView
                         android:text="@string/feature_otp_sms_subtitle"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:textColor="@color/terminal_text_dim"
-                        android:textSize="10.5sp" />
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="7sp"
+                        android:autoSizeMaxTextSize="10.5sp"
+                        android:autoSizeStepGranularity="1sp" />
 
                 </LinearLayout>
 
@@ -353,19 +388,29 @@
 
                     <TextView
                         android:text="@string/feature_social_scams_title"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/onboarding_heading"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="8sp"
+                        android:autoSizeMaxTextSize="13sp"
+                        android:autoSizeStepGranularity="1sp" />
 
                     <TextView
                         android:text="@string/feature_social_scams_subtitle"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:textColor="@color/terminal_text_dim"
-                        android:textSize="10.5sp" />
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="7sp"
+                        android:autoSizeMaxTextSize="10.5sp"
+                        android:autoSizeStepGranularity="1sp" />
 
                 </LinearLayout>
 
@@ -392,19 +437,29 @@
 
                     <TextView
                         android:text="@string/feature_see_more_title"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/onboarding_heading"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="8sp"
+                        android:autoSizeMaxTextSize="13sp"
+                        android:autoSizeStepGranularity="1sp" />
 
                     <TextView
                         android:text="@string/feature_see_more_subtitle"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:textColor="@color/terminal_text_dim"
-                        android:textSize="10.5sp" />
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="7sp"
+                        android:autoSizeMaxTextSize="10.5sp"
+                        android:autoSizeStepGranularity="1sp" />
 
                 </LinearLayout>
 
@@ -435,7 +490,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/onboarding_accent"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
 
             </LinearLayout>
 
