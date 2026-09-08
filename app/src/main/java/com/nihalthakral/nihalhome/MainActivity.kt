@@ -72,6 +72,10 @@ class MainActivity : ComponentActivity() {
             startActivity(Intent(this, SeeMoreActivity::class.java))
         }
 
+        findViewById<View>(R.id.containerAskNihalAi).setOnClickListener {
+            startActivity(Intent(this, AskNihalAiActivity::class.java))
+        }
+
         isMainContentReady = true
     }
 
