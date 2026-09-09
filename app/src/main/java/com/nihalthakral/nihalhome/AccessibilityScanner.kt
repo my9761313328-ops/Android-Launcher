@@ -7,19 +7,11 @@ import android.graphics.drawable.Drawable
 import android.view.accessibility.AccessibilityManager
 import android.accessibilityservice.AccessibilityServiceInfo
 
-/**
- * A single app that will be printed to the terminal-style log while scanning.
- */
 data class ScannedAppEntry(
     val packageName: String,
     val label: String
 )
 
-/**
- * An app that has an Accessibility Service currently ENABLED by the user,
- * and is not a system app/service — flagged so the user can review and
- * turn it off if it's not something they trust.
- */
 data class FlaggedAccessibilityApp(
     val packageName: String,
     val label: String,
@@ -34,15 +26,9 @@ data class ScanResult(
 
 object AccessibilityScanner {
 
-    /**
-     * Performs the full scan. Safe to call from a background thread only —
-     * it touches PackageManager for every installed app on the device.
-     */
     fun performScan(context: Context): ScanResult {
         val packageManager = context.packageManager
 
-        // 1. Every installed app on the device, no filtering — used purely
-        // for the terminal-style "scanning..." feed.
         val installedApps: List<ApplicationInfo> = try {
             packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
         } catch (e: Exception) {
@@ -58,9 +44,6 @@ object AccessibilityScanner {
             }
             .sortedBy { it.packageName }
 
-        // 2. Only apps/services whose Accessibility Service is CURRENTLY
-        // ENABLED by the user. Services that are merely installed/declared
-        // but switched off are not flagged.
         val accessibilityManager =
             context.getSystemService(Context.ACCESSIBILITY_SERVICE) as? AccessibilityManager
 
@@ -93,10 +76,6 @@ object AccessibilityScanner {
         return ScanResult(scannedApps = scannedApps, flaggedApps = flaggedApps)
     }
 
-    /**
-     * A system app or a system-updated app/service is never flagged —
-     * only third-party apps with Accessibility access are a concern.
-     */
     private fun isSystemApp(appInfo: ApplicationInfo): Boolean {
         val isBuiltInSystemApp = (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
         val isUpdatedSystemApp = (appInfo.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0
