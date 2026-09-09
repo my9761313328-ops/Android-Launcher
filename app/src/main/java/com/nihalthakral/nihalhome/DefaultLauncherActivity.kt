@@ -32,32 +32,17 @@ class DefaultLauncherActivity : ComponentActivity() {
         }
     }
 
-    /**
-     * The Continue button gets its height/width from screen-percentage
-     * Guidelines (see activity_default_launcher.xml), so its pixel size
-     * already varies per device and DPI. Once the button is actually laid
-     * out, this measures its real pixel height and derives a text size (a
-     * fixed fraction of that height) applied to it - this keeps the label
-     * visually proportional to the button on every screen. It no longer
-     * relies on autoSize picking a size based on the label's own text
-     * length, which is what caused the text to render inconsistently
-     * across devices with different DPI.
-     */
     private fun applyResponsiveButtonTextSize(vararg buttons: Button) {
         val root = buttons[0].rootView
         root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 val minHeight = buttons.minOf { it.height }
-                if (minHeight <= 0) return // layout not measured yet
+                if (minHeight <= 0) return
 
                 root.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                // A label ~42% of the button's own height reads as a
-                // comfortably filled button without touching its edges.
                 var textSizePx = minHeight * 0.42f
 
-                // Safety net: if the label would not fit the button's
-                // width, shrink the size just enough for it to fit.
                 buttons.forEach { button ->
                     val availableWidth =
                         (button.width - button.paddingLeft - button.paddingRight).toFloat()
@@ -75,27 +60,11 @@ class DefaultLauncherActivity : ComponentActivity() {
 
                 buttons.forEach { it.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx) }
 
-                // Gravity="center" centers text using the FONT's ascent/
-                // descent metrics, not the actual drawn pixels of the
-                // specific label. Words with no descenders don't use the
-                // space the font reserves below the baseline, so they
-                // visually sit a little above true center. This nudges
-                // each label using its own real ink bounds so it lands
-                // dead center.
                 buttons.forEach { button -> centerTextVertically(button) }
             }
         })
     }
 
-    /**
-     * Renders the button's own label onto a small offscreen bitmap (with
-     * the exact same paint - size, typeface, everything) and scans it to
-     * find the topmost and bottommost row that actually has ink. This is
-     * pixel-exact: it reflects precisely what will be drawn on screen, so
-     * it centers correctly for ANY text, regardless of whether the font's
-     * reported ascent/descent metrics happen to match that word's real
-     * shape.
-     */
     private fun centerTextVertically(button: Button) {
         val text = button.text?.toString().orEmpty()
         if (text.isEmpty()) return
@@ -112,7 +81,7 @@ class DefaultLauncherActivity : ComponentActivity() {
             width, height, android.graphics.Bitmap.Config.ALPHA_8
         )
         val canvas = android.graphics.Canvas(bitmap)
-        val baselineY = -top.toFloat() // baseline sits 'top' px below the bitmap's top edge
+        val baselineY = -top.toFloat()
         canvas.drawText(text, 0f, baselineY, paint)
 
         var inkTop = -1
@@ -126,14 +95,10 @@ class DefaultLauncherActivity : ComponentActivity() {
             }
         }
         bitmap.recycle()
-        if (inkTop == -1) return // nothing drawn (blank text) - nothing to center
+        if (inkTop == -1) return
 
-        // Real ink's vertical midpoint, relative to the baseline.
         val inkCenter = (inkTop + inkBottom) / 2f + top
 
-        // Where gravity="center" currently anchors the line, relative to
-        // the baseline, using font metrics (since includeFontPadding is
-        // "false").
         val fontMetricCenter = (fm.ascent + fm.descent) / 2f
         val shiftDown = fontMetricCenter - inkCenter
 
