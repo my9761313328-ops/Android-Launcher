@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--
-        Used by ShapeableImageView (imageAppLogo on the "Choose Default
-        Launcher" screen) to clip the icon into a circle - corner radius is
-        50% of the view size, so it stays a circle at any resolved size.
-    -->
     <style name="CircleImageOverlay">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
