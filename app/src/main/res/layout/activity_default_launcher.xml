@@ -1,56 +1,215 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+    Responsive "Choose Default Launcher" screen.
+
+    Layout is driven entirely by percentage Guidelines so it holds the exact
+    proportions below on any screen size / aspect ratio (content area =
+    screen minus status bar & nav bar, since the app does not draw edge-to-edge):
+
+    Vertical:
+      Top space                          : 10.8%
+      "Choose Default Launcher" title    : 4.0%
+      Space (title -> icon)              : 23.8%
+      Icon Circle (Nihal Home Logo)      : 17.1%
+      Gap (icon -> label)                : 2.9%
+      "Nihal Home" label                 : 4.0%
+      Space (label -> Continue button)   : 23.4%
+      Continue button                    : 6.9%
+      Bottom space                       : 7.1%
+
+    Horizontal:
+      Icon circle  -> Left margin 32.5% / Width 35% / Right margin 32.5% (centered)
+      Continue btn -> Left margin 10%   / Width 80% / Right margin 10%
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/onboarding_background"
-    android:padding="32dp">
+    android:background="@color/onboarding_background">
 
-    <TextView
-        android:id="@+id/textChooseDefaultLauncher"
+    <!-- Horizontal guidelines (vertical position, define top/bottom of each block) -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideTitleTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="48dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.108" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideTitleBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.148" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideIconTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.386" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideIconBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.557" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideLabelTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.586" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideLabelBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.626" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideButtonTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.860" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideButtonBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.929" />
+
+    <!-- Vertical guidelines - icon circle (centered, 35% width) -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideIconLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.325" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideIconRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.675" />
+
+    <!-- Vertical guidelines - Continue button (80% width) -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.10" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.90" />
+
+    <!--
+        Title: pinned to its 4.0% band on both width and height. No fixed
+        max size here on purpose - autoSize is left free to grow the text
+        as large as it can while the band itself (height + width, via the
+        guidelines below) is the only real limit, so it always fills the
+        band as much as possible without ever clipping top/bottom, on any
+        device.
+    -->
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textChooseDefaultLauncher"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:text="@string/choose_default_launcher_title"
         android:textColor="@color/onboarding_heading"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:gravity="center"
+        android:maxLines="1"
+        android:includeFontPadding="false"
+        android:ellipsize="none"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="1sp"
+        app:autoSizeMaxTextSize="200sp"
+        app:autoSizeStepGranularity="1sp"
+        app:layout_constraintStart_toStartOf="@id/guideLeft"
+        app:layout_constraintEnd_toEndOf="@id/guideRight"
+        app:layout_constraintTop_toTopOf="@id/guideTitleTop"
+        app:layout_constraintBottom_toBottomOf="@id/guideTitleBottom" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!--
+        Icon circle: Nihal Home logo, centered (35% width x 17.1% height).
+        ShapeableImageView clips the image into a perfect circle at runtime
+        (corner radius = 50% of the shorter side), so it stays circular on
+        any screen size regardless of how the width/height percentages
+        resolve in pixels.
+    -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageAppLogo"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher"
+        app:shapeAppearanceOverlay="@style/CircleImageOverlay"
+        app:layout_constraintStart_toStartOf="@id/guideIconLeft"
+        app:layout_constraintEnd_toEndOf="@id/guideIconRight"
+        app:layout_constraintTop_toTopOf="@id/guideIconTop"
+        app:layout_constraintBottom_toBottomOf="@id/guideIconBottom" />
 
-        <ImageView
-            android:id="@+id/imageAppLogo"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:src="@mipmap/ic_launcher" />
+    <!--
+        "Nihal Home" label: same autoSize approach as the title, pinned to
+        its own 4.0% band so it scales consistently across devices.
+    -->
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textAppName"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/app_name"
+        android:textColor="@color/onboarding_heading"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:maxLines="1"
+        android:includeFontPadding="false"
+        android:ellipsize="none"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="1sp"
+        app:autoSizeMaxTextSize="200sp"
+        app:autoSizeStepGranularity="1sp"
+        app:layout_constraintStart_toStartOf="@id/guideLeft"
+        app:layout_constraintEnd_toEndOf="@id/guideRight"
+        app:layout_constraintTop_toTopOf="@id/guideLabelTop"
+        app:layout_constraintBottom_toBottomOf="@id/guideLabelBottom" />
 
-        <TextView
-            android:id="@+id/textAppName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/app_name"
-            android:textColor="@color/onboarding_heading"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
+    <!--
+        Continue button: same sizing/text approach as the buttons on the
+        Choose Language screen (0dp width/height filling its guideline
+        band, no explicit textSize so it relies on the platform default,
+        exactly like buttonEnglish / buttonHindiUrdu).
+    -->
     <Button
         android:id="@+id/buttonContinue"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginBottom="24dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:paddingVertical="0dp"
         android:background="@color/onboarding_accent"
         android:text="@string/action_continue"
         android:textColor="@color/onboarding_button_text"
         android:textAllCaps="false"
-        android:elevation="0dp" />
+        android:gravity="center"
+        android:maxLines="1"
+        android:includeFontPadding="false"
+        android:elevation="0dp"
+        app:layout_constraintStart_toStartOf="@id/guideLeft"
+        app:layout_constraintEnd_toEndOf="@id/guideRight"
+        app:layout_constraintTop_toTopOf="@id/guideButtonTop"
+        app:layout_constraintBottom_toBottomOf="@id/guideButtonBottom" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
