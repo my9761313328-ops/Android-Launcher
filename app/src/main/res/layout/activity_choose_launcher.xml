@@ -59,6 +59,7 @@
         android:text="@string/action_launch_it"
         android:textColor="@color/onboarding_button_text"
         android:textAllCaps="false"
+        android:includeFontPadding="false"
         android:elevation="0dp" />
 
 </LinearLayout>
