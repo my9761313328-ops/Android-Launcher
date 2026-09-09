@@ -1,27 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Responsive "Choose Language" screen.
 
-    Layout is driven entirely by percentage Guidelines so it holds the exact
-    proportions below on any screen size / aspect ratio (content area =
-    screen minus status bar & nav bar, since the app does not draw edge-to-edge):
-
-    Vertical:
-      Top space                       : 10.9%
-      "Choose Language" title         : 4.0%
-      Space (title -> English button) : 27.2%
-      English button                  : 6.9%
-      Gap (English -> Hindi)          : 2.1%
-      Hindi button                    : 6.8%
-      Space (Hindi -> Next button)    : 28.1%
-      Next button                     : 6.9%
-      Bottom space                    : 7.1%
-
-    Horizontal (buttons):
-      Left margin  : 10%
-      Button width : 80%
-      Right margin : 10%
--->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -29,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/onboarding_background">
 
-    <!-- Horizontal guidelines (vertical position, define top/bottom of each block) -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideTitleTop"
         android:layout_width="wrap_content"
@@ -86,7 +63,6 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.929" />
 
-    <!-- Vertical guidelines (horizontal position, define left/right margins) -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideLeft"
         android:layout_width="wrap_content"
@@ -101,14 +77,6 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.90" />
 
-    <!--
-        Title: pinned to its 2.9% band on both width and height. No fixed
-        max size here on purpose - autoSize is left free to grow the text
-        as large as it can while the band itself (height + width, via the
-        guidelines below) is the only real limit, so it always fills the
-        band as much as possible without ever clipping top/bottom, on any
-        device.
-    -->
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textChooseLanguage"
         android:layout_width="0dp"
