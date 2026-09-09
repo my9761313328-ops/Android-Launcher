@@ -3,7 +3,6 @@ package com.nihalthakral.nihalhome
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
 
@@ -14,8 +13,6 @@ class LanguageSelectionActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_language_selection)
-
-        findViewById<TextView>(R.id.textChooseLanguage).fitTextToViewHeight()
 
         val buttonEnglish = findViewById<Button>(R.id.buttonEnglish)
         val buttonHindiUrdu = findViewById<Button>(R.id.buttonHindiUrdu)
