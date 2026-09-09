@@ -102,9 +102,12 @@
         app:layout_constraintGuide_percent="0.90" />
 
     <!--
-        Title: pinned to its 2.9% band on both width and height. autoSize
-        shrinks the text (never grows it beyond 26sp) so it always fits
-        inside the band without ever clipping top/bottom, on any device.
+        Title: pinned to its 2.9% band on both width and height. No fixed
+        max size here on purpose - autoSize is left free to grow the text
+        as large as it can while the band itself (height + width, via the
+        guidelines below) is the only real limit, so it always fills the
+        band as much as possible without ever clipping top/bottom, on any
+        device.
     -->
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textChooseLanguage"
@@ -119,7 +122,7 @@
         android:ellipsize="none"
         app:autoSizeTextType="uniform"
         app:autoSizeMinTextSize="1sp"
-        app:autoSizeMaxTextSize="26sp"
+        app:autoSizeMaxTextSize="200sp"
         app:autoSizeStepGranularity="1sp"
         app:layout_constraintStart_toStartOf="@id/guideLeft"
         app:layout_constraintEnd_toEndOf="@id/guideRight"
@@ -141,10 +144,6 @@
         android:maxLines="1"
         android:includeFontPadding="false"
         android:elevation="0dp"
-        app:autoSizeTextType="uniform"
-        app:autoSizeMinTextSize="1sp"
-        app:autoSizeMaxTextSize="16sp"
-        app:autoSizeStepGranularity="1sp"
         app:layout_constraintStart_toStartOf="@id/guideLeft"
         app:layout_constraintEnd_toEndOf="@id/guideRight"
         app:layout_constraintTop_toTopOf="@id/guideEnglishTop"
@@ -165,10 +164,6 @@
         android:maxLines="1"
         android:includeFontPadding="false"
         android:elevation="0dp"
-        app:autoSizeTextType="uniform"
-        app:autoSizeMinTextSize="1sp"
-        app:autoSizeMaxTextSize="16sp"
-        app:autoSizeStepGranularity="1sp"
         app:layout_constraintStart_toStartOf="@id/guideLeft"
         app:layout_constraintEnd_toEndOf="@id/guideRight"
         app:layout_constraintTop_toTopOf="@id/guideHindiTop"
@@ -190,10 +185,6 @@
         android:maxLines="1"
         android:includeFontPadding="false"
         android:elevation="0dp"
-        app:autoSizeTextType="uniform"
-        app:autoSizeMinTextSize="1sp"
-        app:autoSizeMaxTextSize="16sp"
-        app:autoSizeStepGranularity="1sp"
         app:layout_constraintStart_toStartOf="@id/guideLeft"
         app:layout_constraintEnd_toEndOf="@id/guideRight"
         app:layout_constraintTop_toTopOf="@id/guideNextTop"
