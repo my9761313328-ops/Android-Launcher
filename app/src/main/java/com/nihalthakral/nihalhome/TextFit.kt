@@ -3,61 +3,61 @@ package com.nihalthakral.nihalhome
 import android.graphics.Paint
 import android.graphics.Rect
 import android.util.TypedValue
-import android.view.ViewTreeObserver
 import android.widget.TextView
 
 /**
  * Fits this TextView's text size exactly to its own final measured height
  * (in pixels), regardless of ConstraintLayout guideline % used to size it.
  *
- * Works around the known unreliability of android:autoSizeTextType inside
- * ConstraintLayout when the view's height is derived from percentage
- * guidelines (0dp / match_constraint). Instead of relying on Android's
- * autosize pass, we read the view's actual laid-out pixel height once
- * layout is complete, then binary-search the largest text size whose
- * rendered glyph bounds fit inside that height. The result is applied in
- * pixels via setTextSize(TypedValue.COMPLEX_UNIT_PX, ...), so it is not
- * affected by the user's system font-size setting scaling it back out of
- * the box.
+ * IMPORTANT: this must be scheduled with View.post{}, not with
+ * viewTreeObserver.addOnGlobalLayoutListener called immediately after
+ * setContentView(). Registering a global-layout listener that early
+ * attaches to a temporary ViewTreeObserver that is discarded once the
+ * view hierarchy actually attaches to the window - so the listener
+ * silently never fires and the text stays at its XML default size.
+ * View.post() is specifically designed to defer until the view is
+ * attached and has completed its layout pass, so it is used here instead.
  *
  * Call this once after setContentView(), e.g.:
  *   textChooseLanguage.fitTextToViewHeight()
  */
-fun TextView.fitTextToViewHeight(minPx: Float = 1f, maxPx: Float = 500f) {
-    // Wait for a real layout pass so height/width reflect the resolved
-    // ConstraintLayout guidelines, not 0 (pre-layout).
-    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-        override fun onGlobalLayout() {
-            viewTreeObserver.removeOnGlobalLayoutListener(this)
+fun TextView.fitTextToViewHeight(minPx: Float = 1f, maxPx: Float = 500f, attemptsLeft: Int = 5) {
+    post {
+        val availableHeight = height - paddingTop - paddingBottom
+        val availableWidth = width - paddingLeft - paddingRight
 
-            val availableHeight = height - paddingTop - paddingBottom
-            val availableWidth = width - paddingLeft - paddingRight
-            val content = text?.toString()?.takeIf { it.isNotEmpty() } ?: return
-            if (availableHeight <= 0 || availableWidth <= 0) return
-
-            val testPaint = Paint(paint)
-            val bounds = Rect()
-            var lo = minPx
-            var hi = maxPx
-            var best = lo
-
-            // Binary search the largest text size (in px) whose rendered
-            // glyph bounds fit within BOTH the exact height and the width.
-            repeat(30) {
-                val mid = (lo + hi) / 2f
-                testPaint.textSize = mid
-                testPaint.getTextBounds(content, 0, content.length, bounds)
-                val fitsHeight = bounds.height() <= availableHeight
-                val fitsWidth = bounds.width() <= availableWidth
-                if (fitsHeight && fitsWidth) {
-                    best = mid
-                    lo = mid
-                } else {
-                    hi = mid
-                }
-            }
-
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, best)
+        // Layout may not have fully resolved the guideline-based size yet
+        // on the very first pass; retry a few times via post() until it has.
+        if ((availableHeight <= 0 || availableWidth <= 0) && attemptsLeft > 0) {
+            fitTextToViewHeight(minPx, maxPx, attemptsLeft - 1)
+            return@post
         }
-    })
+        if (availableHeight <= 0 || availableWidth <= 0) return@post
+
+        val content = text?.toString()?.takeIf { it.isNotEmpty() } ?: return@post
+        val testPaint = Paint(paint)
+        val bounds = Rect()
+        var lo = minPx
+        var hi = maxPx
+        var best = lo
+
+        // Binary search the largest text size (in px) whose rendered
+        // glyph bounds fit within BOTH the exact height and the width.
+        repeat(30) {
+            val mid = (lo + hi) / 2f
+            testPaint.textSize = mid
+            testPaint.getTextBounds(content, 0, content.length, bounds)
+            val fitsHeight = bounds.height() <= availableHeight
+            val fitsWidth = bounds.width() <= availableWidth
+            if (fitsHeight && fitsWidth) {
+                best = mid
+                lo = mid
+            } else {
+                hi = mid
+            }
+        }
+
+        setTextSize(TypedValue.COMPLEX_UNIT_PX, best)
+    }
 }
+
