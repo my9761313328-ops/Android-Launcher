@@ -23,11 +23,6 @@ class MainActivity : ComponentActivity() {
 
     private val mainHandler = Handler(Looper.getMainLooper())
 
-    // True once setContentView + view setup has run for this Activity
-    // instance. Used so onResume knows whether it's safe to run the scan
-    // (it isn't, on the very first onCreate call that redirects away to
-    // language selection / default launcher setup, since no layout is
-    // inflated in that case).
     private var isMainContentReady = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,12 +78,6 @@ class MainActivity : ComponentActivity() {
         isMainContentReady = true
     }
 
-    // ---------------------------------------------------------------
-    // Accessibility scan: runs automatically every time the launcher
-    // comes to the foreground (fresh launch, Home button press, back
-    // from another app, etc.) — never just once on first create.
-    // ---------------------------------------------------------------
-
     override fun onResume() {
         super.onResume()
         if (isMainContentReady) {
@@ -97,8 +86,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun startAccessibilityScan() {
-        // Cancel any in-progress scan animation from a previous visit
-        // before starting a fresh one.
+
         mainHandler.removeCallbacksAndMessages(null)
         resetScanUi()
 
@@ -122,12 +110,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /**
-     * Puts the screen back into the "scanning…" visual state — hides
-     * whatever result view (No Issues / Flagged list) was showing from
-     * the previous visit, clears the old terminal text, and shows the
-     * terminal feed again so the scan animation can restart cleanly.
-     */
     private fun resetScanUi() {
         findViewById<TextView>(R.id.textTerminalLog).text = ""
         findViewById<TextView>(R.id.textScanSubtitle).text = getString(R.string.scan_subtitle_running)
@@ -225,16 +207,6 @@ class MainActivity : ComponentActivity() {
         findViewById<View>(R.id.scrollResults).visibility = View.VISIBLE
     }
 
-    /**
-     * Opens the specific Accessibility Service's own settings screen
-     * (the page with the ON/OFF toggle for that service) so the user
-     * can turn it off directly, instead of opening generic App Info.
-     *
-     * On Android 12+ (API 31+) this deep-links straight to that service's
-     * detail page. On older versions, or if the deep-link isn't supported
-     * by the device's OEM, it falls back to the general Accessibility
-     * Settings list where the user can find and disable it manually.
-     */
     private fun openAccessibilityServiceSettings(packageName: String, serviceClassName: String) {
         if (android.os.Build.VERSION.SDK_INT >= 31) {
             try {
@@ -245,14 +217,14 @@ class MainActivity : ComponentActivity() {
                 startActivity(detailIntent)
                 return
             } catch (e: Exception) {
-                // Fall through to the general list below.
+
             }
         }
 
         try {
             startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         } catch (e: Exception) {
-            // No accessibility settings screen available — ignore silently.
+
         }
     }
 
@@ -277,30 +249,17 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /**
-     * The button's height/width is fixed in dp (see activity_main.xml), so
-     * its pixel size already varies per device DPI. Once the button is
-     * actually laid out, this measures its real pixel height and derives a
-     * text size (a fixed fraction of that height) applied to it - this
-     * keeps the label visually proportional to the button on every screen,
-     * instead of relying on the platform's default text size which can
-     * look inconsistent across DPIs.
-     */
     private fun applyResponsiveButtonTextSize(vararg buttons: Button) {
         val root = buttons[0].rootView
         root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 val minHeight = buttons.minOf { it.height }
-                if (minHeight <= 0) return // layout not measured yet
+                if (minHeight <= 0) return
 
                 root.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                // A label ~42% of the button's own height reads as a
-                // comfortably filled button without touching its edges.
                 var textSizePx = minHeight * 0.42f
 
-                // Safety net: if the label would not fit the button's
-                // width, shrink the size just enough for it to fit.
                 buttons.forEach { button ->
                     val availableWidth =
                         (button.width - button.paddingLeft - button.paddingRight).toFloat()
@@ -318,27 +277,11 @@ class MainActivity : ComponentActivity() {
 
                 buttons.forEach { it.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx) }
 
-                // Gravity="center" centers text using the FONT's ascent/
-                // descent metrics, not the actual drawn pixels of the
-                // specific label. Words with no descenders don't use the
-                // space the font reserves below the baseline, so they
-                // visually sit a little above true center. This nudges
-                // each label using its own real ink bounds so it lands
-                // dead center.
                 buttons.forEach { button -> centerTextVertically(button) }
             }
         })
     }
 
-    /**
-     * Renders the button's own label onto a small offscreen bitmap (with
-     * the exact same paint - size, typeface, everything) and scans it to
-     * find the topmost and bottommost row that actually has ink. This is
-     * pixel-exact: it reflects precisely what will be drawn on screen, so
-     * it centers correctly for ANY text, regardless of whether the font's
-     * reported ascent/descent metrics happen to match that word's real
-     * shape.
-     */
     private fun centerTextVertically(button: Button) {
         val text = button.text?.toString().orEmpty()
         if (text.isEmpty()) return
@@ -355,7 +298,7 @@ class MainActivity : ComponentActivity() {
             width, height, android.graphics.Bitmap.Config.ALPHA_8
         )
         val canvas = android.graphics.Canvas(bitmap)
-        val baselineY = -top.toFloat() // baseline sits 'top' px below the bitmap's top edge
+        val baselineY = -top.toFloat()
         canvas.drawText(text, 0f, baselineY, paint)
 
         var inkTop = -1
@@ -369,14 +312,10 @@ class MainActivity : ComponentActivity() {
             }
         }
         bitmap.recycle()
-        if (inkTop == -1) return // nothing drawn (blank text) - nothing to center
+        if (inkTop == -1) return
 
-        // Real ink's vertical midpoint, relative to the baseline.
         val inkCenter = (inkTop + inkBottom) / 2f + top
 
-        // Where gravity="center" currently anchors the line, relative to
-        // the baseline, using font metrics (since includeFontPadding is
-        // "false").
         val fontMetricCenter = (fm.ascent + fm.descent) / 2f
         val shiftDown = fontMetricCenter - inkCenter
 
