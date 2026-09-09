@@ -1,64 +1,202 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+    Responsive "Choose Language" screen.
+
+    Layout is driven entirely by percentage Guidelines so it holds the exact
+    proportions below on any screen size / aspect ratio (content area =
+    screen minus status bar & nav bar, since the app does not draw edge-to-edge):
+
+    Vertical:
+      Top space                       : 10.9%
+      "Choose Language" title         : 2.9%
+      Space (title -> English button) : 28.3%
+      English button                  : 6.9%
+      Gap (English -> Hindi)          : 2.1%
+      Hindi button                    : 6.8%
+      Space (Hindi -> Next button)    : 28.1%
+      Next button                     : 6.9%
+      Bottom space                    : 7.1%
+
+    Horizontal (buttons):
+      Left margin  : 10%
+      Button width : 80%
+      Right margin : 10%
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/onboarding_background"
-    android:padding="32dp">
+    android:background="@color/onboarding_background">
 
-    <TextView
-        android:id="@+id/textChooseLanguage"
+    <!-- Horizontal guidelines (vertical position, define top/bottom of each block) -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideTitleTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="48dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.109" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideTitleBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.138" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideEnglishTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.421" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideEnglishBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.490" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideHindiTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.511" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideHindiBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.579" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideNextTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.860" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideNextBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.929" />
+
+    <!-- Vertical guidelines (horizontal position, define left/right margins) -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.10" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.90" />
+
+    <!--
+        Title: pinned to its 2.9% band on both width and height. autoSize
+        shrinks the text (never grows it beyond 26sp) so it always fits
+        inside the band without ever clipping top/bottom, on any device.
+    -->
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textChooseLanguage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:text="@string/choose_language_title"
         android:textColor="@color/onboarding_heading"
-        android:textSize="26sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:gravity="center"
+        android:maxLines="1"
+        android:includeFontPadding="false"
+        android:ellipsize="none"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="1sp"
+        app:autoSizeMaxTextSize="26sp"
+        app:autoSizeStepGranularity="1sp"
+        app:layout_constraintStart_toStartOf="@id/guideLeft"
+        app:layout_constraintEnd_toEndOf="@id/guideRight"
+        app:layout_constraintTop_toTopOf="@id/guideTitleTop"
+        app:layout_constraintBottom_toBottomOf="@id/guideTitleBottom" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/buttonEnglish"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:paddingVertical="0dp"
+        android:background="@color/onboarding_button_unselected"
+        android:text="@string/language_english"
+        android:textColor="@color/onboarding_heading"
+        android:textAllCaps="false"
+        android:gravity="center"
+        android:maxLines="1"
+        android:includeFontPadding="false"
+        android:elevation="0dp"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="1sp"
+        app:autoSizeMaxTextSize="16sp"
+        app:autoSizeStepGranularity="1sp"
+        app:layout_constraintStart_toStartOf="@id/guideLeft"
+        app:layout_constraintEnd_toEndOf="@id/guideRight"
+        app:layout_constraintTop_toTopOf="@id/guideEnglishTop"
+        app:layout_constraintBottom_toBottomOf="@id/guideEnglishBottom" />
 
-        <Button
-            android:id="@+id/buttonEnglish"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginBottom="16dp"
-            android:background="@color/onboarding_button_unselected"
-            android:text="@string/language_english"
-            android:textColor="@color/onboarding_heading"
-            android:textAllCaps="false"
-            android:elevation="0dp" />
-
-        <Button
-            android:id="@+id/buttonHindiUrdu"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginHorizontal="8dp"
-            android:background="@color/onboarding_button_unselected"
-            android:text="@string/language_hindi_urdu"
-            android:textColor="@color/onboarding_heading"
-            android:textAllCaps="false"
-            android:elevation="0dp" />
-
-    </LinearLayout>
+    <Button
+        android:id="@+id/buttonHindiUrdu"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:paddingVertical="0dp"
+        android:background="@color/onboarding_button_unselected"
+        android:text="@string/language_hindi_urdu"
+        android:textColor="@color/onboarding_heading"
+        android:textAllCaps="false"
+        android:gravity="center"
+        android:maxLines="1"
+        android:includeFontPadding="false"
+        android:elevation="0dp"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="1sp"
+        app:autoSizeMaxTextSize="16sp"
+        app:autoSizeStepGranularity="1sp"
+        app:layout_constraintStart_toStartOf="@id/guideLeft"
+        app:layout_constraintEnd_toEndOf="@id/guideRight"
+        app:layout_constraintTop_toTopOf="@id/guideHindiTop"
+        app:layout_constraintBottom_toBottomOf="@id/guideHindiBottom" />
 
     <Button
         android:id="@+id/buttonNext"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginBottom="24dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:paddingVertical="0dp"
         android:background="@color/onboarding_button_unselected"
         android:enabled="false"
         android:text="@string/action_next"
         android:textColor="@color/onboarding_button_text"
         android:textAllCaps="false"
-        android:elevation="0dp" />
+        android:gravity="center"
+        android:maxLines="1"
+        android:includeFontPadding="false"
+        android:elevation="0dp"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="1sp"
+        app:autoSizeMaxTextSize="16sp"
+        app:autoSizeStepGranularity="1sp"
+        app:layout_constraintStart_toStartOf="@id/guideLeft"
+        app:layout_constraintEnd_toEndOf="@id/guideRight"
+        app:layout_constraintTop_toTopOf="@id/guideNextTop"
+        app:layout_constraintBottom_toBottomOf="@id/guideNextBottom" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
