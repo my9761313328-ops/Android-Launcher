@@ -90,8 +90,43 @@ class LanguageSelectionActivity : ComponentActivity() {
                 }
 
                 buttons.forEach { it.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx) }
+
+                // Gravity="center" centers text using the FONT's ascent/
+                // descent metrics, not the actual drawn pixels of the
+                // specific label. Words with no descenders ("Next",
+                // "English", "Hindi/Urdu") don't use the space the font
+                // reserves below the baseline, so they visually sit a
+                // little above true center. This nudges each label using
+                // its own real ink bounds so it lands dead center.
+                buttons.forEach { button -> centerTextVertically(button) }
             }
         })
+    }
+
+    private fun centerTextVertically(button: Button) {
+        val paint = button.paint
+        val text = button.text.toString()
+        if (text.isEmpty()) return
+
+        val bounds = android.graphics.Rect()
+        paint.getTextBounds(text, 0, text.length, bounds)
+        val fm = paint.fontMetrics
+
+        // Where gravity="center" currently places the text's vertical
+        // midpoint (based on font metrics), vs. where the text's real ink
+        // actually sits (based on measured glyph bounds) - both relative
+        // to the baseline.
+        val fontMetricCenter = (fm.ascent + fm.descent) / 2f
+        val inkCenter = (bounds.top + bounds.bottom) / 2f
+        val shiftDown = fontMetricCenter - inkCenter
+
+        val left = button.paddingLeft
+        val right = button.paddingRight
+        if (shiftDown > 0f) {
+            button.setPadding(left, (shiftDown * 2f).toInt(), right, 0)
+        } else {
+            button.setPadding(left, 0, right, (-shiftDown * 2f).toInt())
+        }
     }
 
     private fun updateSelectionState(selected: Button, unselected: Button, next: Button) {
