@@ -36,20 +36,22 @@ fun TextView.fitTextToViewHeight(minPx: Float = 1f, maxPx: Float = 500f, attempt
 
         val content = text?.toString()?.takeIf { it.isNotEmpty() } ?: return@post
         val testPaint = Paint(paint)
-        val bounds = Rect()
         var lo = minPx
         var hi = maxPx
         var best = lo
 
-        // Binary search the largest text size (in px) whose rendered
-        // glyph bounds fit within BOTH the exact height and the width.
+        // Binary search the largest text size (in px) whose actual
+        // rendered LINE height (ascent-to-descent, what Android really
+        // reserves/draws for a line - not just the glyph ink bounds)
+        // fits within the exact available height, and whose measured
+        // text width fits the available width.
         repeat(30) {
             val mid = (lo + hi) / 2f
             testPaint.textSize = mid
-            testPaint.getTextBounds(content, 0, content.length, bounds)
-            val fitsHeight = bounds.height() <= availableHeight
-            val fitsWidth = bounds.width() <= availableWidth
-            if (fitsHeight && fitsWidth) {
+            val fm = testPaint.fontMetrics
+            val lineHeight = fm.descent - fm.ascent
+            val textWidth = testPaint.measureText(content)
+            if (lineHeight <= availableHeight && textWidth <= availableWidth) {
                 best = mid
                 lo = mid
             } else {
@@ -58,6 +60,11 @@ fun TextView.fitTextToViewHeight(minPx: Float = 1f, maxPx: Float = 500f, attempt
         }
 
         setTextSize(TypedValue.COMPLEX_UNIT_PX, best)
+
+        // Hard safety net: even if some device/font renders a hair
+        // outside this box, physically clip drawing to the view's own
+        // bounds so text can never bleed into neighbouring space.
+        clipBounds = Rect(0, 0, width, height)
     }
 }
 
