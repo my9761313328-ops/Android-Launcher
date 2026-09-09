@@ -1,64 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/onboarding_background"
-    android:padding="32dp">
+    android:background="@color/onboarding_background">
+
+    <!-- Horizontal guidelines: left margin 10%, right margin 10% (button width = 80%) -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.10" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.90" />
+
+    <!-- Vertical guidelines derived from the % breakdown (top to bottom of content area) -->
+    <!-- Top space: 10.9% -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineTitleTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.109" />
+
+    <!-- Title height: 2.9% -> ends at 13.8% -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineTitleBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.138" />
+
+    <!-- Space title->English: 28.3% -> English starts at 42.1% -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineEnglishTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.421" />
+
+    <!-- English height: 6.9% -> ends at 49.0% -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineEnglishBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.490" />
+
+    <!-- Gap English->Hindi: 2.1% -> Hindi starts at 51.1% -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHindiTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.511" />
+
+    <!-- Hindi height: 6.8% -> ends at 57.9% -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHindiBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.579" />
+
+    <!-- Space Hindi->Next: 28.1% -> Next starts at 86.0% -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineNextTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.860" />
+
+    <!-- Next height: 6.9% -> ends at 92.9% (bottom space 7.1% follows automatically) -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineNextBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.929" />
 
     <TextView
         android:id="@+id/textChooseLanguage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="48dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
         android:text="@string/choose_language_title"
         android:textColor="@color/onboarding_heading"
         android:textSize="26sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="12sp"
+        app:autoSizeMaxTextSize="26sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineTitleTop"
+        app:layout_constraintBottom_toTopOf="@id/guidelineTitleBottom" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/buttonEnglish"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:background="@color/onboarding_button_unselected"
+        android:text="@string/language_english"
+        android:textColor="@color/onboarding_heading"
+        android:textAllCaps="false"
+        android:elevation="0dp"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintTop_toBottomOf="@id/guidelineEnglishTop"
+        app:layout_constraintBottom_toTopOf="@id/guidelineEnglishBottom" />
 
-        <Button
-            android:id="@+id/buttonEnglish"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginBottom="16dp"
-            android:background="@color/onboarding_button_unselected"
-            android:text="@string/language_english"
-            android:textColor="@color/onboarding_heading"
-            android:textAllCaps="false"
-            android:elevation="0dp" />
-
-        <Button
-            android:id="@+id/buttonHindiUrdu"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginHorizontal="8dp"
-            android:background="@color/onboarding_button_unselected"
-            android:text="@string/language_hindi_urdu"
-            android:textColor="@color/onboarding_heading"
-            android:textAllCaps="false"
-            android:elevation="0dp" />
-
-    </LinearLayout>
+    <Button
+        android:id="@+id/buttonHindiUrdu"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/onboarding_button_unselected"
+        android:text="@string/language_hindi_urdu"
+        android:textColor="@color/onboarding_heading"
+        android:textAllCaps="false"
+        android:elevation="0dp"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintTop_toBottomOf="@id/guidelineHindiTop"
+        app:layout_constraintBottom_toTopOf="@id/guidelineHindiBottom" />
 
     <Button
         android:id="@+id/buttonNext"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginBottom="24dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@color/onboarding_button_unselected"
         android:enabled="false"
         android:text="@string/action_next"
         android:textColor="@color/onboarding_button_text"
         android:textAllCaps="false"
-        android:elevation="0dp" />
+        android:elevation="0dp"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintTop_toBottomOf="@id/guidelineNextTop"
+        app:layout_constraintBottom_toTopOf="@id/guidelineNextBottom" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
