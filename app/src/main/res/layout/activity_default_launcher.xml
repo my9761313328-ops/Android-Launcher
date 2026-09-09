@@ -1,26 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Responsive "Choose Default Launcher" screen.
 
-    Layout is driven entirely by percentage Guidelines so it holds the exact
-    proportions below on any screen size / aspect ratio (content area =
-    screen minus status bar & nav bar, since the app does not draw edge-to-edge):
-
-    Vertical:
-      Top space                          : 10.8%
-      "Choose Default Launcher" title    : 4.0%
-      Space (title -> icon)              : 23.8%
-      Icon Circle (Nihal Home Logo)      : 17.1%
-      Gap (icon -> label)                : 2.9%
-      "Nihal Home" label                 : 4.0%
-      Space (label -> Continue button)   : 23.4%
-      Continue button                    : 6.9%
-      Bottom space                       : 7.1%
-
-    Horizontal:
-      Icon circle  -> Left margin 32.5% / Width 35% / Right margin 32.5% (centered)
-      Continue btn -> Left margin 10%   / Width 80% / Right margin 10%
--->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -28,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/onboarding_background">
 
-    <!-- Horizontal guidelines (vertical position, define top/bottom of each block) -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideTitleTop"
         android:layout_width="wrap_content"
@@ -85,7 +63,6 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.929" />
 
-    <!-- Vertical guidelines - icon circle (centered, 35% width) -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideIconLeft"
         android:layout_width="wrap_content"
@@ -100,7 +77,6 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.675" />
 
-    <!-- Vertical guidelines - Continue button (80% width) -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideLeft"
         android:layout_width="wrap_content"
@@ -115,14 +91,6 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.90" />
 
-    <!--
-        Title: pinned to its 4.0% band on both width and height. No fixed
-        max size here on purpose - autoSize is left free to grow the text
-        as large as it can while the band itself (height + width, via the
-        guidelines below) is the only real limit, so it always fills the
-        band as much as possible without ever clipping top/bottom, on any
-        device.
-    -->
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textChooseDefaultLauncher"
         android:layout_width="0dp"
@@ -143,13 +111,6 @@
         app:layout_constraintTop_toTopOf="@id/guideTitleTop"
         app:layout_constraintBottom_toBottomOf="@id/guideTitleBottom" />
 
-    <!--
-        Icon circle: Nihal Home logo, centered (35% width x 17.1% height).
-        ShapeableImageView clips the image into a perfect circle at runtime
-        (corner radius = 50% of the shorter side), so it stays circular on
-        any screen size regardless of how the width/height percentages
-        resolve in pixels.
-    -->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imageAppLogo"
         android:layout_width="0dp"
@@ -162,10 +123,6 @@
         app:layout_constraintTop_toTopOf="@id/guideIconTop"
         app:layout_constraintBottom_toBottomOf="@id/guideIconBottom" />
 
-    <!--
-        "Nihal Home" label: same autoSize approach as the title, pinned to
-        its own 4.0% band so it scales consistently across devices.
-    -->
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textAppName"
         android:layout_width="0dp"
@@ -186,13 +143,6 @@
         app:layout_constraintTop_toTopOf="@id/guideLabelTop"
         app:layout_constraintBottom_toBottomOf="@id/guideLabelBottom" />
 
-    <!--
-        Continue button: same 0dp width/height + guideline-band sizing as
-        the Choose Language buttons, plus autoSize (same technique as the
-        title/label above) so the button's own text always scales to fit
-        its band on any screen size / density instead of relying on a
-        fixed platform default size.
-    -->
     <Button
         android:id="@+id/buttonContinue"
         android:layout_width="0dp"
