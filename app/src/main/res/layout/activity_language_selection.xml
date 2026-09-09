@@ -8,8 +8,8 @@
 
     Vertical:
       Top space                       : 10.9%
-      "Choose Language" title         : 2.9%
-      Space (title -> English button) : 28.3%
+      "Choose Language" title         : 4.0%
+      Space (title -> English button) : 27.2%
       English button                  : 6.9%
       Gap (English -> Hindi)          : 2.1%
       Hindi button                    : 6.8%
@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.138" />
+        app:layout_constraintGuide_percent="0.149" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideEnglishTop"
