@@ -187,12 +187,13 @@
         app:layout_constraintBottom_toBottomOf="@id/guideLabelBottom" />
 
     <!--
-        Continue button: same sizing/text approach as the buttons on the
-        Choose Language screen (0dp width/height filling its guideline
-        band, no explicit textSize so it relies on the platform default,
-        exactly like buttonEnglish / buttonHindiUrdu).
+        Continue button: same 0dp width/height + guideline-band sizing as
+        the Choose Language buttons, plus autoSize (same technique as the
+        title/label above) so the button's own text always scales to fit
+        its band on any screen size / density instead of relying on a
+        fixed platform default size.
     -->
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonContinue"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -206,7 +207,12 @@
         android:gravity="center"
         android:maxLines="1"
         android:includeFontPadding="false"
+        android:ellipsize="none"
         android:elevation="0dp"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="1sp"
+        app:autoSizeMaxTextSize="200sp"
+        app:autoSizeStepGranularity="1sp"
         app:layout_constraintStart_toStartOf="@id/guideLeft"
         app:layout_constraintEnd_toEndOf="@id/guideRight"
         app:layout_constraintTop_toTopOf="@id/guideButtonTop"
