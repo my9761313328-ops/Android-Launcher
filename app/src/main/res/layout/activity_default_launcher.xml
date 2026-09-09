@@ -193,7 +193,7 @@
         its band on any screen size / density instead of relying on a
         fixed platform default size.
     -->
-    <androidx.appcompat.widget.AppCompatButton
+    <Button
         android:id="@+id/buttonContinue"
         android:layout_width="0dp"
         android:layout_height="0dp"
