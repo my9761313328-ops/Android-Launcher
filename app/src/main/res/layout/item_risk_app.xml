@@ -55,46 +55,25 @@
 
     </LinearLayout>
 
-    <!-- High Risk Badge : 20% width -->
-    <LinearLayout
+    <!-- High Risk Badge : 20% width, shows only "x" -->
+    <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="20"
-        android:orientation="horizontal"
+        android:text="x"
+        android:textColor="@color/high_risk_text"
+        android:textStyle="bold"
+        android:maxLines="1"
         android:gravity="center"
+        android:includeFontPadding="false"
         android:background="@drawable/bg_high_risk_badge"
         android:paddingStart="8dp"
         android:paddingEnd="9dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:weightSum="100">
-
-        <!-- Warning Icon : 30% of badge width, fills height -->
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="30"
-            android:layout_marginEnd="4dp"
-            android:src="@drawable/ic_warning_small"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter" />
-
-        <!-- High Risk Text : 70% of badge width, auto-size -->
-        <TextView
-            android:text="@string/high_risk_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="70"
-            android:textColor="@color/high_risk_text"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:gravity="center_vertical"
-            android:includeFontPadding="false"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="6sp"
-            android:autoSizeMaxTextSize="500sp"
-            android:autoSizeStepGranularity="1sp" />
-
-    </LinearLayout>
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="6sp"
+        android:autoSizeMaxTextSize="500sp"
+        android:autoSizeStepGranularity="1sp" />
 
 </LinearLayout>
