@@ -192,9 +192,19 @@ class MainActivity : ComponentActivity() {
         val container = findViewById<LinearLayout>(R.id.containerRiskResults)
         container.removeAllViews()
 
+        val scannerCard = findViewById<View>(R.id.boxFirstPart)
         val inflater = LayoutInflater.from(this)
         for (app in result.flaggedApps) {
             val row = inflater.inflate(R.layout.item_risk_app, container, false)
+
+            // Height = 18% of scanner card height
+            val itemHeight = (scannerCard.height * 0.18).toInt()
+            if (itemHeight > 0) {
+                row.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    itemHeight
+                )
+            }
 
             row.findViewById<ImageView>(R.id.imageRiskAppIcon).setImageDrawable(app.icon)
             row.findViewById<TextView>(R.id.textRiskAppName).text = app.label
