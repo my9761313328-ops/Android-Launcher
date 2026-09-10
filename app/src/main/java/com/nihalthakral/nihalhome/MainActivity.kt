@@ -80,6 +80,11 @@ class MainActivity : ComponentActivity() {
             startActivity(Intent(this, AskNihalAiActivity::class.java))
         }
 
+        // Apply header-matched sizing to the feature cards immediately, so
+        // they already look right before the scan even starts, instead of
+        // only snapping into place once the scan finishes.
+        applyHeaderSizeToFeatureCardsDeferred()
+
         isMainContentReady = true
     }
 
@@ -203,9 +208,15 @@ class MainActivity : ComponentActivity() {
 
         headerIcon.post {
             if (headerIcon.width > 0 && headerIcon.height > 0) {
+                // The header icon itself isn't necessarily square (its width
+                // comes from a layout-weight column while its height fills
+                // the row), so copying width/height as-is can stretch a
+                // circular icon into an oval. Force a square using the
+                // smaller dimension instead.
+                val squareSize = minOf(headerIcon.width, headerIcon.height)
                 val params = noIssuesIcon.layoutParams
-                params.width = headerIcon.width
-                params.height = headerIcon.height
+                params.width = squareSize
+                params.height = squareSize
                 noIssuesIcon.layoutParams = params
             }
 
@@ -255,12 +266,20 @@ class MainActivity : ComponentActivity() {
             R.id.textFeatureSubtitle4
         )
 
+        // Same square-icon reasoning as matchNoIssuesStyleToHeader(): force
+        // width == height so the circular background never turns oval.
+        val squareIconSize = if (headerIcon.width > 0 && headerIcon.height > 0) {
+            minOf(headerIcon.width, headerIcon.height)
+        } else {
+            0
+        }
+
         cardIconIds.forEach { id ->
             val cardIcon = findViewById<ImageView>(id)
-            if (headerIcon.width > 0 && headerIcon.height > 0) {
+            if (squareIconSize > 0) {
                 val params = cardIcon.layoutParams
-                params.width = headerIcon.width
-                params.height = headerIcon.height
+                params.width = squareIconSize
+                params.height = squareIconSize
                 cardIcon.layoutParams = params
             }
         }
