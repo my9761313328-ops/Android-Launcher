@@ -54,9 +54,10 @@ class MainActivity : ComponentActivity() {
 
         applyResponsiveButtonTextSize(findViewById(R.id.buttonGo))
 
-        applyResponsivePillIconSize(
+        applyResponsivePillContentSize(
             container = findViewById(R.id.containerAskNihalAi),
-            icon = findViewById(R.id.imageAskNihalAiIcon)
+            icon = findViewById(R.id.imageAskNihalAiIcon),
+            text = findViewById(R.id.textAskNihalAi)
         )
 
         findViewById<View>(R.id.cardUninstallApps).setOnClickListener {
@@ -286,22 +287,46 @@ class MainActivity : ComponentActivity() {
         })
     }
 
-    private fun applyResponsivePillIconSize(container: View, icon: ImageView) {
+    private fun applyResponsivePillContentSize(container: View, icon: ImageView, text: TextView) {
         container.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 val containerHeight = container.height
-                if (containerHeight <= 0) return
+                val containerWidth = container.width
+                if (containerHeight <= 0 || containerWidth <= 0) return
 
                 container.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                 // Scale the icon with the pill's height, same idea as the Launch
                 // button sizing its text off the button's height.
                 val iconSizePx = (containerHeight * 0.5f).toInt().coerceAtLeast(1)
-                val params = icon.layoutParams as LinearLayout.LayoutParams
-                params.width = iconSizePx
-                params.height = iconSizePx
-                params.marginEnd = (containerHeight * 0.17f).toInt().coerceAtLeast(1)
-                icon.layoutParams = params
+                val iconMarginPx = (containerHeight * 0.17f).toInt().coerceAtLeast(1)
+                val iconParams = icon.layoutParams as LinearLayout.LayoutParams
+                iconParams.width = iconSizePx
+                iconParams.height = iconSizePx
+                iconParams.marginEnd = iconMarginPx
+                icon.layoutParams = iconParams
+
+                // Compute the space left for the text using the NEW icon size we
+                // just set (not the stale pre-layout value), so there's no race
+                // with the pending relayout.
+                val availableWidth = (
+                    containerWidth - container.paddingLeft - container.paddingRight -
+                        iconSizePx - iconMarginPx
+                    ).toFloat()
+
+                var textSizePx = containerHeight * 0.42f
+                if (availableWidth > 0f) {
+                    val paint = text.paint
+                    var size = textSizePx
+                    paint.textSize = size
+                    while (paint.measureText(text.text.toString()) > availableWidth && size > 1f) {
+                        size -= 1f
+                        paint.textSize = size
+                    }
+                    textSizePx = size
+                }
+
+                text.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx)
             }
         })
     }
