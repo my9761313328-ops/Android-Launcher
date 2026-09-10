@@ -130,12 +130,11 @@
 
                 <!-- Terminal ScrollView wrapper : left 3.3% | content 93.3% | right 3.3% -->
                 <LinearLayout
-                    android:id="@+id/scrollTerminal"
+                    android:id="@+id/wrapperTerminal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:weightSum="30"
-                    android:visibility="visible">
+                    android:weightSum="30">
 
                     <View
                         android:layout_width="0dp"
@@ -143,6 +142,7 @@
                         android:layout_weight="1" />
 
                     <ScrollView
+                        android:id="@+id/scrollTerminal"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="28"
@@ -170,7 +170,7 @@
 
                 <!-- Results ScrollView wrapper : left 3% | content 94% | right 3% -->
                 <LinearLayout
-                    android:id="@+id/scrollResults"
+                    android:id="@+id/wrapperResults"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
