@@ -465,25 +465,32 @@
         android:layout_height="0dp"
         android:layout_weight="12" />
 
-    <!-- Ask Nihal AI pill : 6.7% -->
+    <!-- Ask Nihal AI pill : 6.7% height. Width breakdown (horizontal weightSum="1000"):
+         Screen Start to Capsule : 296 (29.6%)
+         Capsule                 : 408 (40.8%)
+         Capsule to Screen End   : 296 (29.6%) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="67"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:weightSum="1000">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="296" />
 
         <LinearLayout
             android:id="@+id/containerAskNihalAi"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="408"
             android:orientation="horizontal"
             android:gravity="center"
             android:background="@drawable/bg_capsule_protected"
             android:clickable="true"
-            android:focusable="true"
-            android:paddingStart="16dp"
-            android:paddingEnd="18dp">
+            android:focusable="true">
 
             <ImageView
                 android:layout_width="23dp"
@@ -499,6 +506,11 @@
                 android:textSize="13sp" />
 
         </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="296" />
 
     </LinearLayout>
 
