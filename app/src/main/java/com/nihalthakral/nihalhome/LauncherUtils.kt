@@ -43,18 +43,20 @@ object LauncherUtils {
         }
 
         val seen = HashSet<String>()
-        val launchers = mutableListOf<LauncherAppInfo>()
+        val allLaunchers = mutableListOf<LauncherAppInfo>()
+        val realLaunchers = mutableListOf<LauncherAppInfo>()
 
         for (resolveInfo in resolveInfos) {
             val activityInfo = resolveInfo.activityInfo ?: continue
             val key = activityInfo.packageName + "/" + activityInfo.name
             if (!seen.add(key)) continue
 
-            val label = try {
+            val rawLabel = try {
                 resolveInfo.loadLabel(packageManager)?.toString()
             } catch (e: Exception) {
                 null
-            } ?: activityInfo.packageName
+            }
+            val label = rawLabel ?: activityInfo.packageName
 
             val icon = try {
                 resolveInfo.loadIcon(packageManager)
@@ -62,17 +64,55 @@ object LauncherUtils {
                 null
             } ?: packageManager.defaultActivityIcon
 
-            launchers.add(
-                LauncherAppInfo(
-                    label = label,
-                    packageName = activityInfo.packageName,
-                    activityName = activityInfo.name,
-                    icon = icon
-                )
+            val info = LauncherAppInfo(
+                label = label,
+                packageName = activityInfo.packageName,
+                activityName = activityInfo.name,
+                icon = icon
             )
+
+            // Unfiltered list kept as a fallback, so we never risk showing
+            // zero launchers on some unusual device/OEM.
+            allLaunchers.add(info)
+
+            // "Real" launcher = actually enabled on this device (not a
+            // disabled/hidden system stub) AND has a genuine label (not
+            // just its raw package name, which happens for nameless stub
+            // components) AND isn't our own app.
+            val isEnabled = isComponentEnabled(packageManager, activityInfo)
+            val hasRealLabel = rawLabel != null && rawLabel.isNotBlank()
+            val isOwnApp = activityInfo.packageName == context.packageName
+
+            if (isEnabled && hasRealLabel && !isOwnApp) {
+                realLaunchers.add(info)
+            }
         }
 
-        return launchers.sortedBy { it.label.lowercase() }
+        // Zero-risk fallback: if the filtered list is empty for any reason
+        // (unusual device/OEM behavior), fall back to showing everything,
+        // exactly like before this filtering existed.
+        val result = if (realLaunchers.isNotEmpty()) realLaunchers else allLaunchers
+
+        return result.sortedBy { it.label.lowercase() }
+    }
+
+    private fun isComponentEnabled(
+        packageManager: PackageManager,
+        activityInfo: android.content.pm.ActivityInfo
+    ): Boolean {
+        return try {
+            val componentName = android.content.ComponentName(activityInfo.packageName, activityInfo.name)
+            val setting = packageManager.getComponentEnabledSetting(componentName)
+            when (setting) {
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED_UNTIL_USED -> false
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED -> true
+                else -> activityInfo.isEnabled && activityInfo.applicationInfo.enabled
+            }
+        } catch (e: Exception) {
+            activityInfo.isEnabled
+        }
     }
 
     fun launchSelected(context: Context, packageName: String, activityName: String): Boolean {
