@@ -4,8 +4,7 @@
     Root vertical stack uses weightSum="1000" so every section's layout_weight
     is that section's percentage of the app content area times 10 (1 decimal precision).
 
-    Header             85   (8.5 percent)
-    Scanning Card      249  (24.9 percent)
+    Scanning Card      334  (33.4 percent)
     Gap                29   (2.9 percent)
     Row 1 tiles        202  (20.2 percent)
     Gap                15   (1.5 percent)
@@ -31,80 +30,12 @@
     android:weightSum="1000"
     android:background="@color/onboarding_background">
 
-    <!-- Header (Safety First + Protected Badge) : 8.5% -->
-    <LinearLayout
-        android:id="@+id/topStatusBar"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="85"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp">
-
-        <LinearLayout
-            android:id="@+id/containerSafetyFirst"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="start|center_vertical">
-
-            <ImageView
-                android:id="@+id/imageSafetyLogo"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="6dp"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:id="@+id/textSafetyFirst"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/safety_first_title"
-                android:textColor="@color/onboarding_heading"
-                android:textSize="13sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/containerProtected"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/bg_capsule_protected"
-            android:paddingStart="12dp"
-            android:paddingEnd="14dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp">
-
-            <ImageView
-                android:id="@+id/imageLockIcon"
-                android:layout_width="13dp"
-                android:layout_height="13dp"
-                android:layout_marginEnd="6dp"
-                android:src="@drawable/ic_lock" />
-
-            <TextView
-                android:id="@+id/textProtected"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/protected_label"
-                android:textColor="@color/onboarding_accent"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <!-- Scanning Card : 24.9% -->
+    <!-- Scanning Card : 33.4% -->
     <FrameLayout
         android:id="@+id/containerFirstPart"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="249"
+        android:layout_weight="334"
         android:paddingStart="16dp"
         android:paddingEnd="16dp">
 
