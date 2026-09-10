@@ -493,12 +493,14 @@
             android:focusable="true">
 
             <ImageView
+                android:id="@+id/imageAskNihalAiIcon"
                 android:layout_width="23dp"
                 android:layout_height="23dp"
                 android:layout_marginEnd="8dp"
                 android:src="@drawable/ic_sparkles" />
 
             <TextView
+                android:id="@+id/textAskNihalAi"
                 android:text="@string/ask_nihal_ai_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
