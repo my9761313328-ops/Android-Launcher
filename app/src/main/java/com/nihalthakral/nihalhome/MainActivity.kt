@@ -54,10 +54,9 @@ class MainActivity : ComponentActivity() {
 
         applyResponsiveButtonTextSize(findViewById(R.id.buttonGo))
 
-        applyResponsivePillContentSize(
+        applyResponsivePillIconSize(
             container = findViewById(R.id.containerAskNihalAi),
-            icon = findViewById(R.id.imageAskNihalAiIcon),
-            text = findViewById(R.id.textAskNihalAi)
+            icon = findViewById(R.id.imageAskNihalAiIcon)
         )
 
         findViewById<View>(R.id.cardUninstallApps).setOnClickListener {
@@ -287,7 +286,7 @@ class MainActivity : ComponentActivity() {
         })
     }
 
-    private fun applyResponsivePillContentSize(container: View, icon: ImageView, text: TextView) {
+    private fun applyResponsivePillIconSize(container: View, icon: ImageView) {
         container.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 val containerHeight = container.height
@@ -298,44 +297,13 @@ class MainActivity : ComponentActivity() {
                 // Scale the icon with the pill's height, same idea as the Launch
                 // button sizing its text off the button's height.
                 val iconSizePx = (containerHeight * 0.5f).toInt().coerceAtLeast(1)
-                val iconParams = icon.layoutParams
-                iconParams.width = iconSizePx
-                iconParams.height = iconSizePx
-                icon.layoutParams = iconParams
-                (icon.layoutParams as? LinearLayout.LayoutParams)?.let {
-                    it.marginEnd = (containerHeight * 0.17f).toInt().coerceAtLeast(1)
-                    icon.layoutParams = it
-                }
-
-                container.requestLayout()
-
-                container.post {
-                    var textSizePx = containerHeight * 0.42f
-
-                    val availableWidth = (
-                        container.width - container.paddingLeft - container.paddingRight -
-                            icon.width - iconMarginEnd(icon)
-                        ).toFloat()
-
-                    if (availableWidth > 0f) {
-                        val paint = text.paint
-                        var size = textSizePx
-                        paint.textSize = size
-                        while (paint.measureText(text.text.toString()) > availableWidth && size > 1f) {
-                            size -= 1f
-                            paint.textSize = size
-                        }
-                        textSizePx = size
-                    }
-
-                    text.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx)
-                }
+                val params = icon.layoutParams as LinearLayout.LayoutParams
+                params.width = iconSizePx
+                params.height = iconSizePx
+                params.marginEnd = (containerHeight * 0.17f).toInt().coerceAtLeast(1)
+                icon.layoutParams = params
             }
         })
-    }
-
-    private fun iconMarginEnd(icon: ImageView): Int {
-        return (icon.layoutParams as? LinearLayout.LayoutParams)?.marginEnd ?: 0
     }
 
     private fun centerTextVertically(button: Button) {
