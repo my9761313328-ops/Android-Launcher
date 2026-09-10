@@ -175,6 +175,8 @@ class MainActivity : ComponentActivity() {
         } else {
             showRiskResults(result)
         }
+
+        applyHeaderSizeToFeatureCardsDeferred()
     }
 
     private fun showNoIssuesFound(scannedCount: Int) {
@@ -215,6 +217,63 @@ class MainActivity : ComponentActivity() {
             if (headerSubtitle.textSize > 0f) {
                 noIssuesSubtitle.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_NONE)
                 noIssuesSubtitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, headerSubtitle.textSize)
+            }
+        }
+    }
+
+    private fun applyHeaderSizeToFeatureCardsDeferred() {
+        val headerIcon = findViewById<ImageView>(R.id.imageScanIcon)
+        val headerTitle = findViewById<TextView>(R.id.textScanTitle)
+        val headerSubtitle = findViewById<TextView>(R.id.textScanSubtitle)
+
+        headerIcon.post {
+            applyHeaderSizeToFeatureCards(headerIcon, headerTitle, headerSubtitle)
+        }
+    }
+
+    private fun applyHeaderSizeToFeatureCards(
+        headerIcon: ImageView,
+        headerTitle: TextView,
+        headerSubtitle: TextView
+    ) {
+        val cardIconIds = intArrayOf(
+            R.id.imageFeatureIcon1,
+            R.id.imageFeatureIcon2,
+            R.id.imageFeatureIcon3,
+            R.id.imageFeatureIcon4
+        )
+        val cardTitleIds = intArrayOf(
+            R.id.textFeatureTitle1,
+            R.id.textFeatureTitle2,
+            R.id.textFeatureTitle3,
+            R.id.textFeatureTitle4
+        )
+        val cardSubtitleIds = intArrayOf(
+            R.id.textFeatureSubtitle1,
+            R.id.textFeatureSubtitle2,
+            R.id.textFeatureSubtitle3,
+            R.id.textFeatureSubtitle4
+        )
+
+        cardIconIds.forEach { id ->
+            val cardIcon = findViewById<ImageView>(id)
+            if (headerIcon.width > 0 && headerIcon.height > 0) {
+                val params = cardIcon.layoutParams
+                params.width = headerIcon.width
+                params.height = headerIcon.height
+                cardIcon.layoutParams = params
+            }
+        }
+
+        if (headerTitle.textSize > 0f) {
+            cardTitleIds.forEach { id ->
+                findViewById<TextView>(id).setTextSize(TypedValue.COMPLEX_UNIT_PX, headerTitle.textSize)
+            }
+        }
+
+        if (headerSubtitle.textSize > 0f) {
+            cardSubtitleIds.forEach { id ->
+                findViewById<TextView>(id).setTextSize(TypedValue.COMPLEX_UNIT_PX, headerSubtitle.textSize)
             }
         }
     }
