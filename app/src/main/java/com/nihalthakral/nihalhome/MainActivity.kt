@@ -194,11 +194,23 @@ class MainActivity : ComponentActivity() {
 
         val scannerCard = findViewById<View>(R.id.boxFirstPart)
         val inflater = LayoutInflater.from(this)
-        for (app in result.flaggedApps) {
+        val itemHeight = (scannerCard.height * 0.18).toInt()
+        val gapHeight  = (scannerCard.height * 0.05).toInt()
+
+        result.flaggedApps.forEachIndexed { index, app ->
+            // Gap between items (not before the first)
+            if (index > 0 && gapHeight > 0) {
+                val spacer = View(this)
+                spacer.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    gapHeight
+                )
+                container.addView(spacer)
+            }
+
             val row = inflater.inflate(R.layout.item_risk_app, container, false)
 
             // Height = 18% of scanner card height
-            val itemHeight = (scannerCard.height * 0.18).toInt()
             if (itemHeight > 0) {
                 row.layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -208,7 +220,6 @@ class MainActivity : ComponentActivity() {
 
             row.findViewById<ImageView>(R.id.imageRiskAppIcon).setImageDrawable(app.icon)
             row.findViewById<TextView>(R.id.textRiskAppName).text = app.label
-            row.findViewById<TextView>(R.id.textRiskAppPackage).text = app.packageName
 
             row.setOnClickListener {
                 openAccessibilityServiceSettings(app.packageName, app.serviceClassName)
