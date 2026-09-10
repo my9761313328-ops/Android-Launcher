@@ -130,6 +130,7 @@
 
                 <!-- Terminal ScrollView wrapper : left 3.3% | content 93.3% | right 3.3% -->
                 <LinearLayout
+                    android:id="@+id/scrollTerminal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
@@ -142,7 +143,6 @@
                         android:layout_weight="1" />
 
                     <ScrollView
-                        android:id="@+id/scrollTerminal"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="28"
@@ -168,20 +168,40 @@
 
                 </LinearLayout>
 
-                <ScrollView
+                <!-- Results ScrollView wrapper : left 3% | content 94% | right 3% -->
+                <LinearLayout
                     android:id="@+id/scrollResults"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scrollbars="none"
+                    android:orientation="horizontal"
+                    android:weightSum="100"
                     android:visibility="gone">
 
-                    <LinearLayout
-                        android:id="@+id/containerRiskResults"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" />
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3" />
 
-                </ScrollView>
+                    <ScrollView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="94"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:id="@+id/containerRiskResults"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+
+                    </ScrollView>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/containerNoIssues"
