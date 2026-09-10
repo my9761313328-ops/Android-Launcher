@@ -23,11 +23,17 @@
         android:adjustViewBounds="true"
         android:scaleType="fitCenter" />
 
-    <!-- App Info : 70% width -->
+    <!-- Gap : 5% -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="5" />
+
+    <!-- App Info : 60% width -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="70"
+        android:layout_weight="60"
         android:orientation="vertical">
 
         <!-- App Name : auto-size, single line -->
@@ -62,11 +68,11 @@
 
     </LinearLayout>
 
-    <!-- High Risk Badge : 15% width -->
+    <!-- High Risk Badge : 20% width -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="15"
+        android:layout_weight="20"
         android:orientation="horizontal"
         android:gravity="center"
         android:background="@drawable/bg_high_risk_badge"
