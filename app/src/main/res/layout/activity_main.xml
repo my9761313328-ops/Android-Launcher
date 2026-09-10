@@ -65,6 +65,7 @@
 
                 <!-- Icon : 18% width, fills height, no fixed dp size -->
                 <ImageView
+                    android:id="@+id/imageScanIcon"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="18"
@@ -82,6 +83,7 @@
 
                     <!-- Title : 60% height, auto-size, single line -->
                     <TextView
+                        android:id="@+id/textScanTitle"
                         android:text="@string/scan_title"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
@@ -216,6 +218,7 @@
                     android:visibility="gone">
 
                     <ImageView
+                        android:id="@+id/imageNoIssuesIcon"
                         android:layout_width="@dimen/no_issues_icon_size"
                         android:layout_height="@dimen/no_issues_icon_size"
                         android:layout_marginBottom="4dp"
@@ -224,6 +227,7 @@
                         android:src="@drawable/ic_shield_check" />
 
                     <TextView
+                        android:id="@+id/textNoIssuesTitle"
                         android:text="@string/no_issues_found_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -237,6 +241,7 @@
                         android:autoSizeStepGranularity="1sp" />
 
                     <TextView
+                        android:id="@+id/textNoIssuesSubtitle"
                         android:text="@string/no_issues_found_subtitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
