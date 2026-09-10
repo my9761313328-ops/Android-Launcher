@@ -6,10 +6,10 @@
     <string name="action_next">Next</string>
     <string name="choose_default_launcher_title">Choose Default Launcher</string>
     <string name="action_continue">Continue</string>
-    <string name="action_go">Launch 🚀</string>
+    <string name="action_go">Close</string>
     <string name="choose_favourite_launcher_title">Choose Your Favourite Launcher</string>
     <string name="dont_ask_me_again">Don\'t Ask me Again</string>
-    <string name="action_launch_it">Launch It</string>
+    <string name="action_launch_it">Submit</string>
     <string name="safety_first_title">Safety First</string>
     <string name="protected_label">Protected</string>
     <string name="scan_title">Scanning apps that can control your screen</string>
