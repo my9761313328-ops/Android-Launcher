@@ -119,9 +119,9 @@ class MainActivity : ComponentActivity() {
         findViewById<TextView>(R.id.textTerminalLog).text = ""
         findViewById<TextView>(R.id.textScanSubtitle).text = getString(R.string.scan_subtitle_running)
 
-        findViewById<View>(R.id.scrollResults).visibility = View.GONE
+        findViewById<View>(R.id.wrapperResults).visibility = View.GONE
         findViewById<View>(R.id.containerNoIssues).visibility = View.GONE
-        findViewById<View>(R.id.scrollTerminal).visibility = View.VISIBLE
+        findViewById<View>(R.id.wrapperTerminal).visibility = View.VISIBLE
     }
 
     private fun animateTerminalScan(
@@ -178,8 +178,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun showNoIssuesFound(scannedCount: Int) {
-        findViewById<View>(R.id.scrollTerminal).visibility = View.GONE
-        findViewById<View>(R.id.scrollResults).visibility = View.GONE
+        findViewById<View>(R.id.wrapperTerminal).visibility = View.GONE
+        findViewById<View>(R.id.wrapperResults).visibility = View.GONE
         findViewById<View>(R.id.containerNoIssues).visibility = View.VISIBLE
 
         if (scannedCount > 0) {
@@ -217,9 +217,9 @@ class MainActivity : ComponentActivity() {
             container.addView(row)
         }
 
-        findViewById<View>(R.id.scrollTerminal).visibility = View.GONE
+        findViewById<View>(R.id.wrapperTerminal).visibility = View.GONE
         findViewById<View>(R.id.containerNoIssues).visibility = View.GONE
-        findViewById<View>(R.id.scrollResults).visibility = View.VISIBLE
+        findViewById<View>(R.id.wrapperResults).visibility = View.VISIBLE
     }
 
     private fun openAccessibilityServiceSettings(packageName: String, serviceClassName: String) {
