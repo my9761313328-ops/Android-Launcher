@@ -29,11 +29,11 @@
         android:layout_height="match_parent"
         android:layout_weight="5" />
 
-    <!-- App Info : 60% width -->
+    <!-- App Info : 80% width -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="60"
+        android:layout_weight="80"
         android:orientation="vertical"
         android:gravity="center_vertical">
 
@@ -54,26 +54,5 @@
             android:autoSizeStepGranularity="1sp" />
 
     </LinearLayout>
-
-    <!-- High Risk Badge : 20% width, shows only "x" -->
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="20"
-        android:text="x"
-        android:textColor="@color/high_risk_text"
-        android:textStyle="bold"
-        android:maxLines="1"
-        android:gravity="center"
-        android:includeFontPadding="false"
-        android:background="@drawable/bg_high_risk_badge"
-        android:paddingStart="8dp"
-        android:paddingEnd="9dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:autoSizeTextType="uniform"
-        android:autoSizeMinTextSize="6sp"
-        android:autoSizeMaxTextSize="500sp"
-        android:autoSizeStepGranularity="1sp" />
 
 </LinearLayout>
