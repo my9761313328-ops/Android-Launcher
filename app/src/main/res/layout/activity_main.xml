@@ -4,7 +4,8 @@
     Root vertical stack uses weightSum="1000" so every section's layout_weight
     is that section's percentage of the app content area times 10 (1 decimal precision).
 
-    Scanning Card      334  (33.4 percent)
+    Top Gap            30   (3.0 percent)
+    Scanning Card      304  (30.4 percent)
     Gap                29   (2.9 percent)
     Row 1 tiles        202  (20.2 percent)
     Gap                15   (1.5 percent)
@@ -30,12 +31,18 @@
     android:weightSum="1000"
     android:background="@color/onboarding_background">
 
-    <!-- Scanning Card : 33.4% -->
+    <!-- Top Gap : 3.0% (equal to bottom gap after Launch Button) -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="30" />
+
+    <!-- Scanning Card : 30.4% -->
     <FrameLayout
         android:id="@+id/containerFirstPart"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="334"
+        android:layout_weight="304"
         android:paddingStart="16dp"
         android:paddingEnd="16dp">
 
