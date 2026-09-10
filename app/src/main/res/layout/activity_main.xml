@@ -1,19 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Responsive layout notes:
+    Root vertical stack uses weightSum="1000" so every section's layout_weight
+    is that section's percentage of the app content area * 10 (for 1 decimal precision).
+
+    Header                : 85   (8.5%)
+    Scanning Card          : 249  (24.9%)
+    Gap                    : 29   (2.9%)
+    Row 1 tiles            : 202  (20.2%)
+    Gap                    : 15   (1.5%)
+    Row 2 tiles            : 202  (20.2%)
+    Gap                    : 12   (1.2%)
+    Ask Nihal AI pill      : 67   (6.7%)
+    Gap                    : 40   (4.0%)
+    Launch Button          : 69   (6.9%)
+    Gap                    : 30   (3.0%)
+    ---------------------------------
+    Total                  : 1000 (100%)
+
+    Each tile row is a horizontal LinearLayout with weightSum="10000":
+    Left Margin : 415  (4.15%)
+    Card 1      : 4430 (44.3%)
+    Gap         : 310  (3.1%)
+    Card 2      : 4430 (44.3%)
+    Right Margin: 415  (4.15%)
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:weightSum="1000"
     android:background="@color/onboarding_background">
 
+    <!-- Header (Safety First + Protected Badge) : 8.5% -->
     <LinearLayout
         android:id="@+id/topStatusBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="85"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingStart="24dp"
-        android:paddingEnd="24dp"
-        android:paddingTop="24dp">
+        android:paddingEnd="24dp">
 
         <LinearLayout
             android:id="@+id/containerSafetyFirst"
@@ -72,387 +100,434 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/middleContentArea"
+    <!-- Scanning Card : 24.9% -->
+    <FrameLayout
+        android:id="@+id/containerFirstPart"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <FrameLayout
-            android:id="@+id/containerFirstPart"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="35"
-            android:padding="16dp">
-
-            <LinearLayout
-                android:id="@+id/boxFirstPart"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:background="@drawable/bg_scan_card"
-                android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="10dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginEnd="8dp"
-                        android:src="@drawable/ic_shield_scan" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:text="@string/scan_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/onboarding_heading"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/textScanSubtitle"
-                            android:text="@string/scan_subtitle_running"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/terminal_text_dim"
-                            android:textSize="10.5sp" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
-                    <ScrollView
-                        android:id="@+id/scrollTerminal"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/bg_terminal"
-                        android:padding="10dp"
-                        android:scrollbars="none"
-                        android:visibility="visible">
-
-                        <TextView
-                            android:id="@+id/textTerminalLog"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="monospace"
-                            android:textColor="@color/terminal_text"
-                            android:textSize="9.5sp"
-                            android:lineSpacingExtra="2dp" />
-
-                    </ScrollView>
-
-                    <ScrollView
-                        android:id="@+id/scrollResults"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scrollbars="none"
-                        android:visibility="gone">
-
-                        <LinearLayout
-                            android:id="@+id/containerRiskResults"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical" />
-
-                    </ScrollView>
-
-                    <LinearLayout
-                        android:id="@+id/containerNoIssues"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="10dp"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="4dp"
-                        android:visibility="gone">
-
-                        <ImageView
-                            android:layout_width="@dimen/no_issues_icon_size"
-                            android:layout_height="@dimen/no_issues_icon_size"
-                            android:layout_marginBottom="4dp"
-                            android:adjustViewBounds="true"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_shield_check" />
-
-                        <TextView
-                            android:text="@string/no_issues_found_title"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/onboarding_heading"
-                            android:textStyle="bold"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            android:autoSizeTextType="uniform"
-                            android:autoSizeMinTextSize="8sp"
-                            android:autoSizeMaxTextSize="13sp"
-                            android:autoSizeStepGranularity="1sp" />
-
-                        <TextView
-                            android:text="@string/no_issues_found_subtitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:textColor="@color/terminal_text_dim"
-                            android:gravity="center"
-                            android:maxLines="2"
-                            android:autoSizeTextType="uniform"
-                            android:autoSizeMinTextSize="7sp"
-                            android:autoSizeMaxTextSize="10sp"
-                            android:autoSizeStepGranularity="1sp" />
-
-                    </LinearLayout>
-
-                </FrameLayout>
-
-            </LinearLayout>
-
-        </FrameLayout>
+        android:layout_weight="249"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
         <LinearLayout
-            android:id="@+id/containerSecondPart"
+            android:id="@+id/boxFirstPart"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="65"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:background="@drawable/bg_scan_card"
+            android:padding="12dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/cardUninstallApps"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="6dp"
-                    android:layout_marginBottom="6dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_feature_card"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="14dp">
-
-                    <ImageView
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/bg_feature_icon_circle"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_feature_uninstall" />
-
-                    <TextView
-                        android:text="@string/feature_uninstall_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/onboarding_heading"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:text="@string/feature_uninstall_subtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textColor="@color/terminal_text_dim"
-                        android:textSize="10.5sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cardOtpSms"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginBottom="6dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_feature_card"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="14dp">
-
-                    <ImageView
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/bg_feature_icon_circle"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_feature_otp_sms" />
-
-                    <TextView
-                        android:text="@string/feature_otp_sms_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/onboarding_heading"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:text="@string/feature_otp_sms_subtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textColor="@color/terminal_text_dim"
-                        android:textSize="10.5sp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/cardSocialScams"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="6dp"
-                    android:layout_marginTop="6dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_feature_card"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="14dp">
-
-                    <ImageView
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/bg_feature_icon_circle"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_feature_social_scams" />
-
-                    <TextView
-                        android:text="@string/feature_social_scams_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/onboarding_heading"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:text="@string/feature_social_scams_subtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textColor="@color/terminal_text_dim"
-                        android:textSize="10.5sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cardSeeMore"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginTop="6dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_feature_card"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="14dp">
-
-                    <ImageView
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/bg_feature_icon_circle"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_feature_see_more" />
-
-                    <TextView
-                        android:text="@string/feature_see_more_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/onboarding_heading"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:text="@string/feature_see_more_subtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textColor="@color/terminal_text_dim"
-                        android:textSize="10.5sp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/containerAskNihalAi"
-                android:layout_width="wrap_content"
-                android:layout_height="56dp"
-                android:layout_marginTop="10dp"
-                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center"
-                android:background="@drawable/bg_capsule_protected"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingStart="16dp"
-                android:paddingEnd="18dp">
+                android:gravity="center_vertical"
+                android:layout_marginBottom="10dp">
 
                 <ImageView
-                    android:layout_width="23dp"
-                    android:layout_height="23dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginEnd="8dp"
-                    android:src="@drawable/ic_sparkles" />
+                    android:src="@drawable/ic_shield_scan" />
 
-                <TextView
-                    android:text="@string/ask_nihal_ai_label"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/onboarding_accent"
-                    android:textSize="13sp" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:text="@string/scan_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/onboarding_heading"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textScanSubtitle"
+                        android:text="@string/scan_subtitle_running"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/terminal_text_dim"
+                        android:textSize="10.5sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <ScrollView
+                    android:id="@+id/scrollTerminal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_terminal"
+                    android:padding="10dp"
+                    android:scrollbars="none"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/textTerminalLog"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:textColor="@color/terminal_text"
+                        android:textSize="9.5sp"
+                        android:lineSpacingExtra="2dp" />
+
+                </ScrollView>
+
+                <ScrollView
+                    android:id="@+id/scrollResults"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="none"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:id="@+id/containerRiskResults"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                </ScrollView>
+
+                <LinearLayout
+                    android:id="@+id/containerNoIssues"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="@dimen/no_issues_icon_size"
+                        android:layout_height="@dimen/no_issues_icon_size"
+                        android:layout_marginBottom="4dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_shield_check" />
+
+                    <TextView
+                        android:text="@string/no_issues_found_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/onboarding_heading"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="8sp"
+                        android:autoSizeMaxTextSize="13sp"
+                        android:autoSizeStepGranularity="1sp" />
+
+                    <TextView
+                        android:text="@string/no_issues_found_subtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/terminal_text_dim"
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="7sp"
+                        android:autoSizeMaxTextSize="10sp"
+                        android:autoSizeStepGranularity="1sp" />
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <!-- Gap : 2.9% -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="29" />
+
+    <!-- Row 1 tiles : 20.2% -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="202"
+        android:orientation="horizontal"
+        android:weightSum="10000">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="415" />
+
+        <LinearLayout
+            android:id="@+id/cardUninstallApps"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4430"
+            android:orientation="vertical"
+            android:background="@drawable/bg_feature_card"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="14dp">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_feature_icon_circle"
+                android:padding="8dp"
+                android:src="@drawable/ic_feature_uninstall" />
+
+            <TextView
+                android:text="@string/feature_uninstall_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/onboarding_heading"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:text="@string/feature_uninstall_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/terminal_text_dim"
+                android:textSize="10.5sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="310" />
+
+        <LinearLayout
+            android:id="@+id/cardOtpSms"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4430"
+            android:orientation="vertical"
+            android:background="@drawable/bg_feature_card"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="14dp">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_feature_icon_circle"
+                android:padding="8dp"
+                android:src="@drawable/ic_feature_otp_sms" />
+
+            <TextView
+                android:text="@string/feature_otp_sms_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/onboarding_heading"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:text="@string/feature_otp_sms_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/terminal_text_dim"
+                android:textSize="10.5sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="415" />
+
+    </LinearLayout>
+
+    <!-- Gap : 1.5% -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="15" />
+
+    <!-- Row 2 tiles : 20.2% -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="202"
+        android:orientation="horizontal"
+        android:weightSum="10000">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="415" />
+
+        <LinearLayout
+            android:id="@+id/cardSocialScams"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4430"
+            android:orientation="vertical"
+            android:background="@drawable/bg_feature_card"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="14dp">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_feature_icon_circle"
+                android:padding="8dp"
+                android:src="@drawable/ic_feature_social_scams" />
+
+            <TextView
+                android:text="@string/feature_social_scams_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/onboarding_heading"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:text="@string/feature_social_scams_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/terminal_text_dim"
+                android:textSize="10.5sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="310" />
+
+        <LinearLayout
+            android:id="@+id/cardSeeMore"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4430"
+            android:orientation="vertical"
+            android:background="@drawable/bg_feature_card"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="14dp">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_feature_icon_circle"
+                android:padding="8dp"
+                android:src="@drawable/ic_feature_see_more" />
+
+            <TextView
+                android:text="@string/feature_see_more_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/onboarding_heading"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:text="@string/feature_see_more_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/terminal_text_dim"
+                android:textSize="10.5sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="415" />
+
+    </LinearLayout>
+
+    <!-- Gap : 1.2% -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="12" />
+
+    <!-- Ask Nihal AI pill : 6.7% -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="67"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/containerAskNihalAi"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="@drawable/bg_capsule_protected"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="16dp"
+            android:paddingEnd="18dp">
+
+            <ImageView
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_sparkles" />
+
+            <TextView
+                android:text="@string/ask_nihal_ai_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/onboarding_accent"
+                android:textSize="13sp" />
 
         </LinearLayout>
 
     </LinearLayout>
 
+    <!-- Gap : 4.0% -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="40" />
+
+    <!-- Launch Button : 6.9% -->
     <Button
         android:id="@+id/buttonGo"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_margin="24dp"
+        android:layout_height="0dp"
+        android:layout_weight="69"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:background="@color/onboarding_accent"
         android:text="@string/action_go"
         android:textColor="@color/onboarding_button_text"
         android:textAllCaps="false"
         android:includeFontPadding="false"
         android:elevation="0dp" />
+
+    <!-- Gap : 3.0% -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="30" />
 
 </LinearLayout>
