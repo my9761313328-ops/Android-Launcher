@@ -186,6 +186,37 @@ class MainActivity : ComponentActivity() {
             findViewById<TextView>(R.id.textScanSubtitle).text =
                 getString(R.string.scan_subtitle_done, scannedCount)
         }
+
+        matchNoIssuesStyleToHeader()
+    }
+
+    private fun matchNoIssuesStyleToHeader() {
+        val headerIcon = findViewById<ImageView>(R.id.imageScanIcon)
+        val headerTitle = findViewById<TextView>(R.id.textScanTitle)
+        val headerSubtitle = findViewById<TextView>(R.id.textScanSubtitle)
+
+        val noIssuesIcon = findViewById<ImageView>(R.id.imageNoIssuesIcon)
+        val noIssuesTitle = findViewById<TextView>(R.id.textNoIssuesTitle)
+        val noIssuesSubtitle = findViewById<TextView>(R.id.textNoIssuesSubtitle)
+
+        headerIcon.post {
+            if (headerIcon.width > 0 && headerIcon.height > 0) {
+                val params = noIssuesIcon.layoutParams
+                params.width = headerIcon.width
+                params.height = headerIcon.height
+                noIssuesIcon.layoutParams = params
+            }
+
+            if (headerTitle.textSize > 0f) {
+                noIssuesTitle.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_NONE)
+                noIssuesTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, headerTitle.textSize)
+            }
+
+            if (headerSubtitle.textSize > 0f) {
+                noIssuesSubtitle.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_NONE)
+                noIssuesSubtitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, headerSubtitle.textSize)
+            }
+        }
     }
 
     private fun showRiskResults(result: com.nihalthakral.nihalhome.ScanResult) {
