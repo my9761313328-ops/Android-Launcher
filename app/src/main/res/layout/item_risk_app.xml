@@ -32,34 +32,21 @@
     <!-- App Info : 60% width -->
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="60"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center_vertical">
 
-        <!-- App Name : auto-size, single line -->
+        <!-- App Name : auto-size, single line, fills height for max text size -->
         <TextView
             android:id="@+id/textRiskAppName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:textColor="@color/onboarding_heading"
             android:textStyle="bold"
             android:maxLines="1"
             android:ellipsize="end"
-            android:includeFontPadding="false"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="6sp"
-            android:autoSizeMaxTextSize="500sp"
-            android:autoSizeStepGranularity="1sp" />
-
-        <!-- Package Name : auto-size, single line -->
-        <TextView
-            android:id="@+id/textRiskAppPackage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:textColor="@color/terminal_text_dim"
-            android:maxLines="1"
-            android:ellipsize="end"
+            android:gravity="start|center_vertical"
             android:includeFontPadding="false"
             android:autoSizeTextType="uniform"
             android:autoSizeMinTextSize="6sp"
