@@ -93,7 +93,7 @@
                         android:includeFontPadding="false"
                         android:autoSizeTextType="uniform"
                         android:autoSizeMinTextSize="6sp"
-                        android:autoSizeMaxTextSize="13sp"
+                        android:autoSizeMaxTextSize="500sp"
                         android:autoSizeStepGranularity="1sp" />
 
                     <!-- Subtitle : 40% height, auto-size, single line -->
@@ -109,7 +109,7 @@
                         android:includeFontPadding="false"
                         android:autoSizeTextType="uniform"
                         android:autoSizeMinTextSize="6sp"
-                        android:autoSizeMaxTextSize="10sp"
+                        android:autoSizeMaxTextSize="500sp"
                         android:autoSizeStepGranularity="1sp" />
 
                 </LinearLayout>
