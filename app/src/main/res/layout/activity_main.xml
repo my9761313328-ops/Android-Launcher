@@ -487,10 +487,12 @@
             android:layout_height="match_parent"
             android:layout_weight="408"
             android:orientation="horizontal"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:background="@drawable/bg_capsule_protected"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp">
 
             <ImageView
                 android:id="@+id/imageAskNihalAiIcon"
@@ -502,10 +504,17 @@
             <TextView
                 android:id="@+id/textAskNihalAi"
                 android:text="@string/ask_nihal_ai_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:textColor="@color/onboarding_accent"
-                android:textSize="13sp" />
+                android:maxLines="1"
+                android:includeFontPadding="false"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="6sp"
+                android:autoSizeMaxTextSize="16sp"
+                android:autoSizeStepGranularity="1sp" />
 
         </LinearLayout>
 
