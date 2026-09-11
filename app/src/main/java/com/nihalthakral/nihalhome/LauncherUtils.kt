@@ -71,14 +71,8 @@ object LauncherUtils {
                 icon = icon
             )
 
-            // Unfiltered list kept as a fallback, so we never risk showing
-            // zero launchers on some unusual device/OEM.
             allLaunchers.add(info)
 
-            // "Real" launcher = actually enabled on this device (not a
-            // disabled/hidden system stub) AND has a genuine label (not
-            // just its raw package name, which happens for nameless stub
-            // components) AND isn't our own app.
             val isEnabled = isComponentEnabled(packageManager, activityInfo)
             val hasRealLabel = rawLabel != null && rawLabel.isNotBlank()
             val isOwnApp = activityInfo.packageName == context.packageName
@@ -88,9 +82,6 @@ object LauncherUtils {
             }
         }
 
-        // Zero-risk fallback: if the filtered list is empty for any reason
-        // (unusual device/OEM behavior), fall back to showing everything,
-        // exactly like before this filtering existed.
         val result = if (realLaunchers.isNotEmpty()) realLaunchers else allLaunchers
 
         return result.sortedBy { it.label.lowercase() }
