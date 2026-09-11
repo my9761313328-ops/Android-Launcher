@@ -75,6 +75,16 @@ class ChooseLauncherActivity : ComponentActivity() {
 
     private fun applyResponsiveCheckboxIcon(checkBox: CheckBox) {
         val originalDrawable = CompoundButtonCompat.getButtonDrawable(checkBox) ?: return
+
+        checkBox.minWidth = 0
+        checkBox.minHeight = 0
+        checkBox.minimumWidth = 0
+        checkBox.minimumHeight = 0
+
+        val maxSizePx = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP, 500f, checkBox.resources.displayMetrics
+        ).toInt()
+
         checkBox.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 val availableHeight = checkBox.height - checkBox.paddingTop - checkBox.paddingBottom
@@ -82,7 +92,7 @@ class ChooseLauncherActivity : ComponentActivity() {
 
                 checkBox.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                val targetSize = availableHeight
+                val targetSize = availableHeight.coerceAtMost(maxSizePx)
                 CompoundButtonCompat.setButtonDrawable(checkBox, ScalableDrawable(originalDrawable, targetSize))
 
                 val density = checkBox.resources.displayMetrics.density
