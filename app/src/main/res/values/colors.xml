@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="screen_background">#F7F7F9</color>
-    <color name="search_background">#EDEDF1</color>
     <color name="text_primary">#181818</color>
     <color name="text_secondary">#73737B</color>
-    <color name="sponsored_background">#FFFFFF</color>
-    <color name="sponsored_border">#E5E5E8</color>
-    <color name="divider">#E2E2E5</color>
     <color name="onboarding_background">#232D3F</color>
     <color name="onboarding_button_text">#232D3F</color>
     <color name="onboarding_accent">#7DD3FC</color>
@@ -25,10 +20,6 @@
 
     <color name="risk_row_background">#26314A</color>
     <color name="risk_row_border">#3D4C6B</color>
-
-    <color name="high_risk_background">#3A1E22</color>
-    <color name="high_risk_border">#7A2E36</color>
-    <color name="high_risk_text">#F87171</color>
 
     <color name="safe_state_icon">#4ADE80</color>
 </resources>
