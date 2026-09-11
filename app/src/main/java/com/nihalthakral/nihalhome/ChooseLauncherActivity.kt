@@ -91,6 +91,8 @@ class ChooseLauncherActivity : ComponentActivity() {
 
                 textView.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
+                val safeHeight = availableHeight * 0.85f
+
                 val paint = android.text.TextPaint(textView.paint)
                 var size = 1f
                 while (true) {
@@ -98,7 +100,7 @@ class ChooseLauncherActivity : ComponentActivity() {
                     val fm = paint.fontMetrics
                     val textHeight = fm.descent - fm.ascent
                     val textWidth = paint.measureText(textView.text.toString())
-                    if (textHeight > availableHeight || textWidth > availableWidth) break
+                    if (textHeight > safeHeight || textWidth > availableWidth) break
                     size += 1f
                 }
 
