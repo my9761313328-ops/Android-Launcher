@@ -47,7 +47,7 @@
         android:textColor="@color/onboarding_heading" />
 
     <Button
-        android:id="@+id/buttonLaunchIt"
+        android:id="@+id/buttonSubmit"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginStart="24dp"
@@ -56,7 +56,7 @@
         android:layout_marginBottom="24dp"
         android:background="@color/onboarding_accent"
         android:enabled="false"
-        android:text="@string/action_launch_it"
+        android:text="@string/action_submit"
         android:textColor="@color/onboarding_button_text"
         android:textAllCaps="false"
         android:includeFontPadding="false"
