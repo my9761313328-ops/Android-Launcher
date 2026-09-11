@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
+import androidx.core.widget.CompoundButtonCompat
 
 class ChooseLauncherActivity : ComponentActivity() {
 
@@ -73,7 +74,7 @@ class ChooseLauncherActivity : ComponentActivity() {
     }
 
     private fun applyResponsiveCheckboxIcon(checkBox: CheckBox) {
-        val originalDrawable = checkBox.buttonDrawable ?: return
+        val originalDrawable = CompoundButtonCompat.getButtonDrawable(checkBox) ?: return
         checkBox.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 val availableHeight = checkBox.height - checkBox.paddingTop - checkBox.paddingBottom
@@ -82,7 +83,7 @@ class ChooseLauncherActivity : ComponentActivity() {
                 checkBox.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                 val targetSize = availableHeight
-                checkBox.buttonDrawable = ScalableDrawable(originalDrawable, targetSize)
+                CompoundButtonCompat.setButtonDrawable(checkBox, ScalableDrawable(originalDrawable, targetSize))
 
                 val density = checkBox.resources.displayMetrics.density
                 val paddingPx = (8 * density).toInt()
