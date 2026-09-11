@@ -23,9 +23,9 @@ class ChooseLauncherActivity : ComponentActivity() {
 
         val listContainer = findViewById<LinearLayout>(R.id.launcherListContainer)
         val checkboxDontAskAgain = findViewById<CheckBox>(R.id.checkboxDontAskAgain)
-        val buttonLaunchIt = findViewById<Button>(R.id.buttonLaunchIt)
+        val buttonSubmit = findViewById<Button>(R.id.buttonSubmit)
 
-        applyResponsiveButtonTextSize(buttonLaunchIt)
+        applyResponsiveButtonTextSize(buttonSubmit)
 
         var selectedLauncher: LauncherAppInfo? = null
         var selectedRow: View? = null
@@ -43,14 +43,14 @@ class ChooseLauncherActivity : ComponentActivity() {
                 imageSelected.visibility = View.VISIBLE
                 selectedRow = itemView
                 selectedLauncher = launcherInfo
-                buttonLaunchIt.isEnabled = true
-                buttonLaunchIt.setBackgroundColor(ContextCompat.getColor(this, R.color.onboarding_accent))
+                buttonSubmit.isEnabled = true
+                buttonSubmit.setBackgroundColor(ContextCompat.getColor(this, R.color.onboarding_accent))
             }
 
             listContainer.addView(itemView)
         }
 
-        buttonLaunchIt.setOnClickListener {
+        buttonSubmit.setOnClickListener {
             val chosen = selectedLauncher ?: return@setOnClickListener
             val prefs = getSharedPreferences(PreferenceKeys.PREFS_NAME, MODE_PRIVATE)
 
