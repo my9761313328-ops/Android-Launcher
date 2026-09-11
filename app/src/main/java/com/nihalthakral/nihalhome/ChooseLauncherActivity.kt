@@ -26,6 +26,7 @@ class ChooseLauncherActivity : ComponentActivity() {
         val buttonSubmit = findViewById<Button>(R.id.buttonSubmit)
 
         applyResponsiveButtonTextSize(buttonSubmit)
+        applyResponsiveCheckboxIcon(checkboxDontAskAgain)
 
         var selectedLauncher: LauncherAppInfo? = null
         var selectedRow: View? = null
@@ -69,6 +70,38 @@ class ChooseLauncherActivity : ComponentActivity() {
             LauncherUtils.launchSelected(this, chosen.packageName, chosen.activityName)
             finish()
         }
+    }
+
+    private fun applyResponsiveCheckboxIcon(checkBox: CheckBox) {
+        val originalDrawable = checkBox.buttonDrawable ?: return
+        checkBox.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                val availableHeight = checkBox.height - checkBox.paddingTop - checkBox.paddingBottom
+                if (availableHeight <= 0) return
+
+                checkBox.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                val targetSize = availableHeight
+                checkBox.buttonDrawable = ScalableDrawable(originalDrawable, targetSize)
+
+                val density = checkBox.resources.displayMetrics.density
+                val paddingPx = (8 * density).toInt()
+                checkBox.compoundDrawablePadding = paddingPx
+
+                val availableTextWidth =
+                    (checkBox.width - checkBox.paddingLeft - checkBox.paddingRight - targetSize - paddingPx).toFloat()
+                if (availableTextWidth <= 0f) return
+
+                val paint = checkBox.paint
+                var textSizePx = availableHeight * 0.42f
+                paint.textSize = textSizePx
+                while (paint.measureText(checkBox.text.toString()) > availableTextWidth && textSizePx > 1f) {
+                    textSizePx -= 1f
+                    paint.textSize = textSizePx
+                }
+                checkBox.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx)
+            }
+        })
     }
 
     private fun applyResponsiveButtonTextSize(vararg buttons: Button) {
