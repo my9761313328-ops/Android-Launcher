@@ -93,7 +93,7 @@ class ChooseLauncherActivity : ComponentActivity() {
                 checkBox.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                 val targetSize = availableHeight.coerceAtMost(maxSizePx)
-                CompoundButtonCompat.setButtonDrawable(checkBox, ScalableDrawable(originalDrawable, targetSize))
+                checkBox.buttonDrawable = ScalableDrawable(originalDrawable, targetSize)
 
                 val density = checkBox.resources.displayMetrics.density
                 val paddingPx = (8 * density).toInt()
