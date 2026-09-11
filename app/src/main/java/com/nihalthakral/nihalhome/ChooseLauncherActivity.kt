@@ -28,7 +28,7 @@ class ChooseLauncherActivity : ComponentActivity() {
         val textDontAskAgain = findViewById<TextView>(R.id.textDontAskAgain)
         val buttonSubmit = findViewById<Button>(R.id.buttonSubmit)
 
-        applyResponsiveButtonTextSize(buttonSubmit)
+        applyResponsiveButtonTextSize(listContainer, buttonSubmit)
         applyResponsiveCheckboxText(textDontAskAgain)
 
         rowDontAskAgain.setOnClickListener {
@@ -82,6 +82,32 @@ class ChooseLauncherActivity : ComponentActivity() {
         }
     }
 
+    private fun applyLauncherItemSizes(button: Button, labelTextSizePx: Float, listContainer: LinearLayout) {
+        val buttonHeight = button.height
+        val iconSize = (buttonHeight * 0.85f).toInt()
+        val checkmarkSize = (buttonHeight * 0.60f).toInt()
+
+        for (i in 0 until listContainer.childCount) {
+            val itemView = listContainer.getChildAt(i)
+
+            val icon = itemView.findViewById<ImageView>(R.id.imageLauncherIcon)
+            val label = itemView.findViewById<TextView>(R.id.textLauncherLabel)
+            val checkmark = itemView.findViewById<ImageView>(R.id.imageLauncherSelected)
+
+            val iconParams = icon.layoutParams
+            iconParams.width = iconSize
+            iconParams.height = iconSize
+            icon.layoutParams = iconParams
+
+            label.setTextSize(TypedValue.COMPLEX_UNIT_PX, labelTextSizePx)
+
+            val checkmarkParams = checkmark.layoutParams
+            checkmarkParams.width = checkmarkSize
+            checkmarkParams.height = checkmarkSize
+            checkmark.layoutParams = checkmarkParams
+        }
+    }
+
     private fun applyResponsiveCheckboxText(textView: TextView) {
         textView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -110,7 +136,7 @@ class ChooseLauncherActivity : ComponentActivity() {
         })
     }
 
-    private fun applyResponsiveButtonTextSize(vararg buttons: Button) {
+    private fun applyResponsiveButtonTextSize(listContainer: LinearLayout, vararg buttons: Button) {
         val root = buttons[0].rootView
         root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -137,8 +163,9 @@ class ChooseLauncherActivity : ComponentActivity() {
                 }
 
                 buttons.forEach { it.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx) }
-
                 buttons.forEach { button -> centerTextVertically(button) }
+
+                applyLauncherItemSizes(buttons[0], textSizePx, listContainer)
             }
         })
     }
