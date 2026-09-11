@@ -60,7 +60,7 @@
             android:theme="@style/Theme.NihalHome" />
 
         <activity
-            android:name=".SocialScamsActivity"
+            android:name=".SocialHackingActivity"
             android:exported="false"
             android:theme="@style/Theme.NihalHome" />
 
@@ -70,7 +70,7 @@
             android:theme="@style/Theme.NihalHome" />
 
         <activity
-            android:name=".AskNihalAiActivity"
+            android:name=".AskAnExpertActivity"
             android:exported="false"
             android:theme="@style/Theme.NihalHome" />
 
