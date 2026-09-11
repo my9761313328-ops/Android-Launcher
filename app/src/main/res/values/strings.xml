@@ -10,12 +10,9 @@
     <string name="choose_favourite_launcher_title">Choose Your Favourite Launcher</string>
     <string name="dont_ask_me_again">Don\'t Ask me Again</string>
     <string name="action_launch_it">Submit</string>
-    <string name="safety_first_title">Safety First</string>
-    <string name="protected_label">Protected</string>
     <string name="scan_title">Scanning apps that can control your screen</string>
     <string name="scan_subtitle_running">Scanning installed apps…</string>
     <string name="scan_subtitle_done">All apps scanned</string>
-    <string name="high_risk_label">Flagged</string>
     <string name="no_issues_found_title">Today, You\'re Safe</string>
     <string name="no_issues_found_subtitle">No Apps Found that can control your screen</string>
 
