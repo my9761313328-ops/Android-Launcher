@@ -6,15 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.core.content.ContextCompat
-import androidx.core.widget.CompoundButtonCompat
 
 class ChooseLauncherActivity : ComponentActivity() {
+
+    private var isDontAskAgainChecked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,11 +23,20 @@ class ChooseLauncherActivity : ComponentActivity() {
         val launchers = LauncherUtils.getAvailableLaunchers(this)
 
         val listContainer = findViewById<LinearLayout>(R.id.launcherListContainer)
-        val checkboxDontAskAgain = findViewById<CheckBox>(R.id.checkboxDontAskAgain)
+        val rowDontAskAgain = findViewById<View>(R.id.rowDontAskAgain)
+        val imageCheckboxIcon = findViewById<ImageView>(R.id.imageCheckboxIcon)
+        val textDontAskAgain = findViewById<TextView>(R.id.textDontAskAgain)
         val buttonSubmit = findViewById<Button>(R.id.buttonSubmit)
 
         applyResponsiveButtonTextSize(buttonSubmit)
-        applyResponsiveCheckboxIcon(checkboxDontAskAgain)
+        applyResponsiveCheckboxText(textDontAskAgain, imageCheckboxIcon)
+
+        rowDontAskAgain.setOnClickListener {
+            isDontAskAgainChecked = !isDontAskAgainChecked
+            imageCheckboxIcon.setImageResource(
+                if (isDontAskAgainChecked) R.drawable.ic_checkbox_checked else R.drawable.ic_checkbox_unchecked
+            )
+        }
 
         var selectedLauncher: LauncherAppInfo? = null
         var selectedRow: View? = null
@@ -56,7 +65,7 @@ class ChooseLauncherActivity : ComponentActivity() {
             val chosen = selectedLauncher ?: return@setOnClickListener
             val prefs = getSharedPreferences(PreferenceKeys.PREFS_NAME, MODE_PRIVATE)
 
-            if (checkboxDontAskAgain.isChecked) {
+            if (isDontAskAgainChecked) {
                 prefs.edit()
                     .putBoolean(PreferenceKeys.KEY_DONT_ASK_AGAIN, true)
                     .putString(PreferenceKeys.KEY_SAVED_LAUNCHER_PACKAGE, chosen.packageName)
@@ -73,44 +82,26 @@ class ChooseLauncherActivity : ComponentActivity() {
         }
     }
 
-    private fun applyResponsiveCheckboxIcon(checkBox: CheckBox) {
-        val originalDrawable = CompoundButtonCompat.getButtonDrawable(checkBox) ?: return
-
-        checkBox.minWidth = 0
-        checkBox.minHeight = 0
-        checkBox.minimumWidth = 0
-        checkBox.minimumHeight = 0
-
-        val maxSizePx = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_SP, 500f, checkBox.resources.displayMetrics
-        ).toInt()
-
-        checkBox.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+    private fun applyResponsiveCheckboxText(textView: TextView, imageView: ImageView) {
+        textView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                val availableHeight = checkBox.height - checkBox.paddingTop - checkBox.paddingBottom
+                val availableHeight = imageView.height
                 if (availableHeight <= 0) return
 
-                checkBox.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                val targetSize = availableHeight.coerceAtMost(maxSizePx)
-                checkBox.buttonDrawable = ScalableDrawable(originalDrawable, targetSize)
-
-                val density = checkBox.resources.displayMetrics.density
-                val paddingPx = (8 * density).toInt()
-                checkBox.compoundDrawablePadding = paddingPx
+                textView.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                 val availableTextWidth =
-                    (checkBox.width - checkBox.paddingLeft - checkBox.paddingRight - targetSize - paddingPx).toFloat()
+                    (textView.width - textView.paddingLeft - textView.paddingRight).toFloat()
                 if (availableTextWidth <= 0f) return
 
-                val paint = checkBox.paint
+                val paint = textView.paint
                 var textSizePx = availableHeight * 0.42f
                 paint.textSize = textSizePx
-                while (paint.measureText(checkBox.text.toString()) > availableTextWidth && textSizePx > 1f) {
+                while (paint.measureText(textView.text.toString()) > availableTextWidth && textSizePx > 1f) {
                     textSizePx -= 1f
                     paint.textSize = textSizePx
                 }
-                checkBox.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx)
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx)
             }
         })
     }
