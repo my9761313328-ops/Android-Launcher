@@ -55,9 +55,9 @@ class MainActivity : ComponentActivity() {
         applyResponsiveButtonTextSize(findViewById(R.id.buttonClose))
 
         applyResponsivePillContentSize(
-            container = findViewById(R.id.containerAskNihalAi),
-            icon = findViewById(R.id.imageAskNihalAiIcon),
-            text = findViewById(R.id.textAskNihalAi)
+            container = findViewById(R.id.containerAskAnExpert),
+            icon = findViewById(R.id.imageAskAnExpertIcon),
+            text = findViewById(R.id.textAskAnExpert)
         )
 
         findViewById<View>(R.id.cardUninstallApps).setOnClickListener {
@@ -68,16 +68,16 @@ class MainActivity : ComponentActivity() {
             startActivity(Intent(this, OtpSmsActivity::class.java))
         }
 
-        findViewById<View>(R.id.cardSocialScams).setOnClickListener {
-            startActivity(Intent(this, SocialScamsActivity::class.java))
+        findViewById<View>(R.id.cardSocialHacking).setOnClickListener {
+            startActivity(Intent(this, SocialHackingActivity::class.java))
         }
 
         findViewById<View>(R.id.cardSeeMore).setOnClickListener {
             startActivity(Intent(this, SeeMoreActivity::class.java))
         }
 
-        findViewById<View>(R.id.containerAskNihalAi).setOnClickListener {
-            startActivity(Intent(this, AskNihalAiActivity::class.java))
+        findViewById<View>(R.id.containerAskAnExpert).setOnClickListener {
+            startActivity(Intent(this, AskAnExpertActivity::class.java))
         }
 
         // Apply header-matched sizing to the feature cards immediately, so
