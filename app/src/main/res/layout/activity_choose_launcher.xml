@@ -10,10 +10,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.109" />
+        app:layout_constraintGuide_percent="0.0544" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideTitleBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.0946" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideContentStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -64,7 +71,7 @@
         android:id="@+id/contentSection"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/guideTitleBottom"
+        app:layout_constraintTop_toBottomOf="@id/guideContentStart"
         app:layout_constraintBottom_toTopOf="@id/guidelineContentFooter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
