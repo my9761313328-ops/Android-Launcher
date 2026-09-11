@@ -14,7 +14,6 @@
     android:layout_marginBottom="6dp"
     android:weightSum="100">
 
-    <!-- App Icon : 15% width, fills height, no fixed dp size -->
     <ImageView
         android:id="@+id/imageRiskAppIcon"
         android:layout_width="0dp"
@@ -23,13 +22,11 @@
         android:adjustViewBounds="true"
         android:scaleType="fitCenter" />
 
-    <!-- Gap : 5% -->
     <View
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="5" />
 
-    <!-- App Info : 80% width -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -37,7 +34,6 @@
         android:orientation="vertical"
         android:gravity="center_vertical">
 
-        <!-- App Name : auto-size, single line, fills height for max text size -->
         <TextView
             android:id="@+id/textRiskAppName"
             android:layout_width="match_parent"
