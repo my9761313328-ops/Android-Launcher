@@ -118,14 +118,14 @@
         app:layout_constraintBottom_toBottomOf="@id/guideEnglishBottom" />
 
     <Button
-        android:id="@+id/buttonHindiUrdu"
+        android:id="@+id/buttonHindi"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:minWidth="0dp"
         android:minHeight="0dp"
         android:paddingVertical="0dp"
         android:background="@color/onboarding_button_unselected"
-        android:text="@string/language_hindi_urdu"
+        android:text="@string/language_hindi"
         android:textColor="@color/onboarding_heading"
         android:textAllCaps="false"
         android:gravity="center"
