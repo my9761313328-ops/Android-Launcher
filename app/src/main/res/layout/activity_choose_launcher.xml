@@ -141,18 +141,42 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <CheckBox
-            android:id="@+id/checkboxDontAskAgain"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rowDontAskAgain"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:text="@string/dont_ask_me_again"
-            android:textColor="@color/onboarding_heading"
-            android:gravity="center_vertical"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintTop_toTopOf="@id/guidelineCheckboxTop"
             app:layout_constraintBottom_toTopOf="@id/guidelineCheckboxBottom"
             app:layout_constraintStart_toStartOf="@id/guidelineFooterLeft"
-            app:layout_constraintEnd_toEndOf="@id/guidelineFooterRight"
-            app:layout_constraintHeight_default="spread" />
+            app:layout_constraintEnd_toEndOf="@id/guidelineFooterRight">
+
+            <ImageView
+                android:id="@+id/imageCheckboxIcon"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/ic_checkbox_unchecked"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/textDontAskAgain"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="12dp"
+                android:gravity="center_vertical"
+                android:text="@string/dont_ask_me_again"
+                android:textColor="@color/onboarding_heading"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/imageCheckboxIcon"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
             android:id="@+id/buttonSubmit"
