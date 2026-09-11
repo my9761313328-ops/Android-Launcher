@@ -399,7 +399,7 @@
             android:layout_weight="415" />
 
         <LinearLayout
-            android:id="@+id/cardSocialScams"
+            android:id="@+id/cardSocialHacking"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4430"
@@ -416,11 +416,11 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/bg_feature_icon_circle"
                 android:padding="8dp"
-                android:src="@drawable/ic_feature_social_scams" />
+                android:src="@drawable/ic_feature_social_hacking" />
 
             <TextView
                 android:id="@+id/textFeatureTitle3"
-                android:text="@string/feature_social_scams_title"
+                android:text="@string/feature_social_hacking_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/onboarding_heading"
@@ -429,7 +429,7 @@
 
             <TextView
                 android:id="@+id/textFeatureSubtitle3"
-                android:text="@string/feature_social_scams_subtitle"
+                android:text="@string/feature_social_hacking_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
@@ -513,7 +513,7 @@
             android:layout_weight="296" />
 
         <LinearLayout
-            android:id="@+id/containerAskNihalAi"
+            android:id="@+id/containerAskAnExpert"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="408"
@@ -526,15 +526,15 @@
             android:paddingEnd="14dp">
 
             <ImageView
-                android:id="@+id/imageAskNihalAiIcon"
+                android:id="@+id/imageAskAnExpertIcon"
                 android:layout_width="23dp"
                 android:layout_height="23dp"
                 android:layout_marginEnd="8dp"
                 android:src="@drawable/ic_sparkles" />
 
             <TextView
-                android:id="@+id/textAskNihalAi"
-                android:text="@string/ask_nihal_ai_label"
+                android:id="@+id/textAskAnExpert"
+                android:text="@string/ask_an_expert_label"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
