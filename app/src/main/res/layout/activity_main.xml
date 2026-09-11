@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Responsive layout notes.
+    Root vertical stack uses weightSum="1000" so every section's layout_weight
+    is that section's percentage of the app content area times 10 (1 decimal precision).
 
+    Top Gap            30   (3.0 percent)
+    Scanning Card      304  (30.4 percent)
+    Gap                29   (2.9 percent)
+    Row 1 tiles        202  (20.2 percent)
+    Gap                15   (1.5 percent)
+    Row 2 tiles        202  (20.2 percent)
+    Gap                12   (1.2 percent)
+    Ask Nihal AI pill  67   (6.7 percent)
+    Gap                40   (4.0 percent)
+    Launch Button      69   (6.9 percent)
+    Gap                30   (3.0 percent)
+    Total              1000 (100 percent)
+
+    Each tile row is a horizontal LinearLayout with weightSum="10000".
+    Left Margin  415  (4.15 percent)
+    Card 1       4430 (44.3 percent)
+    Gap          310  (3.1 percent)
+    Card 2       4430 (44.3 percent)
+    Right Margin 415  (4.15 percent)
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,11 +31,13 @@
     android:weightSum="1000"
     android:background="@color/onboarding_background">
 
+    <!-- Top Gap : 3.0% (equal to bottom gap after Launch Button) -->
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="30" />
 
+    <!-- Scanning Card : 30.4% -->
     <FrameLayout
         android:id="@+id/containerFirstPart"
         android:layout_width="match_parent"
@@ -37,6 +63,7 @@
                 android:layout_marginBottom="10dp"
                 android:weightSum="100">
 
+                <!-- Icon : 18% width, fills height, no fixed dp size -->
                 <ImageView
                     android:id="@+id/imageScanIcon"
                     android:layout_width="0dp"
@@ -46,6 +73,7 @@
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true" />
 
+                <!-- Text column : 82% width -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -53,6 +81,7 @@
                     android:orientation="vertical"
                     android:weightSum="100">
 
+                    <!-- Title : 60% height, auto-size, single line -->
                     <TextView
                         android:id="@+id/textScanTitle"
                         android:text="@string/scan_title"
@@ -69,6 +98,7 @@
                         android:autoSizeMaxTextSize="500sp"
                         android:autoSizeStepGranularity="1sp" />
 
+                    <!-- Subtitle : 40% height, auto-size, single line -->
                     <TextView
                         android:id="@+id/textScanSubtitle"
                         android:text="@string/scan_subtitle_running"
@@ -88,16 +118,19 @@
 
             </LinearLayout>
 
+            <!-- Top Gap : 5% -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="5" />
 
+            <!-- Content : 70% (was 80%, 5% top + 5% bottom gap cut) -->
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="70">
 
+                <!-- Terminal ScrollView wrapper : left 3.3% | content 93.3% | right 3.3% -->
                 <LinearLayout
                     android:id="@+id/wrapperTerminal"
                     android:layout_width="match_parent"
@@ -137,6 +170,7 @@
 
                 </LinearLayout>
 
+                <!-- Results ScrollView wrapper : left 3% | content 94% | right 3% -->
                 <LinearLayout
                     android:id="@+id/wrapperResults"
                     android:layout_width="match_parent"
@@ -224,6 +258,7 @@
 
             </FrameLayout>
 
+            <!-- Bottom Gap : 5% -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -233,11 +268,13 @@
 
     </FrameLayout>
 
+    <!-- Gap : 2.9% -->
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="29" />
 
+    <!-- Row 1 tiles : 20.2% -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -342,11 +379,13 @@
 
     </LinearLayout>
 
+    <!-- Gap : 1.5% -->
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="15" />
 
+    <!-- Row 2 tiles : 20.2% -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -451,11 +490,16 @@
 
     </LinearLayout>
 
+    <!-- Gap : 1.2% -->
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="12" />
 
+    <!-- Ask Nihal AI pill : 6.7% height. Width breakdown (horizontal weightSum="1000"):
+         Screen Start to Capsule : 296 (29.6%)
+         Capsule                 : 408 (40.8%)
+         Capsule to Screen End   : 296 (29.6%) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -508,25 +552,28 @@
 
     </LinearLayout>
 
+    <!-- Gap : 4.0% -->
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="40" />
 
+    <!-- Launch Button : 6.9% -->
     <Button
-        android:id="@+id/buttonGo"
+        android:id="@+id/buttonClose"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="69"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:background="@color/onboarding_accent"
-        android:text="@string/action_go"
+        android:text="@string/action_close"
         android:textColor="@color/onboarding_button_text"
         android:textAllCaps="false"
         android:includeFontPadding="false"
         android:elevation="0dp" />
 
+    <!-- Gap : 3.0% -->
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
