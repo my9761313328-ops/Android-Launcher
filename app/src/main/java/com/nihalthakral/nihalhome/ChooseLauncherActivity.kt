@@ -86,6 +86,7 @@ class ChooseLauncherActivity : ComponentActivity() {
         val buttonHeight = button.height
         val iconSize = (buttonHeight * 0.85f).toInt()
         val checkmarkSize = (buttonHeight * 0.60f).toInt()
+        val halfGap = (iconSize * 0.20f).toInt()
 
         for (i in 0 until listContainer.childCount) {
             val itemView = listContainer.getChildAt(i)
@@ -105,6 +106,13 @@ class ChooseLauncherActivity : ComponentActivity() {
             checkmarkParams.width = checkmarkSize
             checkmarkParams.height = checkmarkSize
             checkmark.layoutParams = checkmarkParams
+
+            itemView.setPadding(
+                itemView.paddingLeft,
+                halfGap,
+                itemView.paddingRight,
+                halfGap
+            )
         }
     }
 
