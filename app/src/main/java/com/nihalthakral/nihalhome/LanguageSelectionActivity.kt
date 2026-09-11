@@ -17,19 +17,19 @@ class LanguageSelectionActivity : ComponentActivity() {
         setContentView(R.layout.activity_language_selection)
 
         val buttonEnglish = findViewById<Button>(R.id.buttonEnglish)
-        val buttonHindiUrdu = findViewById<Button>(R.id.buttonHindiUrdu)
+        val buttonHindi = findViewById<Button>(R.id.buttonHindi)
         val buttonNext = findViewById<Button>(R.id.buttonNext)
 
-        applyResponsiveButtonTextSize(buttonEnglish, buttonHindiUrdu, buttonNext)
+        applyResponsiveButtonTextSize(buttonEnglish, buttonHindi, buttonNext)
 
         buttonEnglish.setOnClickListener {
             selectedLanguage = PreferenceKeys.LANGUAGE_ENGLISH
-            updateSelectionState(buttonEnglish, buttonHindiUrdu, buttonNext)
+            updateSelectionState(buttonEnglish, buttonHindi, buttonNext)
         }
 
-        buttonHindiUrdu.setOnClickListener {
+        buttonHindi.setOnClickListener {
             selectedLanguage = PreferenceKeys.LANGUAGE_HINDI_URDU
-            updateSelectionState(buttonHindiUrdu, buttonEnglish, buttonNext)
+            updateSelectionState(buttonHindi, buttonEnglish, buttonNext)
         }
 
         buttonNext.setOnClickListener {
