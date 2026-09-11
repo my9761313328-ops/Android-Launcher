@@ -29,7 +29,7 @@ class ChooseLauncherActivity : ComponentActivity() {
         val buttonSubmit = findViewById<Button>(R.id.buttonSubmit)
 
         applyResponsiveButtonTextSize(buttonSubmit)
-        applyResponsiveCheckboxText(textDontAskAgain, imageCheckboxIcon)
+        applyResponsiveCheckboxText(textDontAskAgain)
 
         rowDontAskAgain.setOnClickListener {
             isDontAskAgainChecked = !isDontAskAgainChecked
@@ -82,26 +82,28 @@ class ChooseLauncherActivity : ComponentActivity() {
         }
     }
 
-    private fun applyResponsiveCheckboxText(textView: TextView, imageView: ImageView) {
+    private fun applyResponsiveCheckboxText(textView: TextView) {
         textView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                val availableHeight = imageView.height
-                if (availableHeight <= 0) return
+                val availableHeight = textView.height - textView.paddingTop - textView.paddingBottom
+                val availableWidth = textView.width - textView.paddingLeft - textView.paddingRight
+                if (availableHeight <= 0 || availableWidth <= 0) return
 
                 textView.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                val availableTextWidth =
-                    (textView.width - textView.paddingLeft - textView.paddingRight).toFloat()
-                if (availableTextWidth <= 0f) return
-
-                val paint = textView.paint
-                var textSizePx = availableHeight * 0.42f
-                paint.textSize = textSizePx
-                while (paint.measureText(textView.text.toString()) > availableTextWidth && textSizePx > 1f) {
-                    textSizePx -= 1f
-                    paint.textSize = textSizePx
+                val paint = android.text.TextPaint(textView.paint)
+                var size = 1f
+                while (true) {
+                    paint.textSize = size + 1f
+                    val fm = paint.fontMetrics
+                    val textHeight = fm.descent - fm.ascent
+                    val textWidth = paint.measureText(textView.text.toString())
+                    if (textHeight > availableHeight || textWidth > availableWidth) break
+                    size += 1f
                 }
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx)
+
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+                centerTextVertically(textView)
             }
         })
     }
@@ -139,11 +141,11 @@ class ChooseLauncherActivity : ComponentActivity() {
         })
     }
 
-    private fun centerTextVertically(button: Button) {
-        val text = button.text?.toString().orEmpty()
+    private fun centerTextVertically(textView: TextView) {
+        val text = textView.text?.toString().orEmpty()
         if (text.isEmpty()) return
 
-        val paint = android.text.TextPaint(button.paint)
+        val paint = android.text.TextPaint(textView.paint)
         val fm = paint.fontMetrics
 
         val width = kotlin.math.ceil(paint.measureText(text)).toInt().coerceAtLeast(1)
@@ -176,12 +178,12 @@ class ChooseLauncherActivity : ComponentActivity() {
         val fontMetricCenter = (fm.ascent + fm.descent) / 2f
         val shiftDown = fontMetricCenter - inkCenter
 
-        val left = button.paddingLeft
-        val right = button.paddingRight
+        val left = textView.paddingLeft
+        val right = textView.paddingRight
         if (shiftDown > 0f) {
-            button.setPadding(left, (shiftDown * 2f).toInt(), right, 0)
+            textView.setPadding(left, (shiftDown * 2f).toInt(), right, 0)
         } else {
-            button.setPadding(left, 0, right, (-shiftDown * 2f).toInt())
+            textView.setPadding(left, 0, right, (-shiftDown * 2f).toInt())
         }
     }
 }
