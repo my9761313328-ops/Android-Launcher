@@ -45,6 +45,7 @@ class PremiumActivity : ComponentActivity() {
         val buttonSkip = findViewById<Button>(R.id.buttonSkip)
         val emojiWatchAd = findViewById<TextView>(R.id.emojiWatchAd)
         val watchAdContainer = findViewById<FrameLayout>(R.id.watchAdContainer)
+        emojiWatchAd.bringToFront()
 
         buttonLocked.setOnClickListener {
             vibrateDevice()
