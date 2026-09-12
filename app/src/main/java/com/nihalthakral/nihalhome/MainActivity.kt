@@ -480,13 +480,36 @@ class MainActivity : ComponentActivity() {
         val text = button.text?.toString().orEmpty()
         if (text.isEmpty()) return
 
-        val paint = button.paint
+        val paint = android.text.TextPaint(button.paint)
         val fm = paint.fontMetrics
 
-        val bounds = android.graphics.Rect()
-        paint.getTextBounds(text, 0, text.length, bounds)
+        val width = kotlin.math.ceil(paint.measureText(text)).toInt().coerceAtLeast(1)
+        val top = kotlin.math.floor(fm.top).toInt()
+        val bottom = kotlin.math.ceil(fm.bottom).toInt()
+        val height = (bottom - top).coerceAtLeast(1)
 
-        val inkCenter = (bounds.top + bounds.bottom) / 2f
+        val bitmap = android.graphics.Bitmap.createBitmap(
+            width, height, android.graphics.Bitmap.Config.ALPHA_8
+        )
+        val canvas = android.graphics.Canvas(bitmap)
+        val baselineY = -top.toFloat()
+        canvas.drawText(text, 0f, baselineY, paint)
+
+        var inkTop = -1
+        var inkBottom = -1
+        val row = IntArray(width)
+        for (y in 0 until height) {
+            bitmap.getPixels(row, 0, width, 0, y, width, 1)
+            if (row.any { (it ushr 24) != 0 }) {
+                if (inkTop == -1) inkTop = y
+                inkBottom = y
+            }
+        }
+        bitmap.recycle()
+        if (inkTop == -1) return
+
+        val inkCenter = (inkTop + inkBottom) / 2f + top
+
         val fontMetricCenter = (fm.ascent + fm.descent) / 2f
         val shiftDown = fontMetricCenter - inkCenter
 
