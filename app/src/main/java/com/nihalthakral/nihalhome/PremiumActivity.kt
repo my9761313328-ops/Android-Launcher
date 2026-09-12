@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
@@ -30,6 +31,17 @@ class PremiumActivity : ComponentActivity() {
     private val mainHandler = Handler(Looper.getMainLooper())
     private var rewardedAd: RewardedAd? = null
 
+    private lateinit var buttonWatchAd: Button
+    private lateinit var buttonSkip: Button
+
+    private var isAdLoading = false
+    private var loadStartElapsedMs = 0L
+    private var rewardEarnedThisSession = false
+
+    private var skipSecondsRemaining = SKIP_COUNTDOWN_SECONDS
+    private var skipCountdownFinished = false
+    private var skipCountdownRunnable: Runnable? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_premium)
@@ -41,8 +53,8 @@ class PremiumActivity : ComponentActivity() {
         MobileAds.initialize(this) {}
 
         val buttonLocked = findViewById<Button>(R.id.buttonLocked)
-        val buttonWatchAd = findViewById<Button>(R.id.buttonWatchAd)
-        val buttonSkip = findViewById<Button>(R.id.buttonSkip)
+        buttonWatchAd = findViewById(R.id.buttonWatchAd)
+        buttonSkip = findViewById(R.id.buttonSkip)
         val emojiWatchAd = findViewById<TextView>(R.id.emojiWatchAd)
         val watchAdContainer = findViewById<FrameLayout>(R.id.watchAdContainer)
         emojiWatchAd.bringToFront()
@@ -53,18 +65,31 @@ class PremiumActivity : ComponentActivity() {
         }
 
         buttonWatchAd.setOnClickListener {
-            showRewardedAd()
+            onWatchAdClicked()
         }
 
         startPulseAnimation(watchAdContainer)
-        startSkipCountdown(buttonSkip)
-        loadRewardedAd()
+        startSkipCountdown()
 
         applyResponsiveButtonTextSize(buttonLocked) { lockedTextSizePx ->
             emojiWatchAd.setTextSize(TypedValue.COMPLEX_UNIT_PX, lockedTextSizePx)
         }
         applyResponsiveButtonTextSize(buttonWatchAd)
         applyResponsiveButtonTextSize(buttonSkip)
+    }
+
+    private fun onWatchAdClicked() {
+        if (isAdLoading) return
+
+        isAdLoading = true
+        rewardEarnedThisSession = false
+        loadStartElapsedMs = SystemClock.elapsedRealtime()
+        pauseSkipCountdown()
+
+        buttonWatchAd.text = getString(R.string.action_loading)
+        applyResponsiveButtonTextSize(buttonWatchAd)
+
+        loadRewardedAd()
     }
 
     private fun loadRewardedAd() {
@@ -76,35 +101,62 @@ class PremiumActivity : ComponentActivity() {
             object : RewardedAdLoadCallback() {
                 override fun onAdLoaded(ad: RewardedAd) {
                     rewardedAd = ad
+                    finishLoading(success = true)
                 }
 
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     rewardedAd = null
+                    finishLoading(success = false)
                 }
             }
         )
     }
 
+    private fun finishLoading(success: Boolean) {
+        val elapsed = SystemClock.elapsedRealtime() - loadStartElapsedMs
+        val remainingDelay = (MIN_LOADING_DISPLAY_MS - elapsed).coerceAtLeast(0L)
+
+        mainHandler.postDelayed({
+            isAdLoading = false
+            resumeSkipCountdown()
+
+            if (success) {
+                buttonWatchAd.text = getString(R.string.action_watch_ad)
+                applyResponsiveButtonTextSize(buttonWatchAd)
+                showRewardedAd()
+            } else {
+                buttonWatchAd.text = getString(R.string.action_retry)
+                applyResponsiveButtonTextSize(buttonWatchAd)
+            }
+        }, remainingDelay)
+    }
+
     private fun showRewardedAd() {
         val ad = rewardedAd
         if (ad == null) {
-            loadRewardedAd()
+            buttonWatchAd.text = getString(R.string.action_retry)
+            applyResponsiveButtonTextSize(buttonWatchAd)
             return
         }
 
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdDismissedFullScreenContent() {
                 rewardedAd = null
-                loadRewardedAd()
+                if (!rewardEarnedThisSession) {
+                    buttonWatchAd.text = getString(R.string.action_watch_ad)
+                    applyResponsiveButtonTextSize(buttonWatchAd)
+                }
             }
 
             override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                 rewardedAd = null
-                loadRewardedAd()
+                buttonWatchAd.text = getString(R.string.action_retry)
+                applyResponsiveButtonTextSize(buttonWatchAd)
             }
         }
 
         ad.show(this) {
+            rewardEarnedThisSession = true
             onRewardEarned()
         }
     }
@@ -125,28 +177,40 @@ class PremiumActivity : ComponentActivity() {
         finish()
     }
 
-    private fun startSkipCountdown(buttonSkip: Button) {
-        var remaining = SKIP_COUNTDOWN_SECONDS
-        buttonSkip.text = getString(R.string.action_skip_in_seconds, remaining)
+    private fun startSkipCountdown() {
+        buttonSkip.text = getString(R.string.action_skip_in_seconds, skipSecondsRemaining)
+        scheduleSkipTick()
+    }
 
-        val tick = object : Runnable {
+    private fun scheduleSkipTick() {
+        val runnable = object : Runnable {
             override fun run() {
-                remaining -= 1
-                if (remaining <= 0) {
+                skipSecondsRemaining -= 1
+                if (skipSecondsRemaining <= 0) {
+                    skipCountdownFinished = true
                     buttonSkip.text = getString(R.string.action_skip)
-                    buttonSkip.isEnabled = true
                     buttonSkip.setOnClickListener {
-                        goToFavouriteLauncherOrChooser()
+                        if (!isAdLoading) goToFavouriteLauncherOrChooser()
                     }
                     applyResponsiveButtonTextSize(buttonSkip)
                 } else {
-                    buttonSkip.text = getString(R.string.action_skip_in_seconds, remaining)
+                    buttonSkip.text = getString(R.string.action_skip_in_seconds, skipSecondsRemaining)
                     applyResponsiveButtonTextSize(buttonSkip)
                     mainHandler.postDelayed(this, 1000L)
                 }
             }
         }
-        mainHandler.postDelayed(tick, 1000L)
+        skipCountdownRunnable = runnable
+        mainHandler.postDelayed(runnable, 1000L)
+    }
+
+    private fun pauseSkipCountdown() {
+        skipCountdownRunnable?.let { mainHandler.removeCallbacks(it) }
+    }
+
+    private fun resumeSkipCountdown() {
+        if (skipCountdownFinished) return
+        scheduleSkipTick()
     }
 
     private fun goToFavouriteLauncherOrChooser() {
@@ -291,5 +355,6 @@ class PremiumActivity : ComponentActivity() {
     companion object {
         private const val TEST_REWARDED_AD_UNIT_ID = "ca-app-pub-3940256099942544/5224354917"
         private const val SKIP_COUNTDOWN_SECONDS = 15
+        private const val MIN_LOADING_DISPLAY_MS = 500L
     }
 }
