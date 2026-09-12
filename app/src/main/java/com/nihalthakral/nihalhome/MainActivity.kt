@@ -42,6 +42,14 @@ class MainActivity : ComponentActivity() {
             return
         }
 
+        if (isUnlockExpired(prefs)) {
+            startActivity(Intent(this, PremiumActivity::class.java))
+            finish()
+            return
+        }
+
+        ensureUnlockInitialized(prefs)
+
         setContentView(R.layout.activity_main)
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -80,9 +88,6 @@ class MainActivity : ComponentActivity() {
             startActivity(Intent(this, AskAnExpertActivity::class.java))
         }
 
-        // Apply header-matched sizing to the feature cards immediately, so
-        // they already look right before the scan even starts, instead of
-        // only snapping into place once the scan finishes.
         applyHeaderSizeToFeatureCardsDeferred()
 
         isMainContentReady = true
@@ -90,8 +95,32 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+
+        val prefs = getSharedPreferences(PreferenceKeys.PREFS_NAME, MODE_PRIVATE)
+        if (isMainContentReady && isUnlockExpired(prefs)) {
+            startActivity(Intent(this, PremiumActivity::class.java))
+            finish()
+            return
+        }
+
         if (isMainContentReady) {
             startAccessibilityScan()
+        }
+    }
+
+    private fun isUnlockExpired(prefs: android.content.SharedPreferences): Boolean {
+        val expiry = prefs.getLong(PreferenceKeys.KEY_UNLOCK_EXPIRY_TIMESTAMP, 0L)
+        if (expiry == 0L) return false
+        return System.currentTimeMillis() >= expiry
+    }
+
+    private fun ensureUnlockInitialized(prefs: android.content.SharedPreferences) {
+        val expiry = prefs.getLong(PreferenceKeys.KEY_UNLOCK_EXPIRY_TIMESTAMP, 0L)
+        if (expiry == 0L) {
+            prefs.edit().putLong(
+                PreferenceKeys.KEY_UNLOCK_EXPIRY_TIMESTAMP,
+                System.currentTimeMillis() + PreferenceKeys.UNLOCK_DURATION_MS
+            ).apply()
         }
     }
 
@@ -208,11 +237,6 @@ class MainActivity : ComponentActivity() {
 
         headerIcon.post {
             if (headerIcon.width > 0 && headerIcon.height > 0) {
-                // The header icon itself isn't necessarily square (its width
-                // comes from a layout-weight column while its height fills
-                // the row), so copying width/height as-is can stretch a
-                // circular icon into an oval. Force a square using the
-                // smaller dimension instead.
                 val squareSize = minOf(headerIcon.width, headerIcon.height)
                 val params = noIssuesIcon.layoutParams
                 params.width = squareSize
@@ -266,8 +290,6 @@ class MainActivity : ComponentActivity() {
             R.id.textFeatureSubtitle4
         )
 
-        // Same square-icon reasoning as matchNoIssuesStyleToHeader(): force
-        // width == height so the circular background never turns oval.
         val squareIconSize = if (headerIcon.width > 0 && headerIcon.height > 0) {
             minOf(headerIcon.width, headerIcon.height)
         } else {
@@ -307,7 +329,6 @@ class MainActivity : ComponentActivity() {
         val gapHeight  = (scannerCard.height * 0.05).toInt()
 
         result.flaggedApps.forEachIndexed { index, app ->
-            // Gap between items (not before the first)
             if (index > 0 && gapHeight > 0) {
                 val spacer = View(this)
                 spacer.layoutParams = LinearLayout.LayoutParams(
@@ -319,7 +340,6 @@ class MainActivity : ComponentActivity() {
 
             val row = inflater.inflate(R.layout.item_risk_app, container, false)
 
-            // Height = 18% of scanner card height
             if (itemHeight > 0) {
                 row.layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -426,8 +446,6 @@ class MainActivity : ComponentActivity() {
 
                 container.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                // Scale the icon with the pill's height, same idea as the Launch
-                // button sizing its text off the button's height.
                 val iconSizePx = (containerHeight * 0.5f).toInt().coerceAtLeast(1)
                 val iconMarginPx = (containerHeight * 0.17f).toInt().coerceAtLeast(1)
                 val iconParams = icon.layoutParams as LinearLayout.LayoutParams
@@ -436,9 +454,6 @@ class MainActivity : ComponentActivity() {
                 iconParams.marginEnd = iconMarginPx
                 icon.layoutParams = iconParams
 
-                // Compute the space left for the text using the NEW icon size we
-                // just set (not the stale pre-layout value), so there's no race
-                // with the pending relayout.
                 val availableWidth = (
                     containerWidth - container.paddingLeft - container.paddingRight -
                         iconSizePx - iconMarginPx
