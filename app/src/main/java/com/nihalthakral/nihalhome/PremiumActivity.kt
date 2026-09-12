@@ -13,6 +13,7 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.Button
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import com.google.android.gms.ads.AdError
@@ -41,6 +42,7 @@ class PremiumActivity : ComponentActivity() {
         val buttonLocked = findViewById<Button>(R.id.buttonLocked)
         val buttonWatchAd = findViewById<Button>(R.id.buttonWatchAd)
         val buttonSkip = findViewById<Button>(R.id.buttonSkip)
+        val emojiWatchAd = findViewById<TextView>(R.id.emojiWatchAd)
 
         buttonLocked.setOnClickListener {
             vibrateDevice()
@@ -55,7 +57,9 @@ class PremiumActivity : ComponentActivity() {
         startSkipCountdown(buttonSkip)
         loadRewardedAd()
 
-        applyResponsiveButtonTextSize(buttonLocked)
+        applyResponsiveButtonTextSize(buttonLocked, onSizeSet = { sizePx ->
+            emojiWatchAd.setTextSize(TypedValue.COMPLEX_UNIT_PX, sizePx)
+        })
         applyResponsiveButtonTextSize(buttonWatchAd)
         applyResponsiveButtonTextSize(buttonSkip)
     }
@@ -197,7 +201,7 @@ class PremiumActivity : ComponentActivity() {
         mainHandler.removeCallbacksAndMessages(null)
     }
 
-    private fun applyResponsiveButtonTextSize(vararg buttons: Button) {
+    private fun applyResponsiveButtonTextSize(vararg buttons: Button, onSizeSet: ((Float) -> Unit)? = null) {
         val root = buttons[0].rootView
         root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -224,6 +228,7 @@ class PremiumActivity : ComponentActivity() {
                 }
 
                 buttons.forEach { it.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx) }
+                onSizeSet?.invoke(textSizePx)
 
                 buttons.forEach { button -> centerTextVertically(button) }
             }
