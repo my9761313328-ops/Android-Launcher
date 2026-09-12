@@ -29,6 +29,7 @@
             android:layout_weight="20" />
 
         <FrameLayout
+            android:id="@+id/watchAdContainer"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="60">
@@ -51,8 +52,9 @@
                 android:layout_gravity="start|center_vertical"
                 android:layout_marginStart="16dp"
                 android:text="🎬"
+                android:textColor="@color/onboarding_button_text"
                 android:includeFontPadding="false"
-                android:visibility="invisible"
+                android:visibility="visible"
                 android:clickable="false"
                 android:focusable="false"
                 android:importantForAccessibility="no" />
