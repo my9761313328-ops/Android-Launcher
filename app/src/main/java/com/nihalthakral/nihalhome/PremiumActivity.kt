@@ -13,6 +13,7 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -43,6 +44,7 @@ class PremiumActivity : ComponentActivity() {
         val buttonWatchAd = findViewById<Button>(R.id.buttonWatchAd)
         val buttonSkip = findViewById<Button>(R.id.buttonSkip)
         val emojiWatchAd = findViewById<TextView>(R.id.emojiWatchAd)
+        val watchAdContainer = findViewById<FrameLayout>(R.id.watchAdContainer)
 
         buttonLocked.setOnClickListener {
             vibrateDevice()
@@ -53,13 +55,12 @@ class PremiumActivity : ComponentActivity() {
             showRewardedAd()
         }
 
-        startPulseAnimation(buttonWatchAd)
+        startPulseAnimation(watchAdContainer)
         startSkipCountdown(buttonSkip)
         loadRewardedAd()
 
         applyResponsiveButtonTextSize(buttonLocked) { lockedTextSizePx ->
             emojiWatchAd.setTextSize(TypedValue.COMPLEX_UNIT_PX, lockedTextSizePx)
-            emojiWatchAd.visibility = View.VISIBLE
         }
         applyResponsiveButtonTextSize(buttonWatchAd)
         applyResponsiveButtonTextSize(buttonSkip)
