@@ -26,8 +26,8 @@
     <string name="feature_see_more_subtitle">Discover more for safety</string>
     <string name="ask_an_expert_label">Ask an Expert</string>
 
-    <string name="action_locked">🔒Locked</string>
-    <string name="action_watch_ad">🎬 Watch ad</string>
+    <string name="action_locked">Locked</string>
+    <string name="action_watch_ad">Watch ad</string>
     <string name="action_skip_in_seconds">Skip in %ds</string>
     <string name="action_skip">Skip</string>
 </resources>
