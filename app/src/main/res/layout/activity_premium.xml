@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1000"
+    android:background="@color/onboarding_background">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="30" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="721" />
+
+    <Button
+        android:id="@+id/buttonWatchAd"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="50"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/onboarding_accent"
+        android:text="@string/action_watch_ad"
+        android:textColor="@color/onboarding_button_text"
+        android:textAllCaps="false"
+        android:includeFontPadding="false"
+        android:elevation="0dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="15" />
+
+    <Button
+        android:id="@+id/buttonSkip"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="30"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/onboarding_button_unselected"
+        android:text="@string/action_skip_in_seconds"
+        android:textColor="@color/onboarding_heading"
+        android:textAllCaps="false"
+        android:includeFontPadding="false"
+        android:enabled="false"
+        android:elevation="0dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="15" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="40" />
+
+    <Button
+        android:id="@+id/buttonLocked"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="69"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/onboarding_accent"
+        android:text="@string/action_locked"
+        android:textColor="@color/onboarding_button_text"
+        android:textAllCaps="false"
+        android:includeFontPadding="false"
+        android:elevation="0dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="30" />
+
+</LinearLayout>
