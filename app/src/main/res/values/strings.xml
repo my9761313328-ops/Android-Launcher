@@ -27,7 +27,7 @@
     <string name="ask_an_expert_label">Ask an Expert</string>
 
     <string name="action_locked">Locked</string>
-    <string name="action_watch_ad">Watch ad - Unlock</string>
+    <string name="action_watch_ad">Watch ad</string>
     <string name="action_skip_in_seconds">No Thanks (%ds)</string>
     <string name="action_skip">No Thanks</string>
 </resources>
