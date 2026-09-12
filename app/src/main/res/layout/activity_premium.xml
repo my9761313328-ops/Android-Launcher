@@ -28,17 +28,36 @@
             android:layout_height="match_parent"
             android:layout_weight="20" />
 
-        <Button
-            android:id="@+id/buttonWatchAd"
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="60"
-            android:background="@color/onboarding_accent"
-            android:text="@string/action_watch_ad"
-            android:textColor="@color/onboarding_button_text"
-            android:textAllCaps="false"
-            android:includeFontPadding="false"
-            android:elevation="0dp" />
+            android:layout_weight="60">
+
+            <Button
+                android:id="@+id/buttonWatchAd"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/onboarding_accent"
+                android:text="@string/action_watch_ad"
+                android:textColor="@color/onboarding_button_text"
+                android:textAllCaps="false"
+                android:includeFontPadding="false"
+                android:elevation="0dp" />
+
+            <TextView
+                android:id="@+id/emojiWatchAd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="16dp"
+                android:text="🎬"
+                android:includeFontPadding="false"
+                android:visibility="invisible"
+                android:clickable="false"
+                android:focusable="false"
+                android:importantForAccessibility="no" />
+
+        </FrameLayout>
 
         <View
             android:layout_width="0dp"
