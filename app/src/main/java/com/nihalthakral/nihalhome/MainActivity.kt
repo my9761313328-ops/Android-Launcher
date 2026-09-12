@@ -489,8 +489,9 @@ class MainActivity : ComponentActivity() {
         val height = (bottom - top).coerceAtLeast(1)
 
         val bitmap = android.graphics.Bitmap.createBitmap(
-            width, height, android.graphics.Bitmap.Config.ALPHA_8
+            width, height, android.graphics.Bitmap.Config.ARGB_8888
         )
+        bitmap.eraseColor(android.graphics.Color.TRANSPARENT)
         val canvas = android.graphics.Canvas(bitmap)
         val baselineY = -top.toFloat()
         canvas.drawText(text, 0f, baselineY, paint)
