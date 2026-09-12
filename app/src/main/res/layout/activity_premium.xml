@@ -52,11 +52,14 @@
                 android:layout_gravity="start|center_vertical"
                 android:layout_marginStart="16dp"
                 android:text="🎬"
+                android:textSize="20sp"
                 android:textColor="@color/onboarding_button_text"
                 android:includeFontPadding="false"
                 android:visibility="visible"
                 android:clickable="false"
                 android:focusable="false"
+                android:elevation="4dp"
+                android:translationZ="4dp"
                 android:importantForAccessibility="no" />
 
         </FrameLayout>
