@@ -1,6 +1,7 @@
 package com.nihalthakral.nihalhome
 
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -12,7 +13,10 @@ import android.os.VibratorManager
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.animation.LinearInterpolator
 import android.widget.Button
+import android.animation.AnimatorListenerAdapter
+import android.animation.Animator
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
@@ -46,6 +50,7 @@ class PremiumActivity : ComponentActivity() {
         val buttonLocked = findViewById<Button>(R.id.buttonLocked)
         val buttonWatchAd = findViewById<Button>(R.id.buttonWatchAd)
         val buttonSkip = findViewById<Button>(R.id.buttonSkip)
+        val skipProgressOverlay = findViewById<View>(R.id.skipProgressOverlay)
         val emojiWatchAd = findViewById<TextView>(R.id.emojiWatchAd)
         val watchAdContainer = findViewById<FrameLayout>(R.id.watchAdContainer)
         emojiWatchAd.bringToFront()
@@ -61,7 +66,7 @@ class PremiumActivity : ComponentActivity() {
         }
 
         startPulseAnimation(watchAdContainer)
-        startSkipCountdown(buttonSkip)
+        startSkipCountdown(buttonSkip, skipProgressOverlay)
 
         applyResponsiveButtonTextSize(buttonLocked) { lockedTextSizePx ->
             emojiWatchAd.setTextSize(TypedValue.COMPLEX_UNIT_PX, lockedTextSizePx)
@@ -135,28 +140,29 @@ class PremiumActivity : ComponentActivity() {
         finish()
     }
 
-    private fun startSkipCountdown(buttonSkip: Button) {
-        var remaining = SKIP_COUNTDOWN_SECONDS
-        buttonSkip.text = getString(R.string.action_skip_in_seconds, remaining)
+    private fun startSkipCountdown(buttonSkip: Button, progressOverlay: View) {
+        progressOverlay.post {
+            val overlayWidth = progressOverlay.width
+            if (overlayWidth <= 0) return@post
 
-        val tick = object : Runnable {
-            override fun run() {
-                remaining -= 1
-                if (remaining <= 0) {
-                    buttonSkip.text = getString(R.string.action_skip)
+            val animator = ValueAnimator.ofInt(overlayWidth, 0)
+            animator.duration = SKIP_COUNTDOWN_SECONDS * 1000L
+            animator.interpolator = LinearInterpolator()
+            animator.addUpdateListener { valueAnimator ->
+                val params = progressOverlay.layoutParams
+                params.width = valueAnimator.animatedValue as Int
+                progressOverlay.layoutParams = params
+            }
+            animator.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
                     buttonSkip.isEnabled = true
                     buttonSkip.setOnClickListener {
                         goToFavouriteLauncherOrChooser()
                     }
-                    applyResponsiveButtonTextSize(buttonSkip)
-                } else {
-                    buttonSkip.text = getString(R.string.action_skip_in_seconds, remaining)
-                    applyResponsiveButtonTextSize(buttonSkip)
-                    mainHandler.postDelayed(this, 1000L)
                 }
-            }
+            })
+            animator.start()
         }
-        mainHandler.postDelayed(tick, 1000L)
     }
 
     private fun goToFavouriteLauncherOrChooser() {
