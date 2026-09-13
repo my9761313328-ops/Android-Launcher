@@ -30,6 +30,6 @@
     <string name="action_watch_ad">Watch ad</string>
     <string name="action_loading_ad">Loading...</string>
     <string name="action_retry_ad">Retry</string>
-    <string name="action_skip_in_seconds">No Thanks (%ds)</string>
+    <string name="action_skip_in_seconds">No Thanks·%d</string>
     <string name="action_skip">No Thanks</string>
 </resources>
