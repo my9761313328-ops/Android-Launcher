@@ -88,18 +88,33 @@
             android:layout_height="match_parent"
             android:layout_weight="30" />
 
-        <Button
-            android:id="@+id/buttonSkip"
+        <FrameLayout
+            android:id="@+id/skipButtonContainer"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="40"
-            android:background="@color/onboarding_button_unselected"
-            android:text="@string/action_skip_in_seconds"
-            android:textColor="@color/onboarding_heading"
-            android:textAllCaps="false"
-            android:includeFontPadding="false"
-            android:enabled="false"
-            android:elevation="0dp" />
+            android:background="@color/onboarding_button_locked"
+            android:clipChildren="true">
+
+            <View
+                android:id="@+id/skipProgressOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/onboarding_button_unselected" />
+
+            <Button
+                android:id="@+id/buttonSkip"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:text="@string/action_skip"
+                android:textColor="@color/onboarding_heading"
+                android:textAllCaps="false"
+                android:includeFontPadding="false"
+                android:enabled="false"
+                android:elevation="0dp" />
+
+        </FrameLayout>
 
         <View
             android:layout_width="0dp"
