@@ -29,6 +29,9 @@ class PremiumActivity : ComponentActivity() {
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private var rewardedAd: RewardedAd? = null
+    private var isAdBusy = false
+    private var rewardEarned = false
+    private lateinit var buttonWatchAdRef: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +49,7 @@ class PremiumActivity : ComponentActivity() {
         val emojiWatchAd = findViewById<TextView>(R.id.emojiWatchAd)
         val watchAdContainer = findViewById<FrameLayout>(R.id.watchAdContainer)
         emojiWatchAd.bringToFront()
+        buttonWatchAdRef = buttonWatchAd
 
         buttonLocked.setOnClickListener {
             vibrateDevice()
@@ -53,12 +57,11 @@ class PremiumActivity : ComponentActivity() {
         }
 
         buttonWatchAd.setOnClickListener {
-            showRewardedAd()
+            onWatchAdClicked()
         }
 
         startPulseAnimation(watchAdContainer)
         startSkipCountdown(buttonSkip)
-        loadRewardedAd()
 
         applyResponsiveButtonTextSize(buttonLocked) { lockedTextSizePx ->
             emojiWatchAd.setTextSize(TypedValue.COMPLEX_UNIT_PX, lockedTextSizePx)
@@ -67,7 +70,12 @@ class PremiumActivity : ComponentActivity() {
         applyResponsiveButtonTextSize(buttonSkip)
     }
 
-    private fun loadRewardedAd() {
+    private fun onWatchAdClicked() {
+        if (isAdBusy) return
+        isAdBusy = true
+        rewardEarned = false
+        buttonWatchAdRef.text = getString(R.string.action_loading_ad)
+
         val adRequest = AdRequest.Builder().build()
         RewardedAd.load(
             this,
@@ -76,35 +84,37 @@ class PremiumActivity : ComponentActivity() {
             object : RewardedAdLoadCallback() {
                 override fun onAdLoaded(ad: RewardedAd) {
                     rewardedAd = ad
+                    showRewardedAd(ad)
                 }
 
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     rewardedAd = null
+                    isAdBusy = false
+                    buttonWatchAdRef.text = getString(R.string.action_retry_ad)
                 }
             }
         )
     }
 
-    private fun showRewardedAd() {
-        val ad = rewardedAd
-        if (ad == null) {
-            loadRewardedAd()
-            return
-        }
-
+    private fun showRewardedAd(ad: RewardedAd) {
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdDismissedFullScreenContent() {
                 rewardedAd = null
-                loadRewardedAd()
+                isAdBusy = false
+                if (!rewardEarned) {
+                    buttonWatchAdRef.text = getString(R.string.action_watch_ad)
+                }
             }
 
             override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                 rewardedAd = null
-                loadRewardedAd()
+                isAdBusy = false
+                buttonWatchAdRef.text = getString(R.string.action_retry_ad)
             }
         }
 
         ad.show(this) {
+            rewardEarned = true
             onRewardEarned()
         }
     }
