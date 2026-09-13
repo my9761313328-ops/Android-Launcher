@@ -1,43 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Responsive layout notes.
-    Root vertical stack uses weightSum="1000" so every section's layout_weight
-    is that section's percentage of the app content area times 10 (1 decimal precision).
-
-    Top Gap            30   (3.0 percent)
-    Scanning Card      304  (30.4 percent)
-    Gap                29   (2.9 percent)
-    Row 1 tiles        202  (20.2 percent)
-    Gap                15   (1.5 percent)
-    Row 2 tiles        202  (20.2 percent)
-    Gap                12   (1.2 percent)
-    Ask Nihal AI pill  67   (6.7 percent)
-    Gap                40   (4.0 percent)
-    Launch Button      69   (6.9 percent)
-    Gap                30   (3.0 percent)
-    Total              1000 (100 percent)
-
-    Each tile row is a horizontal LinearLayout with weightSum="10000".
-    Left Margin  415  (4.15 percent)
-    Card 1       4430 (44.3 percent)
-    Gap          310  (3.1 percent)
-    Card 2       4430 (44.3 percent)
-    Right Margin 415  (4.15 percent)
--->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="1000"
     android:background="@color/onboarding_background">
-
-    <!-- Top Gap : 3.0% (equal to bottom gap after Launch Button) -->
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="30" />
-
-    <!-- Scanning Card : 30.4% -->
     <FrameLayout
         android:id="@+id/containerFirstPart"
         android:layout_width="match_parent"
@@ -45,7 +16,6 @@
         android:layout_weight="304"
         android:paddingStart="16dp"
         android:paddingEnd="16dp">
-
         <LinearLayout
             android:id="@+id/boxFirstPart"
             android:layout_width="match_parent"
@@ -54,7 +24,6 @@
             android:background="@drawable/bg_scan_card"
             android:padding="12dp"
             android:weightSum="100">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -62,8 +31,6 @@
                 android:orientation="horizontal"
                 android:layout_marginBottom="10dp"
                 android:weightSum="100">
-
-                <!-- Icon : 18% width, fills height, no fixed dp size -->
                 <ImageView
                     android:id="@+id/imageScanIcon"
                     android:layout_width="0dp"
@@ -72,16 +39,12 @@
                     android:src="@drawable/ic_shield_scan"
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true" />
-
-                <!-- Text column : 82% width -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="82"
                     android:orientation="vertical"
                     android:weightSum="100">
-
-                    <!-- Title : 60% height, auto-size, single line -->
                     <TextView
                         android:id="@+id/textScanTitle"
                         android:text="@string/scan_title"
@@ -97,8 +60,6 @@
                         android:autoSizeMinTextSize="6sp"
                         android:autoSizeMaxTextSize="500sp"
                         android:autoSizeStepGranularity="1sp" />
-
-                    <!-- Subtitle : 40% height, auto-size, single line -->
                     <TextView
                         android:id="@+id/textScanSubtitle"
                         android:text="@string/scan_subtitle_running"
@@ -113,36 +74,26 @@
                         android:autoSizeMinTextSize="6sp"
                         android:autoSizeMaxTextSize="500sp"
                         android:autoSizeStepGranularity="1sp" />
-
                 </LinearLayout>
-
             </LinearLayout>
-
-            <!-- Top Gap : 5% -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="5" />
-
-            <!-- Content : 70% (was 80%, 5% top + 5% bottom gap cut) -->
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="70">
-
-                <!-- Terminal ScrollView wrapper : left 3.3% | content 93.3% | right 3.3% -->
                 <LinearLayout
                     android:id="@+id/wrapperTerminal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:weightSum="30">
-
                     <View
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1" />
-
                     <ScrollView
                         android:id="@+id/scrollTerminal"
                         android:layout_width="0dp"
@@ -151,7 +102,6 @@
                         android:background="@drawable/bg_terminal"
                         android:padding="10dp"
                         android:scrollbars="none">
-
                         <TextView
                             android:id="@+id/textTerminalLog"
                             android:layout_width="match_parent"
@@ -160,17 +110,12 @@
                             android:textColor="@color/terminal_text"
                             android:textSize="9.5sp"
                             android:lineSpacingExtra="2dp" />
-
                     </ScrollView>
-
                     <View
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1" />
-
                 </LinearLayout>
-
-                <!-- Results ScrollView wrapper : left 3% | content 94% | right 3% -->
                 <LinearLayout
                     android:id="@+id/wrapperResults"
                     android:layout_width="match_parent"
@@ -178,33 +123,26 @@
                     android:orientation="horizontal"
                     android:weightSum="100"
                     android:visibility="gone">
-
                     <View
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3" />
-
                     <ScrollView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="94"
                         android:scrollbars="none">
-
                         <LinearLayout
                             android:id="@+id/containerRiskResults"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical" />
-
                     </ScrollView>
-
                     <View
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3" />
-
                 </LinearLayout>
-
                 <LinearLayout
                     android:id="@+id/containerNoIssues"
                     android:layout_width="match_parent"
@@ -216,7 +154,6 @@
                     android:paddingTop="4dp"
                     android:paddingBottom="4dp"
                     android:visibility="gone">
-
                     <ImageView
                         android:id="@+id/imageNoIssuesIcon"
                         android:layout_width="@dimen/no_issues_icon_size"
@@ -225,7 +162,6 @@
                         android:adjustViewBounds="true"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_shield_check" />
-
                     <TextView
                         android:id="@+id/textNoIssuesTitle"
                         android:text="@string/no_issues_found_title"
@@ -239,7 +175,6 @@
                         android:autoSizeMinTextSize="8sp"
                         android:autoSizeMaxTextSize="13sp"
                         android:autoSizeStepGranularity="1sp" />
-
                     <TextView
                         android:id="@+id/textNoIssuesSubtitle"
                         android:text="@string/no_issues_found_subtitle"
@@ -253,40 +188,28 @@
                         android:autoSizeMinTextSize="7sp"
                         android:autoSizeMaxTextSize="10sp"
                         android:autoSizeStepGranularity="1sp" />
-
                 </LinearLayout>
-
             </FrameLayout>
-
-            <!-- Bottom Gap : 5% -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="5" />
-
         </LinearLayout>
-
     </FrameLayout>
-
-    <!-- Gap : 2.9% -->
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="29" />
-
-    <!-- Row 1 tiles : 20.2% -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="202"
         android:orientation="horizontal"
         android:weightSum="10000">
-
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="415" />
-
         <LinearLayout
             android:id="@+id/cardUninstallApps"
             android:layout_width="0dp"
@@ -297,7 +220,6 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="14dp">
-
             <ImageView
                 android:id="@+id/imageFeatureIcon1"
                 android:layout_width="36dp"
@@ -306,7 +228,6 @@
                 android:background="@drawable/bg_feature_icon_circle"
                 android:padding="8dp"
                 android:src="@drawable/ic_feature_uninstall" />
-
             <TextView
                 android:id="@+id/textFeatureTitle1"
                 android:text="@string/feature_uninstall_title"
@@ -315,7 +236,6 @@
                 android:textColor="@color/onboarding_heading"
                 android:textSize="13sp"
                 android:textStyle="bold" />
-
             <TextView
                 android:id="@+id/textFeatureSubtitle1"
                 android:text="@string/feature_uninstall_subtitle"
@@ -324,14 +244,11 @@
                 android:layout_marginTop="2dp"
                 android:textColor="@color/terminal_text_dim"
                 android:textSize="10.5sp" />
-
         </LinearLayout>
-
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="310" />
-
         <LinearLayout
             android:id="@+id/cardOtpSms"
             android:layout_width="0dp"
@@ -342,7 +259,6 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="14dp">
-
             <ImageView
                 android:id="@+id/imageFeatureIcon2"
                 android:layout_width="36dp"
@@ -351,7 +267,6 @@
                 android:background="@drawable/bg_feature_icon_circle"
                 android:padding="8dp"
                 android:src="@drawable/ic_feature_otp_sms" />
-
             <TextView
                 android:id="@+id/textFeatureTitle2"
                 android:text="@string/feature_otp_sms_title"
@@ -360,7 +275,6 @@
                 android:textColor="@color/onboarding_heading"
                 android:textSize="13sp"
                 android:textStyle="bold" />
-
             <TextView
                 android:id="@+id/textFeatureSubtitle2"
                 android:text="@string/feature_otp_sms_subtitle"
@@ -369,35 +283,26 @@
                 android:layout_marginTop="2dp"
                 android:textColor="@color/terminal_text_dim"
                 android:textSize="10.5sp" />
-
         </LinearLayout>
-
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="415" />
-
     </LinearLayout>
-
-    <!-- Gap : 1.5% -->
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="15" />
-
-    <!-- Row 2 tiles : 20.2% -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="202"
         android:orientation="horizontal"
         android:weightSum="10000">
-
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="415" />
-
         <LinearLayout
             android:id="@+id/cardSocialHacking"
             android:layout_width="0dp"
@@ -408,7 +313,6 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="14dp">
-
             <ImageView
                 android:id="@+id/imageFeatureIcon3"
                 android:layout_width="36dp"
@@ -417,7 +321,6 @@
                 android:background="@drawable/bg_feature_icon_circle"
                 android:padding="8dp"
                 android:src="@drawable/ic_feature_social_hacking" />
-
             <TextView
                 android:id="@+id/textFeatureTitle3"
                 android:text="@string/feature_social_hacking_title"
@@ -426,7 +329,6 @@
                 android:textColor="@color/onboarding_heading"
                 android:textSize="13sp"
                 android:textStyle="bold" />
-
             <TextView
                 android:id="@+id/textFeatureSubtitle3"
                 android:text="@string/feature_social_hacking_subtitle"
@@ -435,14 +337,11 @@
                 android:layout_marginTop="2dp"
                 android:textColor="@color/terminal_text_dim"
                 android:textSize="10.5sp" />
-
         </LinearLayout>
-
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="310" />
-
         <LinearLayout
             android:id="@+id/cardSeeMore"
             android:layout_width="0dp"
@@ -453,7 +352,6 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="14dp">
-
             <ImageView
                 android:id="@+id/imageFeatureIcon4"
                 android:layout_width="36dp"
@@ -462,7 +360,6 @@
                 android:background="@drawable/bg_feature_icon_circle"
                 android:padding="8dp"
                 android:src="@drawable/ic_feature_see_more" />
-
             <TextView
                 android:id="@+id/textFeatureTitle4"
                 android:text="@string/feature_see_more_title"
@@ -471,7 +368,6 @@
                 android:textColor="@color/onboarding_heading"
                 android:textSize="13sp"
                 android:textStyle="bold" />
-
             <TextView
                 android:id="@+id/textFeatureSubtitle4"
                 android:text="@string/feature_see_more_subtitle"
@@ -480,38 +376,26 @@
                 android:layout_marginTop="2dp"
                 android:textColor="@color/terminal_text_dim"
                 android:textSize="10.5sp" />
-
         </LinearLayout>
-
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="415" />
-
     </LinearLayout>
-
-    <!-- Gap : 1.2% -->
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="12" />
-
-    <!-- Ask Nihal AI pill : 6.7% height. Width breakdown (horizontal weightSum="1000"):
-         Screen Start to Capsule : 296 (29.6%)
-         Capsule                 : 408 (40.8%)
-         Capsule to Screen End   : 296 (29.6%) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="67"
         android:orientation="horizontal"
         android:weightSum="1000">
-
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="296" />
-
         <LinearLayout
             android:id="@+id/containerAskAnExpert"
             android:layout_width="0dp"
@@ -524,14 +408,12 @@
             android:focusable="true"
             android:paddingStart="14dp"
             android:paddingEnd="14dp">
-
             <ImageView
                 android:id="@+id/imageAskAnExpertIcon"
                 android:layout_width="23dp"
                 android:layout_height="23dp"
                 android:layout_marginEnd="8dp"
                 android:src="@drawable/ic_sparkles" />
-
             <TextView
                 android:id="@+id/textAskAnExpert"
                 android:text="@string/ask_an_expert_label"
@@ -542,23 +424,16 @@
                 android:textColor="@color/onboarding_accent"
                 android:maxLines="1"
                 android:includeFontPadding="false" />
-
         </LinearLayout>
-
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="296" />
-
     </LinearLayout>
-
-    <!-- Gap : 4.0% -->
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="40" />
-
-    <!-- Launch Button : 6.9% -->
     <Button
         android:id="@+id/buttonClose"
         android:layout_width="match_parent"
@@ -572,11 +447,8 @@
         android:textAllCaps="false"
         android:includeFontPadding="false"
         android:elevation="0dp" />
-
-    <!-- Gap : 3.0% -->
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="30" />
-
 </LinearLayout>
