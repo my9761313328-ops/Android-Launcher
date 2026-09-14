@@ -42,12 +42,12 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="20"
-                style="?android:attr/borderlessButtonStyle"
-                android:background="@drawable/bg_social_nav_button"
+                android:background="@color/onboarding_accent"
                 android:text="Previous"
                 android:textAllCaps="false"
-                android:textColor="@color/onboarding_heading"
-                android:textSize="14sp" />
+                android:textColor="@color/onboarding_button_text"
+                android:includeFontPadding="false"
+                android:elevation="0dp" />
 
             <View
                 android:layout_width="0dp"
@@ -59,12 +59,12 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="20"
-                style="?android:attr/borderlessButtonStyle"
-                android:background="@drawable/bg_social_nav_button"
+                android:background="@color/onboarding_accent"
                 android:text="Next"
                 android:textAllCaps="false"
-                android:textColor="@color/onboarding_heading"
-                android:textSize="14sp" />
+                android:textColor="@color/onboarding_button_text"
+                android:includeFontPadding="false"
+                android:elevation="0dp" />
 
         </LinearLayout>
 
