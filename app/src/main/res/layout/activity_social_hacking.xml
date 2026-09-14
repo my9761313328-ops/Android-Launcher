@@ -37,12 +37,17 @@
             android:layout_weight="7"
             android:orientation="horizontal">
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="10" />
+
             <Button
                 android:id="@+id/buttonPrevious"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="20"
-                android:background="@color/onboarding_accent"
+                android:layout_weight="25"
+                android:background="@drawable/bg_social_nav_button"
                 android:text="Previous"
                 android:textAllCaps="false"
                 android:textColor="@color/onboarding_button_text"
@@ -52,19 +57,24 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="60" />
+                android:layout_weight="30" />
 
             <Button
                 android:id="@+id/buttonNext"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="20"
-                android:background="@color/onboarding_accent"
+                android:layout_weight="25"
+                android:background="@drawable/bg_social_nav_button"
                 android:text="Next"
                 android:textAllCaps="false"
                 android:textColor="@color/onboarding_button_text"
                 android:includeFontPadding="false"
                 android:elevation="0dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="10" />
 
         </LinearLayout>
 
