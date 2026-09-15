@@ -20,13 +20,6 @@
     <string name="feature_uninstall_subtitle">Remove Unwanted apps</string>
     <string name="feature_otp_sms_title">OTP / SMS</string>
     <string name="feature_otp_sms_subtitle">Apps that can read or send your SMS/OTP</string>
-    <string name="otp_sms_screen_title">SMS &amp; OTP Access</string>
-    <string name="otp_sms_screen_subtitle">These apps currently have permission to read, receive or send SMS/OTP</string>
-    <string name="otp_sms_no_apps_title">No Risky Apps Found</string>
-    <string name="otp_sms_no_apps_subtitle">No installed apps currently have SMS/OTP access</string>
-    <string name="action_app_info">App Info</string>
-    <string name="action_change_default">Change Default</string>
-    <string name="otp_sms_default_handler_note">Default SMS app — change default to remove access</string>
     <string name="feature_social_hacking_title">Social Hacking</string>
     <string name="feature_social_hacking_subtitle">e.g. Whatsapp</string>
     <string name="feature_see_more_title">See More</string>
