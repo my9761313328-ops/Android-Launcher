@@ -23,7 +23,4 @@
     <color name="risk_row_border">#3D4C6B</color>
 
     <color name="safe_state_icon">#4ADE80</color>
-
-    <color name="danger_red">#EF4444</color>
-    <color name="danger_red_border">#B91C1C</color>
 </resources>
