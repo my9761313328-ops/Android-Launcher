@@ -4,25 +4,34 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.provider.Telephony
 
 data class SmsPermissionApp(
     val packageName: String,
     val label: String,
-    val icon: Drawable
+    val icon: Drawable,
+    val isDefaultSmsHandler: Boolean
 )
 
 object SmsPermissionScanner {
 
     private val smsPermissions = listOf(
-        android.Manifest.permission.READ_SMS,
-        android.Manifest.permission.RECEIVE_SMS,
-        android.Manifest.permission.SEND_SMS,
-        android.Manifest.permission.RECEIVE_MMS
+        "android.permission.RECEIVE_SMS",
+        "android.permission.READ_SMS",
+        "android.permission.SEND_SMS",
+        "android.permission.WRITE_SMS",
+        "android.permission.RECEIVE_MMS",
+        "android.permission.RECEIVE_WAP_PUSH"
     )
 
     fun scan(context: Context): List<SmsPermissionApp> {
         val packageManager = context.packageManager
         val ownPackageName = context.packageName
+        val defaultSmsPackage = try {
+            Telephony.Sms.getDefaultSmsPackage(context)
+        } catch (e: Exception) {
+            null
+        }
 
         val installedApps: List<ApplicationInfo> = try {
             packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
@@ -38,7 +47,8 @@ object SmsPermissionScanner {
                 SmsPermissionApp(
                     packageName = appInfo.packageName,
                     label = safeLabel(packageManager, appInfo),
-                    icon = safeIcon(packageManager, appInfo)
+                    icon = safeIcon(packageManager, appInfo),
+                    isDefaultSmsHandler = appInfo.packageName == defaultSmsPackage
                 )
             }
             .sortedBy { it.label.lowercase() }
