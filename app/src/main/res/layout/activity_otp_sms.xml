@@ -7,16 +7,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:weightSum="100">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="15"
             android:orientation="vertical"
+            android:gravity="center_vertical"
             android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:paddingTop="24dp"
-            android:paddingBottom="16dp">
+            android:paddingEnd="20dp">
 
             <TextView
                 android:id="@+id/textOtpSmsTitle"
@@ -43,7 +44,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="85">
 
             <ScrollView
                 android:id="@+id/scrollSmsApps"
