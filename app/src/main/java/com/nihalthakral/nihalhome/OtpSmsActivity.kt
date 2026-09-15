@@ -50,10 +50,22 @@ class OtpSmsActivity : ComponentActivity() {
 
             row.findViewById<ImageView>(R.id.imageSmsAppIcon).setImageDrawable(app.icon)
             row.findViewById<TextView>(R.id.textSmsAppName).text = app.label
-            row.findViewById<TextView>(R.id.textSmsAppPackage).text = app.packageName
 
-            row.findViewById<View>(R.id.buttonAppInfo).setOnClickListener {
-                openAppInfoSettings(app.packageName)
+            val packageLabel = row.findViewById<TextView>(R.id.textSmsAppPackage)
+            val actionButton = row.findViewById<android.widget.Button>(R.id.buttonAppInfo)
+
+            if (app.isDefaultSmsHandler) {
+                packageLabel.text = getString(R.string.otp_sms_default_handler_note)
+                actionButton.text = getString(R.string.action_change_default)
+                actionButton.setOnClickListener {
+                    openDefaultAppsSettings()
+                }
+            } else {
+                packageLabel.text = app.packageName
+                actionButton.text = getString(R.string.action_app_info)
+                actionButton.setOnClickListener {
+                    openAppInfoSettings(app.packageName)
+                }
             }
 
             container.addView(row)
@@ -67,6 +79,18 @@ class OtpSmsActivity : ComponentActivity() {
             startActivity(intent)
         } catch (e: Exception) {
 
+        }
+    }
+
+    private fun openDefaultAppsSettings() {
+        try {
+            startActivity(Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS))
+        } catch (e: Exception) {
+            try {
+                startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS))
+            } catch (e2: Exception) {
+
+            }
         }
     }
 
