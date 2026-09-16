@@ -1,77 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:background="@drawable/bg_risk_row"
-    android:paddingStart="12dp"
-    android:paddingEnd="12dp"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp">
-
-    <ImageView
-        android:id="@+id/imageSmsAppIcon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter" />
+    android:layout_height="72dp"
+    android:orientation="vertical"
+    android:weightSum="100"
+    android:background="@drawable/bg_risk_row">
 
     <View
-        android:layout_width="10dp"
-        android:layout_height="match_parent" />
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="18.3" />
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center_vertical">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="63.4"
+        android:orientation="horizontal"
+        android:weightSum="100">
 
-        <TextView
-            android:id="@+id/textSmsAppName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/onboarding_heading"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:includeFontPadding="false" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4.5" />
 
-        <TextView
-            android:id="@+id/textSmsAppPackage"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/imageSmsAppIcon"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="14.5"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="49.7"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/textSmsAppName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/onboarding_heading"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:includeFontPadding="false" />
+
+            <TextView
+                android:id="@+id/textSmsAppPackage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/terminal_text_dim"
+                android:textSize="11sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:includeFontPadding="false" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/buttonAppInfo"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/terminal_text_dim"
-            android:textSize="11sp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:includeFontPadding="false" />
+            android:layout_weight="27.1"
+            android:layout_gravity="center_vertical"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="@drawable/bg_social_nav_button"
+            android:text="@string/action_app_info"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            android:textColor="@color/onboarding_button_text"
+            android:includeFontPadding="false"
+            android:elevation="0dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4.2" />
 
     </LinearLayout>
 
     <View
-        android:layout_width="10dp"
-        android:layout_height="match_parent" />
-
-    <Button
-        android:id="@+id/buttonAppInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="0dp"
-        android:minHeight="0dp"
-        android:paddingStart="14dp"
-        android:paddingEnd="14dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:background="@drawable/bg_social_nav_button"
-        android:text="@string/action_app_info"
-        android:textAllCaps="false"
-        android:textSize="12sp"
-        android:textColor="@color/onboarding_button_text"
-        android:includeFontPadding="false"
-        android:elevation="0dp" />
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="18.3" />
 
 </LinearLayout>
