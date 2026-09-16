@@ -42,49 +42,63 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="49.7"
-        android:orientation="vertical"
-        android:weightSum="100">
+        android:orientation="horizontal"
+        android:weightSum="49.7">
 
         <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="18.3" />
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="63.4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="45.7"
             android:orientation="vertical"
-            android:gravity="center_vertical">
+            android:weightSum="100">
 
-            <TextView
-                android:id="@+id/textSmsAppName"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/onboarding_heading"
-                android:textStyle="bold"
-                android:textSize="14sp"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:includeFontPadding="false" />
+                android:layout_height="0dp"
+                android:layout_weight="18.3" />
 
-            <TextView
-                android:id="@+id/textSmsAppPackage"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:textColor="@color/terminal_text_dim"
-                android:textSize="11sp"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:includeFontPadding="false" />
+                android:layout_height="0dp"
+                android:layout_weight="63.4"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/textSmsAppName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/onboarding_heading"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:includeFontPadding="false" />
+
+                <TextView
+                    android:id="@+id/textSmsAppPackage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/terminal_text_dim"
+                    android:textSize="11sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:includeFontPadding="false" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="18.3" />
 
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="18.3" />
 
     </LinearLayout>
 
