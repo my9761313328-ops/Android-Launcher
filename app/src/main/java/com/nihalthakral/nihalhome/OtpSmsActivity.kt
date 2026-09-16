@@ -9,6 +9,8 @@ import android.provider.Settings
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewTreeObserver
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -123,6 +125,7 @@ class OtpSmsActivity : ComponentActivity() {
             container.setPadding(0, topMargin, 0, 0)
 
             val inflater = LayoutInflater.from(this)
+            val appInfoButtons = mutableListOf<Button>()
 
             result.flaggedApps.forEachIndexed { index, app ->
                 val row = inflater.inflate(R.layout.item_sms_app, container, false)
@@ -131,9 +134,11 @@ class OtpSmsActivity : ComponentActivity() {
                 row.findViewById<TextView>(R.id.textSmsAppName).text = app.label
                 row.findViewById<TextView>(R.id.textSmsAppPackage).text = app.packageName
 
-                row.findViewById<View>(R.id.buttonAppInfo).setOnClickListener {
+                val appInfoButton = row.findViewById<Button>(R.id.buttonAppInfo)
+                appInfoButton.setOnClickListener {
                     openAppInfoSettings(app.packageName)
                 }
+                appInfoButtons.add(appInfoButton)
 
                 val params = row.layoutParams as LinearLayout.LayoutParams
                 params.height = cardHeight
@@ -144,6 +149,88 @@ class OtpSmsActivity : ComponentActivity() {
 
                 container.addView(row)
             }
+
+            applyResponsiveButtonTextSize(*appInfoButtons.toTypedArray())
+        }
+    }
+
+    private fun applyResponsiveButtonTextSize(vararg buttons: Button) {
+        if (buttons.isEmpty()) return
+        val root = buttons[0].rootView
+        root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                val minHeight = buttons.minOf { it.height }
+                if (minHeight <= 0) return
+
+                root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                var textSizePx = minHeight * 0.42f
+
+                buttons.forEach { button ->
+                    val availableWidth =
+                        (button.width - button.paddingLeft - button.paddingRight).toFloat()
+                    if (availableWidth <= 0f) return@forEach
+
+                    val paint = button.paint
+                    var size = textSizePx
+                    paint.textSize = size
+                    while (paint.measureText(button.text.toString()) > availableWidth && size > 1f) {
+                        size -= 1f
+                        paint.textSize = size
+                    }
+                    if (size < textSizePx) textSizePx = size
+                }
+
+                buttons.forEach { it.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx) }
+
+                buttons.forEach { button -> centerTextVertically(button) }
+            }
+        })
+    }
+
+    private fun centerTextVertically(button: Button) {
+        val text = button.text?.toString().orEmpty()
+        if (text.isEmpty()) return
+
+        val paint = android.text.TextPaint(button.paint)
+        val fm = paint.fontMetrics
+
+        val width = kotlin.math.ceil(paint.measureText(text)).toInt().coerceAtLeast(1)
+        val top = kotlin.math.floor(fm.top).toInt()
+        val bottom = kotlin.math.ceil(fm.bottom).toInt()
+        val height = (bottom - top).coerceAtLeast(1)
+
+        val bitmap = android.graphics.Bitmap.createBitmap(
+            width, height, android.graphics.Bitmap.Config.ALPHA_8
+        )
+        val canvas = android.graphics.Canvas(bitmap)
+        val baselineY = -top.toFloat()
+        canvas.drawText(text, 0f, baselineY, paint)
+
+        var inkTop = -1
+        var inkBottom = -1
+        val row = IntArray(width)
+        for (y in 0 until height) {
+            bitmap.getPixels(row, 0, width, 0, y, width, 1)
+            if (row.any { (it ushr 24) != 0 }) {
+                if (inkTop == -1) inkTop = y
+                inkBottom = y
+            }
+        }
+        bitmap.recycle()
+        if (inkTop == -1) return
+
+        val inkCenter = (inkTop + inkBottom) / 2f + top
+
+        val fontMetricCenter = (fm.ascent + fm.descent) / 2f
+        val shiftDown = fontMetricCenter - inkCenter
+
+        val left = button.paddingLeft
+        val right = button.paddingRight
+        if (shiftDown > 0f) {
+            button.setPadding(left, (shiftDown * 2f).toInt(), right, 0)
+        } else {
+            button.setPadding(left, 0, right, (-shiftDown * 2f).toInt())
         }
     }
 
