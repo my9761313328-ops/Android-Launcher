@@ -62,25 +62,41 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/buttonAppInfo"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="27.1"
-            android:layout_gravity="center_vertical"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:background="@drawable/bg_social_nav_button"
-            android:text="@string/action_app_info"
-            android:textAllCaps="false"
-            android:textSize="12sp"
-            android:textColor="@color/onboarding_button_text"
-            android:includeFontPadding="false"
-            android:elevation="0dp" />
+            android:orientation="vertical"
+            android:weightSum="100">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="25" />
+
+            <Button
+                android:id="@+id/buttonAppInfo"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="50"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:background="@drawable/bg_social_nav_button"
+                android:text="@string/action_app_info"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textColor="@color/onboarding_button_text"
+                android:includeFontPadding="false"
+                android:elevation="0dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="25" />
+
+        </LinearLayout>
 
         <View
             android:layout_width="0dp"
