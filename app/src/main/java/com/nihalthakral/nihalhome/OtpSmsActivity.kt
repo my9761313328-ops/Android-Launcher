@@ -9,6 +9,7 @@ import android.provider.Settings
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -106,23 +107,43 @@ class OtpSmsActivity : ComponentActivity() {
     }
 
     private fun populateSmsAppsList(result: SmsScanResult) {
+        val contentContainer = findViewById<FrameLayout>(R.id.containerOtpSmsContent)
         val container = findViewById<LinearLayout>(R.id.containerSmsApps)
         container.removeAllViews()
 
-        val inflater = LayoutInflater.from(this)
+        contentContainer.post {
+            val referenceWidth = contentContainer.width
+            val referenceHeight = contentContainer.height
 
-        result.flaggedApps.forEach { app ->
-            val row = inflater.inflate(R.layout.item_sms_app, container, false)
+            val topMargin = (referenceHeight * 0.10f).toInt()
+            val cardHeight = (referenceHeight * 0.12f).toInt()
+            val cardGap = (referenceHeight * 0.05f).toInt()
+            val sideMargin = (referenceWidth * 0.07f).toInt()
 
-            row.findViewById<ImageView>(R.id.imageSmsAppIcon).setImageDrawable(app.icon)
-            row.findViewById<TextView>(R.id.textSmsAppName).text = app.label
-            row.findViewById<TextView>(R.id.textSmsAppPackage).text = app.packageName
+            container.setPadding(0, topMargin, 0, 0)
 
-            row.findViewById<View>(R.id.buttonAppInfo).setOnClickListener {
-                openAppInfoSettings(app.packageName)
+            val inflater = LayoutInflater.from(this)
+
+            result.flaggedApps.forEachIndexed { index, app ->
+                val row = inflater.inflate(R.layout.item_sms_app, container, false)
+
+                row.findViewById<ImageView>(R.id.imageSmsAppIcon).setImageDrawable(app.icon)
+                row.findViewById<TextView>(R.id.textSmsAppName).text = app.label
+                row.findViewById<TextView>(R.id.textSmsAppPackage).text = app.packageName
+
+                row.findViewById<View>(R.id.buttonAppInfo).setOnClickListener {
+                    openAppInfoSettings(app.packageName)
+                }
+
+                val params = row.layoutParams as LinearLayout.LayoutParams
+                params.height = cardHeight
+                params.marginStart = sideMargin
+                params.marginEnd = sideMargin
+                params.bottomMargin = if (index == result.flaggedApps.lastIndex) 0 else cardGap
+                row.layoutParams = params
+
+                container.addView(row)
             }
-
-            container.addView(row)
         }
     }
 
