@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -83,12 +84,24 @@ class OtpSmsActivity : ComponentActivity() {
             findViewById<LinearLayout>(R.id.containerSmsNoIssues).visibility = View.VISIBLE
             findViewById<TextView>(R.id.textOtpSmsSubtitle).text =
                 getString(R.string.otp_sms_scan_subtitle_done, 0)
+            syncNoIssuesTextSizes()
         } else {
             populateSmsAppsList(result)
             findViewById<LinearLayout>(R.id.containerSmsNoIssues).visibility = View.GONE
             findViewById<ScrollView>(R.id.scrollSmsApps).visibility = View.VISIBLE
             findViewById<TextView>(R.id.textOtpSmsSubtitle).text =
                 getString(R.string.otp_sms_scan_subtitle_done, result.flaggedApps.size)
+        }
+    }
+
+    private fun syncNoIssuesTextSizes() {
+        val headerSubtitle = findViewById<TextView>(R.id.textOtpSmsSubtitle)
+        headerSubtitle.post {
+            val measuredSize = headerSubtitle.textSize
+            findViewById<TextView>(R.id.textSmsNoIssuesTitle)
+                .setTextSize(TypedValue.COMPLEX_UNIT_PX, measuredSize)
+            findViewById<TextView>(R.id.textSmsNoIssuesSubtitle)
+                .setTextSize(TypedValue.COMPLEX_UNIT_PX, measuredSize * 0.8f)
         }
     }
 
