@@ -1,6 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/onboarding_background" />
+    android:background="@color/onboarding_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="100">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="15"
+            android:orientation="horizontal"
+            android:weightSum="100">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="95"
+                android:orientation="vertical"
+                android:weightSum="100">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="30" />
+
+                <TextView
+                    android:id="@+id/textUninstallTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="45"
+                    android:gravity="start|center_vertical"
+                    android:text="@string/feature_uninstall_title"
+                    android:textColor="@color/onboarding_heading"
+                    android:textStyle="bold"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="1sp"
+                    android:autoSizeMaxTextSize="200sp"
+                    android:autoSizeStepGranularity="1sp"
+                    android:maxLines="1"
+                    android:includeFontPadding="false" />
+
+                <TextView
+                    android:id="@+id/textUninstallSubtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="25"
+                    android:gravity="start|center_vertical"
+                    android:text="@string/uninstall_scan_subtitle_running"
+                    android:textColor="@color/terminal_text_dim"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="1sp"
+                    android:autoSizeMaxTextSize="200sp"
+                    android:autoSizeStepGranularity="1sp"
+                    android:maxLines="1"
+                    android:includeFontPadding="false" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/containerUninstallContent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="85">
+
+            <ScrollView
+                android:id="@+id/scrollUninstallApps"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:clipToPadding="false">
+
+                <LinearLayout
+                    android:id="@+id/containerUninstallApps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+            </ScrollView>
+
+            <LinearLayout
+                android:id="@+id/containerUninstallNoApps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp">
+
+                <TextView
+                    android:id="@+id/textUninstallNoAppsTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_issues_found_title"
+                    android:textColor="@color/safe_state_icon"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:includeFontPadding="false" />
+
+                <TextView
+                    android:id="@+id/textUninstallNoAppsSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/uninstall_no_apps_subtitle"
+                    android:textColor="@color/terminal_text_dim"
+                    android:textSize="13sp"
+                    android:gravity="center"
+                    android:includeFontPadding="false" />
+
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progressUninstallScan"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:indeterminateTint="@android:color/white"
+                android:visibility="visible" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
