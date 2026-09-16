@@ -14,30 +14,58 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="15"
-            android:orientation="vertical"
-            android:gravity="center_vertical"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp">
+            android:orientation="horizontal"
+            android:weightSum="100">
 
-            <TextView
-                android:id="@+id/textOtpSmsTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/feature_otp_sms_title"
-                android:textColor="@color/onboarding_heading"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:includeFontPadding="false" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5" />
 
-            <TextView
-                android:id="@+id/textOtpSmsSubtitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="@string/otp_sms_scan_subtitle_running"
-                android:textColor="@color/terminal_text_dim"
-                android:textSize="13sp"
-                android:includeFontPadding="false" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="95"
+                android:orientation="vertical"
+                android:weightSum="100">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="30" />
+
+                <TextView
+                    android:id="@+id/textOtpSmsTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="45"
+                    android:gravity="start|center_vertical"
+                    android:text="@string/feature_otp_sms_title"
+                    android:textColor="@color/onboarding_heading"
+                    android:textStyle="bold"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="1sp"
+                    android:autoSizeMaxTextSize="200sp"
+                    android:autoSizeStepGranularity="1sp"
+                    android:maxLines="1"
+                    android:includeFontPadding="false" />
+
+                <TextView
+                    android:id="@+id/textOtpSmsSubtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="25"
+                    android:gravity="start|center_vertical"
+                    android:text="@string/otp_sms_scan_subtitle_running"
+                    android:textColor="@color/terminal_text_dim"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="1sp"
+                    android:autoSizeMaxTextSize="200sp"
+                    android:autoSizeStepGranularity="1sp"
+                    android:maxLines="1"
+                    android:includeFontPadding="false" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
