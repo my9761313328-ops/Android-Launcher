@@ -126,13 +126,21 @@ class OtpSmsActivity : ComponentActivity() {
 
             val inflater = LayoutInflater.from(this)
             val appInfoButtons = mutableListOf<Button>()
+            val appNameViews = mutableListOf<TextView>()
+            val appPackageViews = mutableListOf<TextView>()
 
             result.flaggedApps.forEachIndexed { index, app ->
                 val row = inflater.inflate(R.layout.item_sms_app, container, false)
 
                 row.findViewById<ImageView>(R.id.imageSmsAppIcon).setImageDrawable(app.icon)
-                row.findViewById<TextView>(R.id.textSmsAppName).text = app.label
-                row.findViewById<TextView>(R.id.textSmsAppPackage).text = app.packageName
+
+                val nameView = row.findViewById<TextView>(R.id.textSmsAppName)
+                nameView.text = app.label
+                appNameViews.add(nameView)
+
+                val packageView = row.findViewById<TextView>(R.id.textSmsAppPackage)
+                packageView.text = app.packageName
+                appPackageViews.add(packageView)
 
                 val appInfoButton = row.findViewById<Button>(R.id.buttonAppInfo)
                 appInfoButton.setOnClickListener {
@@ -150,11 +158,15 @@ class OtpSmsActivity : ComponentActivity() {
                 container.addView(row)
             }
 
-            applyResponsiveButtonTextSize(*appInfoButtons.toTypedArray())
+            applyResponsiveButtonTextSize(appInfoButtons, appNameViews, appPackageViews)
         }
     }
 
-    private fun applyResponsiveButtonTextSize(vararg buttons: Button) {
+    private fun applyResponsiveButtonTextSize(
+        buttons: List<Button>,
+        appNameViews: List<TextView>,
+        appPackageViews: List<TextView>
+    ) {
         if (buttons.isEmpty()) return
         val root = buttons[0].rootView
         root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -184,6 +196,11 @@ class OtpSmsActivity : ComponentActivity() {
                 buttons.forEach { it.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx) }
 
                 buttons.forEach { button -> centerTextVertically(button) }
+
+                appNameViews.forEach { it.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx) }
+
+                val packageTextSizePx = textSizePx - (textSizePx * 0.30f)
+                appPackageViews.forEach { it.setTextSize(TypedValue.COMPLEX_UNIT_PX, packageTextSizePx) }
             }
         })
     }
