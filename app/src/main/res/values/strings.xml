@@ -34,8 +34,12 @@
     <string name="feature_otp_sms_subtitle">Apps that can read or send your SMS/OTP</string>
     <string name="feature_otp_sms_subtitle_hi">जो ऐप्स आपके SMS या OTP को पढ़ या भेज सकती हैं</string>
     <string name="otp_sms_scan_subtitle_running">Scanning apps for SMS/OTP access…</string>
+    <string name="otp_sms_scan_subtitle_running_hi">SMS/OTP एक्सेस ऐप्स को स्कैन किया जा रहा है...</string>
     <string name="otp_sms_scan_subtitle_done">%1$d apps found with SMS/OTP access</string>
+    <string name="otp_sms_scan_subtitle_done_hi">SMS/OTP एक्सेस के साथ %1$d ऐप्स मिली हैं</string>
+    <string name="otp_sms_no_issues_title_hi">आज आप बिल्कुल सुरक्षित हैं</string>
     <string name="otp_sms_no_issues_subtitle">No apps found with SMS/OTP access</string>
+    <string name="otp_sms_no_issues_subtitle_hi">SMS/OTP एक्सेस वाली कोई ऐप नहीं मिली</string>
     <string name="action_app_info">App Info</string>
     <string name="action_uninstall">Uninstall</string>
     <string name="uninstall_scan_subtitle_running">Scanning installed apps…</string>
