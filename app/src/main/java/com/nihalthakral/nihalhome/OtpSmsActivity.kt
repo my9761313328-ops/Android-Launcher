@@ -75,24 +75,38 @@ class OtpSmsActivity : ComponentActivity() {
         findViewById<ProgressBar>(R.id.progressSmsScan).visibility = View.VISIBLE
         findViewById<ScrollView>(R.id.scrollSmsApps).visibility = View.GONE
         findViewById<LinearLayout>(R.id.containerSmsNoIssues).visibility = View.GONE
-        findViewById<TextView>(R.id.textOtpSmsSubtitle).text =
+        findViewById<TextView>(R.id.textOtpSmsSubtitle).text = if (LocalizationHelper.isHindiSelected(this))
+            getString(R.string.otp_sms_scan_subtitle_running_hi)
+        else
             getString(R.string.otp_sms_scan_subtitle_running)
     }
 
     private fun showScanResult(result: SmsScanResult) {
         findViewById<ProgressBar>(R.id.progressSmsScan).visibility = View.GONE
 
+        val isHindi = LocalizationHelper.isHindiSelected(this)
+
         if (result.flaggedApps.isEmpty()) {
             findViewById<ScrollView>(R.id.scrollSmsApps).visibility = View.GONE
             findViewById<LinearLayout>(R.id.containerSmsNoIssues).visibility = View.VISIBLE
-            findViewById<TextView>(R.id.textOtpSmsSubtitle).text =
+            findViewById<TextView>(R.id.textOtpSmsSubtitle).text = if (isHindi)
+                getString(R.string.otp_sms_scan_subtitle_done_hi, 0)
+            else
                 getString(R.string.otp_sms_scan_subtitle_done, 0)
+            if (isHindi) {
+                findViewById<TextView>(R.id.textSmsNoIssuesTitle).text =
+                    getString(R.string.otp_sms_no_issues_title_hi)
+                findViewById<TextView>(R.id.textSmsNoIssuesSubtitle).text =
+                    getString(R.string.otp_sms_no_issues_subtitle_hi)
+            }
             syncNoIssuesTextSizes()
         } else {
             populateSmsAppsList(result)
             findViewById<LinearLayout>(R.id.containerSmsNoIssues).visibility = View.GONE
             findViewById<ScrollView>(R.id.scrollSmsApps).visibility = View.VISIBLE
-            findViewById<TextView>(R.id.textOtpSmsSubtitle).text =
+            findViewById<TextView>(R.id.textOtpSmsSubtitle).text = if (isHindi)
+                getString(R.string.otp_sms_scan_subtitle_done_hi, result.flaggedApps.size)
+            else
                 getString(R.string.otp_sms_scan_subtitle_done, result.flaggedApps.size)
         }
     }
