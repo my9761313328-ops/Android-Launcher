@@ -4,6 +4,9 @@
     <string name="language_english">English</string>
     <string name="language_hindi">हिंदी</string>
     <string name="action_next">Next</string>
+    <string name="action_next_hi">आगे</string>
+    <string name="action_previous">Previous</string>
+    <string name="action_previous_hi">पीछे</string>
     <string name="choose_default_launcher_title">Choose Default Launcher</string>
     <string name="choose_default_launcher_title_hi">डिफ़ॉल्ट लॉन्चर चुनिए</string>
     <string name="action_continue">Continue</string>
