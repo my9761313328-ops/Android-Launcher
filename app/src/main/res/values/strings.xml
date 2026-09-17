@@ -37,7 +37,9 @@
     <string name="action_uninstall">Uninstall</string>
     <string name="uninstall_scan_subtitle_running">Scanning installed apps…</string>
     <string name="uninstall_scan_subtitle_done">%1$d apps found on your phone</string>
+    <string name="uninstall_scan_subtitle_done_hi">आपके फोन पर %1$d ऐप्स मिली हैं</string>
     <string name="uninstall_no_apps_subtitle">No removable apps found</string>
+    <string name="uninstall_no_apps_subtitle_hi">हटाने लायक कोई ऐप नहीं मिली</string>
     <string name="feature_social_hacking_title">Social Hacking</string>
     <string name="feature_social_hacking_title_hi">सोशल हैकिंग</string>
     <string name="feature_social_hacking_subtitle">e.g. Whatsapp</string>
