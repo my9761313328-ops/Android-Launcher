@@ -77,6 +77,8 @@ class UninstallAppsActivity : ComponentActivity() {
 
         findViewById<TextView>(R.id.textUninstallTitle).text =
             getString(R.string.feature_uninstall_title_hi)
+        findViewById<TextView>(R.id.textUninstallNoAppsTitle).text =
+            getString(R.string.no_issues_found_title_hi)
         findViewById<TextView>(R.id.textUninstallNoAppsSubtitle).text =
             getString(R.string.uninstall_no_apps_subtitle_hi)
     }
@@ -85,7 +87,9 @@ class UninstallAppsActivity : ComponentActivity() {
         findViewById<ProgressBar>(R.id.progressUninstallScan).visibility = View.VISIBLE
         findViewById<ScrollView>(R.id.scrollUninstallApps).visibility = View.GONE
         findViewById<LinearLayout>(R.id.containerUninstallNoApps).visibility = View.GONE
-        findViewById<TextView>(R.id.textUninstallSubtitle).text =
+        findViewById<TextView>(R.id.textUninstallSubtitle).text = if (LocalizationHelper.isHindiSelected(this))
+            getString(R.string.uninstall_scan_subtitle_running_hi)
+        else
             getString(R.string.uninstall_scan_subtitle_running)
     }
 
