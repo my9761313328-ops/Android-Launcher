@@ -1,19 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/containerSeeMoreRoot"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/onboarding_background">
 
-    <TextView
-        android:id="@+id/textSeeMoreComingSoon"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineSeeMoreLeft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:singleLine="true"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineSeeMoreRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineSeeMoreTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineSeeMoreBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textSeeMoreComingSoon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:maxLines="1"
         android:includeFontPadding="false"
         android:textColor="@color/onboarding_heading"
         android:textStyle="bold"
-        android:text="@string/see_more_coming_soon" />
+        android:text="@string/see_more_coming_soon"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="1sp"
+        app:autoSizeMaxTextSize="500sp"
+        app:autoSizeStepGranularity="1sp"
+        app:layout_constraintStart_toEndOf="@id/guidelineSeeMoreLeft"
+        app:layout_constraintEnd_toStartOf="@id/guidelineSeeMoreRight"
+        app:layout_constraintTop_toBottomOf="@id/guidelineSeeMoreTop"
+        app:layout_constraintBottom_toTopOf="@id/guidelineSeeMoreBottom" />
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
