@@ -37,7 +37,7 @@
     <string name="otp_sms_scan_subtitle_running_hi">SMS/OTP एक्सेस ऐप्स को स्कैन किया जा रहा है...</string>
     <string name="otp_sms_scan_subtitle_done">%1$d apps found with SMS/OTP access</string>
     <string name="otp_sms_scan_subtitle_done_hi">SMS/OTP एक्सेस के साथ %1$d ऐप्स मिली हैं</string>
-    <string name="otp_sms_no_issues_title_hi">आज आप बिल्कुल सुरक्षित हैं</string>
+    <string name="otp_sms_no_issues_title_hi">आज आप सुरक्षित हैं</string>
     <string name="otp_sms_no_issues_subtitle">No apps found with SMS/OTP access</string>
     <string name="otp_sms_no_issues_subtitle_hi">SMS/OTP एक्सेस वाली कोई ऐप नहीं मिली</string>
     <string name="action_app_info">App Info</string>
