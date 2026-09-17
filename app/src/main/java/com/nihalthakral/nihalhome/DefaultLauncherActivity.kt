@@ -10,6 +10,7 @@ import android.view.ViewTreeObserver
 import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.AppCompatTextView
 
 class DefaultLauncherActivity : ComponentActivity() {
 
@@ -24,6 +25,12 @@ class DefaultLauncherActivity : ComponentActivity() {
         setContentView(R.layout.activity_default_launcher)
 
         val buttonContinue = findViewById<Button>(R.id.buttonContinue)
+        val textChooseDefaultLauncher = findViewById<AppCompatTextView>(R.id.textChooseDefaultLauncher)
+
+        if (LocalizationHelper.isHindiSelected(this)) {
+            textChooseDefaultLauncher.text = getString(R.string.choose_default_launcher_title_hi)
+            buttonContinue.text = getString(R.string.action_continue_hi)
+        }
 
         applyResponsiveButtonTextSize(buttonContinue)
 
