@@ -28,6 +28,12 @@ class ChooseLauncherActivity : ComponentActivity() {
         val textDontAskAgain = findViewById<TextView>(R.id.textDontAskAgain)
         val buttonSubmit = findViewById<Button>(R.id.buttonSubmit)
 
+        if (LocalizationHelper.isHindiSelected(this)) {
+            findViewById<TextView>(R.id.textSheetTitle).text =
+                getString(R.string.choose_favourite_launcher_title_hi)
+            textDontAskAgain.text = getString(R.string.dont_ask_me_again_hi)
+        }
+
         applyResponsiveButtonTextSize(listContainer, buttonSubmit)
         applyResponsiveCheckboxText(textDontAskAgain)
 
