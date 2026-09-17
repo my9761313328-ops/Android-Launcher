@@ -32,6 +32,7 @@
     <string name="feature_social_hacking_subtitle">e.g. Whatsapp</string>
     <string name="feature_see_more_title">See More</string>
     <string name="feature_see_more_subtitle">Discover more for safety</string>
+    <string name="see_more_coming_soon">Coming Soon</string>
     <string name="ask_an_expert_label">Ask an Expert</string>
 
     <string name="action_locked">Locked</string>
