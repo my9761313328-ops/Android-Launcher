@@ -56,6 +56,8 @@ class MainActivity : ComponentActivity() {
             override fun handleOnBackPressed() {}
         })
 
+        applyHindiStaticText()
+
         findViewById<Button>(R.id.buttonClose).setOnClickListener {
             onCloseClicked()
         }
@@ -108,6 +110,30 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun localized(resId: Int, hiResId: Int): String {
+        return if (LocalizationHelper.isHindiSelected(this)) getString(hiResId) else getString(resId)
+    }
+
+    private fun applyHindiStaticText() {
+        if (!LocalizationHelper.isHindiSelected(this)) return
+
+        findViewById<TextView>(R.id.textScanTitle).text = getString(R.string.scan_title_hi)
+        findViewById<TextView>(R.id.textScanSubtitle).text = getString(R.string.scan_subtitle_running_hi)
+        findViewById<TextView>(R.id.textNoIssuesTitle).text = getString(R.string.no_issues_found_title_hi)
+        findViewById<TextView>(R.id.textNoIssuesSubtitle).text = getString(R.string.no_issues_found_subtitle_hi)
+
+        findViewById<TextView>(R.id.textFeatureTitle1).text = getString(R.string.feature_uninstall_title_hi)
+        findViewById<TextView>(R.id.textFeatureSubtitle1).text = getString(R.string.feature_uninstall_subtitle_hi)
+        findViewById<TextView>(R.id.textFeatureSubtitle2).text = getString(R.string.feature_otp_sms_subtitle_hi)
+        findViewById<TextView>(R.id.textFeatureTitle3).text = getString(R.string.feature_social_hacking_title_hi)
+        findViewById<TextView>(R.id.textFeatureSubtitle3).text = getString(R.string.feature_social_hacking_subtitle_hi)
+        findViewById<TextView>(R.id.textFeatureTitle4).text = getString(R.string.feature_see_more_title_hi)
+        findViewById<TextView>(R.id.textFeatureSubtitle4).text = getString(R.string.feature_see_more_subtitle_hi)
+
+        findViewById<TextView>(R.id.textAskAnExpert).text = getString(R.string.ask_an_expert_label_hi)
+        findViewById<Button>(R.id.buttonClose).text = getString(R.string.action_close_hi)
+    }
+
     private fun isUnlockExpired(prefs: android.content.SharedPreferences): Boolean {
         val expiry = prefs.getLong(PreferenceKeys.KEY_UNLOCK_EXPIRY_TIMESTAMP, 0L)
         if (expiry == 0L) return false
@@ -151,7 +177,8 @@ class MainActivity : ComponentActivity() {
 
     private fun resetScanUi() {
         findViewById<TextView>(R.id.textTerminalLog).text = ""
-        findViewById<TextView>(R.id.textScanSubtitle).text = getString(R.string.scan_subtitle_running)
+        findViewById<TextView>(R.id.textScanSubtitle).text =
+            localized(R.string.scan_subtitle_running, R.string.scan_subtitle_running_hi)
 
         findViewById<View>(R.id.wrapperResults).visibility = View.GONE
         findViewById<View>(R.id.containerNoIssues).visibility = View.GONE
@@ -202,7 +229,7 @@ class MainActivity : ComponentActivity() {
 
     private fun finishScan(result: com.nihalthakral.nihalhome.ScanResult) {
         val subtitle = findViewById<TextView>(R.id.textScanSubtitle)
-        subtitle.text = getString(R.string.scan_subtitle_done, result.scannedApps.size)
+        subtitle.text = localized(R.string.scan_subtitle_done, R.string.scan_subtitle_done_hi)
 
         if (result.flaggedApps.isEmpty()) {
             showNoIssuesFound(result.scannedApps.size)
@@ -220,7 +247,7 @@ class MainActivity : ComponentActivity() {
 
         if (scannedCount > 0) {
             findViewById<TextView>(R.id.textScanSubtitle).text =
-                getString(R.string.scan_subtitle_done, scannedCount)
+                localized(R.string.scan_subtitle_done, R.string.scan_subtitle_done_hi)
         }
 
         matchNoIssuesStyleToHeader()
