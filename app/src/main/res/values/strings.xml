@@ -13,15 +13,23 @@
     <string name="dont_ask_me_again">Don\'t Ask me Again</string>
     <string name="action_submit">Submit</string>
     <string name="scan_title">Scanning apps that can control your screen</string>
+    <string name="scan_title_hi">जो ऐप्स आपकी स्क्रीन कंट्रोल कर सकती हैं, उन्हें स्कैन किया जा रहा है</string>
     <string name="scan_subtitle_running">Scanning installed apps…</string>
+    <string name="scan_subtitle_running_hi">इंस्टॉल की गई ऐप्स को स्कैन किया जा रहा है</string>
     <string name="scan_subtitle_done">All apps scanned</string>
+    <string name="scan_subtitle_done_hi">सभी ऐप्स स्कैन हो चुकी हैं</string>
     <string name="no_issues_found_title">Today, You\'re Safe</string>
+    <string name="no_issues_found_title_hi">आज आप सुरक्षित हैं।</string>
     <string name="no_issues_found_subtitle">No Apps Found that can control your screen</string>
+    <string name="no_issues_found_subtitle_hi">ऐसी कोई ऐप नहीं मिली जो आपकी स्क्रीन कंट्रोल कर सके</string>
 
     <string name="feature_uninstall_title">Uninstall Apps</string>
+    <string name="feature_uninstall_title_hi">ऐप्स अनइंस्टॉल करें</string>
     <string name="feature_uninstall_subtitle">Remove Unwanted apps</string>
+    <string name="feature_uninstall_subtitle_hi">फालतू ऐप्स को हटाएं</string>
     <string name="feature_otp_sms_title">OTP / SMS</string>
     <string name="feature_otp_sms_subtitle">Apps that can read or send your SMS/OTP</string>
+    <string name="feature_otp_sms_subtitle_hi">जो ऐप्स आपके SMS या OTP को पढ़ या भेज सकती हैं</string>
     <string name="otp_sms_scan_subtitle_running">Scanning apps for SMS/OTP access…</string>
     <string name="otp_sms_scan_subtitle_done">%1$d apps found with SMS/OTP access</string>
     <string name="otp_sms_no_issues_subtitle">No apps found with SMS/OTP access</string>
@@ -31,12 +39,18 @@
     <string name="uninstall_scan_subtitle_done">%1$d apps found on your phone</string>
     <string name="uninstall_no_apps_subtitle">No removable apps found</string>
     <string name="feature_social_hacking_title">Social Hacking</string>
+    <string name="feature_social_hacking_title_hi">सोशल हैकिंग</string>
     <string name="feature_social_hacking_subtitle">e.g. Whatsapp</string>
+    <string name="feature_social_hacking_subtitle_hi">जैसे कि WhatsApp</string>
     <string name="feature_see_more_title">See More</string>
+    <string name="feature_see_more_title_hi">और देखें</string>
     <string name="feature_see_more_subtitle">Discover more for safety</string>
+    <string name="feature_see_more_subtitle_hi">सुरक्षा के लिए और देखें</string>
     <string name="see_more_coming_soon">Coming Soon</string>
     <string name="ask_an_expert_label">Ask an Expert</string>
+    <string name="ask_an_expert_label_hi">एक्सपर्ट से पूछें</string>
 
+    <string name="action_close_hi">बंद करें</string>
     <string name="action_locked">Locked</string>
     <string name="action_watch_ad">Watch ad</string>
     <string name="action_loading_ad">Loading...</string>
