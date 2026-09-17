@@ -29,6 +29,8 @@ class UninstallAppsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_uninstall_apps)
 
+        applyHindiStaticText()
+
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 goToMainScreen()
@@ -70,6 +72,15 @@ class UninstallAppsActivity : ComponentActivity() {
         }
     }
 
+    private fun applyHindiStaticText() {
+        if (!LocalizationHelper.isHindiSelected(this)) return
+
+        findViewById<TextView>(R.id.textUninstallTitle).text =
+            getString(R.string.feature_uninstall_title_hi)
+        findViewById<TextView>(R.id.textUninstallNoAppsSubtitle).text =
+            getString(R.string.uninstall_no_apps_subtitle_hi)
+    }
+
     private fun showLoadingState() {
         findViewById<ProgressBar>(R.id.progressUninstallScan).visibility = View.VISIBLE
         findViewById<ScrollView>(R.id.scrollUninstallApps).visibility = View.GONE
@@ -81,17 +92,23 @@ class UninstallAppsActivity : ComponentActivity() {
     private fun showScanResult(result: InstalledAppsResult) {
         findViewById<ProgressBar>(R.id.progressUninstallScan).visibility = View.GONE
 
+        val isHindi = LocalizationHelper.isHindiSelected(this)
+
         if (result.apps.isEmpty()) {
             findViewById<ScrollView>(R.id.scrollUninstallApps).visibility = View.GONE
             findViewById<LinearLayout>(R.id.containerUninstallNoApps).visibility = View.VISIBLE
-            findViewById<TextView>(R.id.textUninstallSubtitle).text =
+            findViewById<TextView>(R.id.textUninstallSubtitle).text = if (isHindi)
+                getString(R.string.uninstall_scan_subtitle_done_hi, 0)
+            else
                 getString(R.string.uninstall_scan_subtitle_done, 0)
             syncNoAppsTextSizes()
         } else {
             populateAppsList(result)
             findViewById<LinearLayout>(R.id.containerUninstallNoApps).visibility = View.GONE
             findViewById<ScrollView>(R.id.scrollUninstallApps).visibility = View.VISIBLE
-            findViewById<TextView>(R.id.textUninstallSubtitle).text =
+            findViewById<TextView>(R.id.textUninstallSubtitle).text = if (isHindi)
+                getString(R.string.uninstall_scan_subtitle_done_hi, result.apps.size)
+            else
                 getString(R.string.uninstall_scan_subtitle_done, result.apps.size)
         }
     }
