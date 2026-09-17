@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/containerSeeMoreRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/onboarding_background" />
+    android:background="@color/onboarding_background">
+
+    <TextView
+        android:id="@+id/textSeeMoreComingSoon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:singleLine="true"
+        android:includeFontPadding="false"
+        android:textColor="@color/onboarding_heading"
+        android:textStyle="bold"
+        android:text="@string/see_more_coming_soon" />
+
+</FrameLayout>
