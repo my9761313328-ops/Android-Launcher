@@ -52,6 +52,10 @@ class PremiumActivity : ComponentActivity() {
         emojiWatchAd.bringToFront()
         buttonWatchAdRef = buttonWatchAd
 
+        if (LocalizationHelper.isHindiSelected(this)) {
+            buttonLocked.text = getString(R.string.action_locked_hi)
+        }
+
         buttonLocked.setOnClickListener {
             vibrateDevice()
             shakeView(buttonLocked)
