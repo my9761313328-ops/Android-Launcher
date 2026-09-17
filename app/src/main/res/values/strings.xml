@@ -36,6 +36,7 @@
     <string name="action_app_info">App Info</string>
     <string name="action_uninstall">Uninstall</string>
     <string name="uninstall_scan_subtitle_running">Scanning installed apps…</string>
+    <string name="uninstall_scan_subtitle_running_hi">इंस्टॉल की गई ऐप्स को स्कैन किया जा रहा है</string>
     <string name="uninstall_scan_subtitle_done">%1$d apps found on your phone</string>
     <string name="uninstall_scan_subtitle_done_hi">आपके फोन पर %1$d ऐप्स मिली हैं</string>
     <string name="uninstall_no_apps_subtitle">No removable apps found</string>
