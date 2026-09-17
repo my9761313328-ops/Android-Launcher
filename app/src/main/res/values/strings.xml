@@ -13,7 +13,7 @@
     <string name="dont_ask_me_again">Don\'t Ask me Again</string>
     <string name="action_submit">Submit</string>
     <string name="scan_title">Scanning apps that can control your screen</string>
-    <string name="scan_title_hi">जो ऐप्स आपकी स्क्रीन कंट्रोल कर सकती हैं, उन्हें स्कैन किया जा रहा है</string>
+    <string name="scan_title_hi">ऐसे ऐप्स जो आपकी स्क्रीन कंट्रोल कर सकती हैं</string>
     <string name="scan_subtitle_running">Scanning installed apps…</string>
     <string name="scan_subtitle_running_hi">इंस्टॉल की गई ऐप्स को स्कैन किया जा रहा है</string>
     <string name="scan_subtitle_done">All apps scanned</string>
