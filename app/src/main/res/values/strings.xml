@@ -64,6 +64,7 @@
 
     <string name="action_close_hi">बंद करें</string>
     <string name="action_locked">Locked</string>
+    <string name="action_locked_hi">बंद नहीं कर सकते</string>
     <string name="action_watch_ad">Watch ad</string>
     <string name="action_loading_ad">Loading...</string>
     <string name="action_retry_ad">Retry</string>
