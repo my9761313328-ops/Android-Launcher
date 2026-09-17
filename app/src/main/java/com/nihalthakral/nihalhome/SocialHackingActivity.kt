@@ -31,6 +31,8 @@ class SocialHackingActivity : ComponentActivity() {
         val buttonPrevious = findViewById<Button>(R.id.buttonPrevious)
         val buttonNext = findViewById<Button>(R.id.buttonNext)
 
+        applyHindiStaticText(buttonPrevious, buttonNext)
+
         updateImage()
 
         applyResponsiveButtonTextSize(buttonPrevious, buttonNext)
@@ -50,6 +52,13 @@ class SocialHackingActivity : ComponentActivity() {
                 goToMainScreen()
             }
         })
+    }
+
+    private fun applyHindiStaticText(buttonPrevious: Button, buttonNext: Button) {
+        if (!LocalizationHelper.isHindiSelected(this)) return
+
+        buttonPrevious.text = getString(R.string.action_previous_hi)
+        buttonNext.text = getString(R.string.action_next_hi)
     }
 
     private fun updateImage() {
