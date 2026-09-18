@@ -90,8 +90,8 @@ class GemmaAIWrapper {
     }
 
     companion object {
-        private const val WORKER_URL = "https://REPLACE_WITH_YOUR_WORKER_URL.workers.dev/"
-        private const val APP_SECRET = "REPLACE_WITH_YOUR_SHARED_SECRET"
+        private const val WORKER_URL = "https://ask-expert-ai-proxy.nihalthakral-trader.workers.dev/"
+        private const val APP_SECRET = "nihalhome_9x7k2mQp5rT8vL3w"
         private const val TEMPERATURE = 0.3
         private const val CONNECT_TIMEOUT_MS = 30000
         private const val READ_TIMEOUT_MS = 60000
