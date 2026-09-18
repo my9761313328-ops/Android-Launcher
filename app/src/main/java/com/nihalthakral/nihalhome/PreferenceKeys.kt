@@ -10,4 +10,5 @@ object PreferenceKeys {
     const val KEY_SAVED_LAUNCHER_CLASS = "saved_launcher_class"
     const val KEY_UNLOCK_EXPIRY_TIMESTAMP = "unlock_expiry_timestamp"
     const val UNLOCK_DURATION_MS = 24 * 60 * 60 * 1000L
+    const val KEY_ASK_EXPERT_CHAT_HISTORY = "ask_expert_chat_history"
 }
