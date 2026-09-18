@@ -222,11 +222,14 @@ class AskAnExpertActivity : ComponentActivity() {
                 persistedMessages.add(finalMessage)
                 ChatHistoryStore.saveMessages(this@AskAnExpertActivity, persistedMessages)
             } catch (e: Throwable) {
+                android.util.Log.e("AskAnExpert", "AI reply failed", e)
                 val isHindi = LocalizationHelper.isHindiSelected(this@AskAnExpertActivity)
-                val errorText = if (isHindi)
+                val baseError = if (isHindi)
                     getString(R.string.ask_expert_error_reply_hi)
                 else
                     getString(R.string.ask_expert_error_reply)
+                val debugDetail = e.message?.takeIf { it.isNotBlank() } ?: e.javaClass.simpleName
+                val errorText = "$baseError\n\n[$debugDetail]"
                 adapter.updateLastMessageText(errorText)
             } finally {
                 setSendingEnabled(true)
