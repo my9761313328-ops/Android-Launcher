@@ -59,7 +59,7 @@ class GemmaAIWrapper {
         contents.forEach { messageContent ->
             val partsArray = JSONArray()
 
-            messageContent.parts.forEach { part ->
+            messageContent.parts?.forEach { part ->
                 val partObject = JSONObject()
 
                 part.text?.let { partText ->
