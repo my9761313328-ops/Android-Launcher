@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.map
 
 class GemmaAIWrapper {
 
-    private val client = Client(apiKey = API_KEY)
+    private val client by lazy { Client(apiKey = API_KEY) }
 
     fun streamReply(systemInstruction: String, contents: List<Content>): Flow<String> {
         val config = GenerateContentConfig(
