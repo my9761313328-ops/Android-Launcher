@@ -93,8 +93,8 @@ class GemmaAIWrapper {
         private const val WORKER_URL = "https://ask-expert-ai-proxy.nihalthakral-trader.workers.dev/"
         private const val APP_SECRET = "nihalhome_9x7k2mQp5rT8vL3w"
         private const val TEMPERATURE = 0.3
-        private const val CONNECT_TIMEOUT_MS = 30000
-        private const val READ_TIMEOUT_MS = 60000
+        private const val CONNECT_TIMEOUT_MS = 300000
+        private const val READ_TIMEOUT_MS = 300000
         private const val READ_BUFFER_SIZE = 512
     }
 }
