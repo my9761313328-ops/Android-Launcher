@@ -1,35 +1,100 @@
 package com.nihalthakral.nihalhome
 
-import com.google.genai.kotlin.Client
+import android.util.Base64
 import com.google.genai.kotlin.types.Content
-import com.google.genai.kotlin.types.GenerateContentConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 
 class GemmaAIWrapper {
 
-    private val client by lazy { Client(apiKey = API_KEY) }
-
     fun streamReply(systemInstruction: String, contents: List<Content>): Flow<String> {
-        val config = GenerateContentConfig(
-            systemInstruction = Content.fromText(systemInstruction)
-        )
-
         return flow {
-            client.models.generateContentStream(
-                model = MODEL_ID,
-                contents = contents,
-                config = config
-            ).map { response -> response.text ?: "" }
-                .collect { chunk -> emit(chunk) }
+            val connection = URL(WORKER_URL).openConnection() as HttpURLConnection
+            connection.requestMethod = "POST"
+            connection.doOutput = true
+            connection.connectTimeout = CONNECT_TIMEOUT_MS
+            connection.readTimeout = READ_TIMEOUT_MS
+            connection.setRequestProperty("Content-Type", "application/json; charset=utf-8")
+            connection.setRequestProperty("x-app-secret", APP_SECRET)
+
+            val requestBody = buildRequestBody(systemInstruction, contents)
+
+            connection.outputStream.use { output ->
+                output.write(requestBody.toString().toByteArray(Charsets.UTF_8))
+            }
+
+            try {
+                if (connection.responseCode !in 200..299) {
+                    val errorText = connection.errorStream?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }
+                        ?: "HTTP ${connection.responseCode}"
+                    throw IOException(errorText)
+                }
+
+                val reader = BufferedReader(InputStreamReader(connection.inputStream, Charsets.UTF_8))
+                val buffer = CharArray(READ_BUFFER_SIZE)
+                while (true) {
+                    val readCount = reader.read(buffer)
+                    if (readCount == -1) break
+                    if (readCount > 0) emit(String(buffer, 0, readCount))
+                }
+                reader.close()
+            } finally {
+                connection.disconnect()
+            }
         }.flowOn(Dispatchers.IO)
     }
 
+    private fun buildRequestBody(systemInstruction: String, contents: List<Content>): JSONObject {
+        val contentsArray = JSONArray()
+
+        contents.forEach { messageContent ->
+            val partsArray = JSONArray()
+
+            messageContent.parts.forEach { part ->
+                val partObject = JSONObject()
+
+                part.text?.let { partText ->
+                    partObject.put("text", partText)
+                }
+
+                part.inlineData?.let { blob ->
+                    val inlineDataObject = JSONObject()
+                    inlineDataObject.put("mimeType", blob.mimeType)
+                    inlineDataObject.put("data", Base64.encodeToString(blob.data, Base64.NO_WRAP))
+                    partObject.put("inlineData", inlineDataObject)
+                }
+
+                partsArray.put(partObject)
+            }
+
+            val contentObject = JSONObject()
+            contentObject.put("role", messageContent.role)
+            contentObject.put("parts", partsArray)
+            contentsArray.put(contentObject)
+        }
+
+        val requestBody = JSONObject()
+        requestBody.put("contents", contentsArray)
+        requestBody.put("systemInstruction", systemInstruction)
+        requestBody.put("temperature", TEMPERATURE)
+        return requestBody
+    }
+
     companion object {
-        private const val API_KEY = "AQ.Ab8RN6JbciEcV9xUFVUiJpNZiOZxBypWkeAD_l4GZZfTlGIktQ"
-        private const val MODEL_ID = "gemma-4-31b-it"
+        private const val WORKER_URL = "https://REPLACE_WITH_YOUR_WORKER_URL.workers.dev/"
+        private const val APP_SECRET = "REPLACE_WITH_YOUR_SHARED_SECRET"
+        private const val TEMPERATURE = 0.3
+        private const val CONNECT_TIMEOUT_MS = 30000
+        private const val READ_TIMEOUT_MS = 60000
+        private const val READ_BUFFER_SIZE = 512
     }
 }
