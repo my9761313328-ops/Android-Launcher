@@ -221,7 +221,7 @@ class AskAnExpertActivity : ComponentActivity() {
                 )
                 persistedMessages.add(finalMessage)
                 ChatHistoryStore.saveMessages(this@AskAnExpertActivity, persistedMessages)
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 val isHindi = LocalizationHelper.isHindiSelected(this@AskAnExpertActivity)
                 val errorText = if (isHindi)
                     getString(R.string.ask_expert_error_reply_hi)
