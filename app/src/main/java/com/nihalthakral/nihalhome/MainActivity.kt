@@ -98,6 +98,12 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
+        if (LauncherUtils.isDefaultLauncher(this)) {
+            mainHandler.postDelayed({
+                LauncherUtils.hideAppIcon(this)
+            }, 600)
+        }
+
         val prefs = getSharedPreferences(PreferenceKeys.PREFS_NAME, MODE_PRIVATE)
         if (isMainContentReady && isUnlockExpired(prefs)) {
             startActivity(Intent(this, PremiumActivity::class.java))
