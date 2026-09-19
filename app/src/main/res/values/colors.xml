@@ -24,15 +24,4 @@
 
     <color name="safe_state_icon">#4ADE80</color>
 
-    <color name="chat_bubble_user_background">#7DD3FC</color>
-    <color name="chat_bubble_user_text">#232D3F</color>
-    <color name="chat_bubble_ai_background">#1B2438</color>
-    <color name="chat_bubble_ai_border">#2E3A52</color>
-    <color name="chat_bubble_ai_text">#E2E8F0</color>
-    <color name="chat_input_bar_background">#1B2438</color>
-    <color name="chat_input_bar_border">#2E3A52</color>
-    <color name="chat_send_button_background">#7DD3FC</color>
-    <color name="chat_attach_button_background">#2A3650</color>
-    <color name="chat_new_chat_background">#2A3650</color>
-    <color name="chat_new_chat_border">#3D4C6B</color>
 </resources>
