@@ -70,24 +70,4 @@
     <string name="action_retry_ad">Retry</string>
     <string name="action_skip">No Thanks</string>
 
-    <string name="ask_expert_toolbar_title">Ask an Expert</string>
-    <string name="ask_expert_toolbar_title_hi">एक्सपर्ट से पूछें</string>
-    <string name="action_new_chat">New Chat</string>
-    <string name="action_new_chat_hi">नई चैट</string>
-    <string name="hint_ask_gemma">Ask Gemma</string>
-    <string name="hint_ask_gemma_hi">Gemma से पूछें</string>
-    <string name="ask_expert_max_images_notice">You can attach up to 5 images at a time</string>
-    <string name="ask_expert_max_images_notice_hi">आप एक बार में अधिकतम 5 इमेज लगा सकते हैं</string>
-    <string name="ask_expert_error_reply">Sorry, I could not reach the server right now. Please check your internet connection and try again.</string>
-    <string name="ask_expert_error_reply_hi">माफ़ कीजिए, अभी सर्वर से जवाब नहीं मिल पाया। कृपया अपना इंटरनेट कनेक्शन जांचें और दोबारा कोशिश करें।</string>
-    <string name="ask_expert_new_chat_confirm_title">Start a new chat?</string>
-    <string name="ask_expert_new_chat_confirm_title_hi">नई चैट शुरू करें?</string>
-    <string name="ask_expert_new_chat_confirm_message">This will permanently delete all messages in this chat.</string>
-    <string name="ask_expert_new_chat_confirm_message_hi">इससे इस चैट के सभी मैसेज हमेशा के लिए मिट जाएंगे।</string>
-    <string name="action_yes">Yes</string>
-    <string name="action_yes_hi">हाँ</string>
-    <string name="action_cancel">Cancel</string>
-    <string name="action_cancel_hi">रद्द करें</string>
-    <string name="welcome_message_expert_en">Hi Dear! I am your Digital Safety Expert. 🛡️\nDo you suspect any suspicious call, hacking, or online scam?\nAsk me without any hesitation—I will help keep you secure.</string>
-    <string name="welcome_message_expert_hi">नमस्ते! मैं आपका डिजिटल सेफ्टी एक्सपर्ट हूँ। 🛡️\nक्या आपको किसी सस्पिशियस (संदिग्ध) कॉल, हैकिंग, या ऑनलाइन स्कैम पर शक है?\nमुझसे बिना झिझक पूछिए—मैं आपको सुरक्षित रखने में मदद करूँगा।</string>
 </resources>
