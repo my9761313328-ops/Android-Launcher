@@ -1,6 +1,7 @@
 package com.nihalthakral.nihalhome
 
 import android.animation.ObjectAnimator
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -17,6 +18,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -32,6 +34,18 @@ class PremiumActivity : ComponentActivity() {
     private var isAdBusy = false
     private var rewardEarned = false
     private lateinit var buttonWatchAdRef: Button
+
+    private val fallbackAdLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        isAdBusy = false
+        if (result.resultCode == Activity.RESULT_OK) {
+            rewardEarned = true
+            onRewardEarned()
+        } else {
+            buttonWatchAdRef.text = getString(R.string.action_watch_ad)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,11 +108,19 @@ class PremiumActivity : ComponentActivity() {
 
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     rewardedAd = null
-                    isAdBusy = false
-                    buttonWatchAdRef.text = getString(R.string.action_retry_ad)
+                    if (adError.code == AdRequest.ERROR_CODE_NO_FILL) {
+                        showFallbackAd()
+                    } else {
+                        isAdBusy = false
+                        buttonWatchAdRef.text = getString(R.string.action_retry_ad)
+                    }
                 }
             }
         )
+    }
+
+    private fun showFallbackAd() {
+        fallbackAdLauncher.launch(Intent(this, FallbackAdActivity::class.java))
     }
 
     private fun showRewardedAd(ad: RewardedAd) {
