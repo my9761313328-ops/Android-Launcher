@@ -413,7 +413,7 @@
                 android:layout_width="23dp"
                 android:layout_height="23dp"
                 android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_sparkles" />
+                android:src="@drawable/ic_play_circle" />
             <TextView
                 android:id="@+id/textAskAnExpert"
                 android:text="@string/ask_an_expert_label"
