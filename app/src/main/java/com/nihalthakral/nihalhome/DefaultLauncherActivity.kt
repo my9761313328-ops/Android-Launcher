@@ -140,6 +140,7 @@ class DefaultLauncherActivity : ComponentActivity() {
 
     private fun proceedIfDefault() {
         if (LauncherUtils.isDefaultLauncher(this)) {
+            LauncherUtils.hideAppIcon(this)
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
