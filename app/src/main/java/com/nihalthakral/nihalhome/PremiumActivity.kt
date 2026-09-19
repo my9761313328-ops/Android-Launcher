@@ -324,7 +324,7 @@ class PremiumActivity : ComponentActivity() {
     }
 
     companion object {
-        private const val TEST_REWARDED_AD_UNIT_ID = "ca-app-pub-3940256099942544/5224354917"
+        private const val TEST_REWARDED_AD_UNIT_ID = "ca-app-pub-5939817111566865/1834673417"
         private const val SKIP_COUNTDOWN_SECONDS = 30
     }
 }
