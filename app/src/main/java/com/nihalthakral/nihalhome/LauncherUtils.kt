@@ -106,30 +106,6 @@ object LauncherUtils {
         }
     }
 
-    fun hideAppIcon(context: Context) {
-        try {
-            val componentName = android.content.ComponentName(context, "com.nihalthakral.nihalhome.AppIconAlias")
-            context.packageManager.setComponentEnabledSetting(
-                componentName,
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                0
-            )
-        } catch (e: Exception) {
-        }
-    }
-
-    fun showAppIcon(context: Context) {
-        try {
-            val componentName = android.content.ComponentName(context, "com.nihalthakral.nihalhome.AppIconAlias")
-            context.packageManager.setComponentEnabledSetting(
-                componentName,
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP
-            )
-        } catch (e: Exception) {
-        }
-    }
-
     fun launchSelected(context: Context, packageName: String, activityName: String): Boolean {
         return try {
             val intent = Intent(Intent.ACTION_MAIN).apply {
