@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/onboarding_background">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideTitleTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.108" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideTitleBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.148" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideIconTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.386" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideIconBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.557" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideLabelTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.586" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideLabelBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.626" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideButtonTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.860" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideButtonBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.929" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideIconLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.325" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideIconRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.675" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.10" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.90" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textDeviceAdminTitle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/device_admin_title"
+        android:textColor="@color/onboarding_heading"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:maxLines="1"
+        android:includeFontPadding="false"
+        android:ellipsize="none"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="1sp"
+        app:autoSizeMaxTextSize="200sp"
+        app:autoSizeStepGranularity="1sp"
+        app:layout_constraintStart_toStartOf="@id/guideLeft"
+        app:layout_constraintEnd_toEndOf="@id/guideRight"
+        app:layout_constraintTop_toTopOf="@id/guideTitleTop"
+        app:layout_constraintBottom_toBottomOf="@id/guideTitleBottom" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageAppLogo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher"
+        app:shapeAppearanceOverlay="@style/CircleImageOverlay"
+        app:layout_constraintStart_toStartOf="@id/guideIconLeft"
+        app:layout_constraintEnd_toEndOf="@id/guideIconRight"
+        app:layout_constraintTop_toTopOf="@id/guideIconTop"
+        app:layout_constraintBottom_toBottomOf="@id/guideIconBottom" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textAppName"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/app_name"
+        android:textColor="@color/onboarding_heading"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:maxLines="1"
+        android:includeFontPadding="false"
+        android:ellipsize="none"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="1sp"
+        app:autoSizeMaxTextSize="200sp"
+        app:autoSizeStepGranularity="1sp"
+        app:layout_constraintStart_toStartOf="@id/guideLeft"
+        app:layout_constraintEnd_toEndOf="@id/guideRight"
+        app:layout_constraintTop_toTopOf="@id/guideLabelTop"
+        app:layout_constraintBottom_toBottomOf="@id/guideLabelBottom" />
+
+    <Button
+        android:id="@+id/buttonContinue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:paddingVertical="0dp"
+        android:background="@color/onboarding_accent"
+        android:text="@string/action_continue"
+        android:textColor="@color/onboarding_button_text"
+        android:textAllCaps="false"
+        android:gravity="center"
+        android:maxLines="1"
+        android:includeFontPadding="false"
+        android:ellipsize="none"
+        android:elevation="0dp"
+        app:layout_constraintStart_toStartOf="@id/guideLeft"
+        app:layout_constraintEnd_toEndOf="@id/guideRight"
+        app:layout_constraintTop_toTopOf="@id/guideButtonTop"
+        app:layout_constraintBottom_toBottomOf="@id/guideButtonBottom" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
