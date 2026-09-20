@@ -151,7 +151,7 @@
         android:minHeight="0dp"
         android:paddingVertical="0dp"
         android:background="@color/onboarding_accent"
-        android:text="@string/action_continue"
+        android:text="@string/action_activate"
         android:textColor="@color/onboarding_button_text"
         android:textAllCaps="false"
         android:gravity="center"
