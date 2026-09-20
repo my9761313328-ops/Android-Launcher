@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    <uses-permission android:name="android.permission.BIND_DEVICE_ADMIN" />
 
     <queries>
         <intent>
@@ -54,9 +55,26 @@
             android:theme="@style/Theme.NihalHome" />
 
         <activity
+            android:name=".DeviceAdminActivity"
+            android:exported="false"
+            android:theme="@style/Theme.NihalHome" />
+
+        <activity
             android:name=".DefaultLauncherActivity"
             android:exported="false"
             android:theme="@style/Theme.NihalHome" />
+
+        <receiver
+            android:name=".AppDeviceAdminReceiver"
+            android:permission="android.permission.BIND_DEVICE_ADMIN"
+            android:exported="true">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin_receiver" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".ChooseLauncherActivity"
