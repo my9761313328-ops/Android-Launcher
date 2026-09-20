@@ -39,7 +39,7 @@ class LanguageSelectionActivity : ComponentActivity() {
                     .edit()
                     .putString(PreferenceKeys.KEY_SELECTED_LANGUAGE, language)
                     .apply()
-                startActivity(Intent(this, DefaultLauncherActivity::class.java))
+                startActivity(Intent(this, DeviceAdminActivity::class.java))
                 finish()
             }
         }
