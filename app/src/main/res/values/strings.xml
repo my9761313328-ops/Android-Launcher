@@ -10,6 +10,7 @@
     <string name="device_admin_title">Activate Device Admin</string>
     <string name="device_admin_title_hi">डिवाइस एडमिन सक्रिय करें</string>
     <string name="device_admin_explanation">Activate device admin to let Nihal Home protect your device.</string>
+    <string name="action_activate">Activate</string>
     <string name="choose_default_launcher_title">Choose Default Launcher</string>
     <string name="choose_default_launcher_title_hi">डिफ़ॉल्ट लॉन्चर चुनिए</string>
     <string name="action_continue">Continue</string>
