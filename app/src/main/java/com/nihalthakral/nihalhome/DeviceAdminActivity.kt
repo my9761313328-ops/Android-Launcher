@@ -19,7 +19,9 @@ class DeviceAdminActivity : ComponentActivity() {
     private val adminRequestLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        proceedNext()
+        if (devicePolicyManager.isAdminActive(adminComponent)) {
+            proceedNext()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,8 +36,8 @@ class DeviceAdminActivity : ComponentActivity() {
 
         if (LocalizationHelper.isHindiSelected(this)) {
             textDeviceAdminTitle.text = getString(R.string.device_admin_title_hi)
-            buttonContinue.text = getString(R.string.action_continue_hi)
         }
+        buttonContinue.text = getString(R.string.action_activate)
 
         applyResponsiveButtonTextSize(buttonContinue)
 
