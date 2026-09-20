@@ -1,5 +1,7 @@
 package com.nihalthakral.nihalhome
 
+import android.app.admin.DevicePolicyManager
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -32,6 +34,14 @@ class MainActivity : ComponentActivity() {
 
         if (!languageSelected) {
             startActivity(Intent(this, LanguageSelectionActivity::class.java))
+            finish()
+            return
+        }
+
+        val devicePolicyManager = getSystemService(DevicePolicyManager::class.java)
+        val adminComponent = ComponentName(this, AppDeviceAdminReceiver::class.java)
+        if (!devicePolicyManager.isAdminActive(adminComponent)) {
+            startActivity(Intent(this, DeviceAdminActivity::class.java))
             finish()
             return
         }
