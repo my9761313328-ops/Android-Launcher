@@ -68,6 +68,13 @@ class PremiumActivity : ComponentActivity() {
 
         if (LocalizationHelper.isHindiSelected(this)) {
             buttonLocked.text = getString(R.string.action_locked_hi)
+            findViewById<TextView>(R.id.textHeroChip).text = getString(R.string.premium_hero_chip_hi)
+            findViewById<TextView>(R.id.textStepWatchTitle).text = getString(R.string.premium_step_watch_title_hi)
+            findViewById<TextView>(R.id.textStepWatchSub).text = getString(R.string.premium_step_watch_sub_hi)
+            findViewById<TextView>(R.id.textStepUnlockTitle).text = getString(R.string.premium_step_unlock_title_hi)
+            findViewById<TextView>(R.id.textStepUnlockSub).text = getString(R.string.premium_step_unlock_sub_hi)
+            findViewById<TextView>(R.id.textStepRepeatTitle).text = getString(R.string.premium_step_repeat_title_hi)
+            findViewById<TextView>(R.id.textStepRepeatSub).text = getString(R.string.premium_step_repeat_sub_hi)
         }
 
         buttonLocked.setOnClickListener {
