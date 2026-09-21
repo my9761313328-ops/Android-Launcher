@@ -74,8 +74,8 @@
     <string name="action_retry_ad">Retry</string>
     <string name="action_skip">No Thanks</string>
 
-    <string name="premium_hero_chip">24 hours</string>
-    <string name="premium_hero_chip_hi">24 घंटे</string>
+    <string name="premium_hero_chip">Protection Expired</string>
+    <string name="premium_hero_chip_hi">प्रोटेक्शन एक्सपायर</string>
     <string name="premium_step_watch_title">Watch one ad</string>
     <string name="premium_step_watch_title_hi">एक ऐड देखें</string>
     <string name="premium_step_watch_sub">about 30 seconds</string>
