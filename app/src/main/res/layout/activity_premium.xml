@@ -21,6 +21,20 @@
         android:clipChildren="false"
         android:clipToPadding="false">
 
+        <ImageView
+            android:id="@+id/imageGapFill"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/premium_gap_image"
+            android:importantForAccessibility="no" />
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,24 +84,10 @@
                 android:paddingEnd="12dp"
                 android:paddingBottom="4dp"
                 android:text="@string/premium_hero_chip"
-                android:textColor="@color/onboarding_accent"
+                android:textColor="@color/premium_expired_accent"
                 android:textSize="11sp" />
 
         </FrameLayout>
-
-        <ImageView
-            android:id="@+id/imageGapFill"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:src="@drawable/premium_gap_image"
-            android:importantForAccessibility="no" />
 
         <LinearLayout
             android:id="@+id/stepsStrip"
