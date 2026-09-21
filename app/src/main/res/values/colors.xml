@@ -24,4 +24,15 @@
 
     <color name="safe_state_icon">#4ADE80</color>
 
+    <color name="premium_muted">#94A3B8</color>
+    <color name="premium_glow_center">#337DD3FC</color>
+    <color name="premium_glow_edge">#007DD3FC</color>
+    <color name="premium_chip_border">#A67DD3FC</color>
+    <color name="premium_step_active_start">#B5E8FF</color>
+    <color name="premium_step_active_end">#38BDF8</color>
+    <color name="premium_step_idle_background">#2A3650</color>
+    <color name="premium_step_idle_border">#737DD3FC</color>
+    <color name="premium_dots">#8C7DD3FC</color>
+    <color name="premium_chevron">#B37DD3FC</color>
+
 </resources>
