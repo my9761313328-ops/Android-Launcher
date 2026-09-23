@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -44,7 +45,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="130dp"
                 android:orientation="horizontal"
                 android:weightSum="100">
 
@@ -53,15 +54,23 @@
                     android:layout_height="match_parent"
                     android:layout_weight="20" />
 
-                <ImageView
-                    android:id="@+id/imageHero"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textPremiumLabel"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="60"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_premium_hero"
-                    android:importantForAccessibility="no" />
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:ellipsize="none"
+                    android:fontFamily="sans-serif-medium"
+                    android:textStyle="bold"
+                    android:text="@string/premium_label"
+                    android:textColor="@color/onboarding_heading"
+                    app:autoSizeTextType="uniform"
+                    app:autoSizeMinTextSize="8sp"
+                    app:autoSizeMaxTextSize="96sp"
+                    app:autoSizeStepGranularity="1sp" />
 
                 <View
                     android:layout_width="0dp"
@@ -69,23 +78,6 @@
                     android:layout_weight="20" />
 
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/textHeroChip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="25dp"
-                android:background="@drawable/bg_premium_hero_chip"
-                android:fontFamily="sans-serif-medium"
-                android:includeFontPadding="false"
-                android:paddingStart="12dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="12dp"
-                android:paddingBottom="4dp"
-                android:text="@string/premium_hero_chip"
-                android:textColor="@color/premium_expired_accent"
-                android:textSize="11sp" />
 
         </FrameLayout>
 
