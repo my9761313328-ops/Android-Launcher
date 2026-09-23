@@ -19,6 +19,7 @@
         android:layout_height="0dp"
         android:layout_weight="663"
         android:orientation="vertical"
+        android:weightSum="100"
         android:clipChildren="false"
         android:clipToPadding="false">
 
@@ -26,7 +27,7 @@
             android:id="@+id/imageGapFill"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="60"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
@@ -38,14 +39,15 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="40"
             android:background="@drawable/bg_premium_hero_glow"
             android:paddingTop="20dp"
             android:paddingBottom="20dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
+                android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:weightSum="100">
 
