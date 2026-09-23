@@ -12,9 +12,11 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -94,6 +96,95 @@ class PremiumActivity : ComponentActivity() {
         }
         applyResponsiveButtonTextSize(buttonWatchAd)
         applyResponsiveButtonTextSize(buttonSkip)
+
+        applyResponsiveStepsStrip(buttonLocked)
+    }
+
+    private fun applyResponsiveStepsStrip(buttonLocked: Button) {
+        val stepsStripContainer = findViewById<LinearLayout>(R.id.stepsStripContainer)
+        val root = buttonLocked.rootView
+        root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                val lockedHeight = buttonLocked.height
+                if (lockedHeight <= 0) return
+
+                root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                val containerHeightPx = lockedHeight * 2
+                val params = stepsStripContainer.layoutParams
+                params.height = containerHeightPx
+                stepsStripContainer.layoutParams = params
+
+                val iconSizePx = (containerHeightPx * 0.34f).toInt()
+                val innerIconPx = (iconSizePx * 0.5f).toInt()
+                val titleTextPx = iconSizePx * 0.30f
+                val subTextPx = titleTextPx * 0.833f
+                val lineThicknessPx = (iconSizePx * 0.10f).toInt().coerceAtLeast(1)
+                val chevronWidthPx = (iconSizePx * 0.20f).toInt().coerceAtLeast(1)
+                val chevronHeightPx = (iconSizePx * 0.30f).toInt().coerceAtLeast(1)
+                val gapAboveTitlePx = (iconSizePx * 0.20f).toInt()
+                val gapAboveSubPx = (iconSizePx * 0.05f).toInt()
+
+                resizeSquare(findViewById(R.id.iconStepWatch), iconSizePx)
+                resizeSquare(findViewById(R.id.iconStepUnlock), iconSizePx)
+                resizeSquare(findViewById(R.id.iconStepRepeat), iconSizePx)
+
+                resizeSquare(findViewById(R.id.imgStepWatch), innerIconPx)
+                resizeSquare(findViewById(R.id.imgStepUnlock), innerIconPx)
+                resizeSquare(findViewById(R.id.imgStepRepeat), innerIconPx)
+
+                resizeExact(findViewById(R.id.chevronStepUnlock), chevronWidthPx, chevronHeightPx)
+                resizeExact(findViewById(R.id.chevronStepRepeat), chevronWidthPx, chevronHeightPx)
+
+                setLineThickness(findViewById(R.id.lineWatchLeft), lineThicknessPx)
+                setLineThickness(findViewById(R.id.lineWatchRight), lineThicknessPx)
+                setLineThickness(findViewById(R.id.lineUnlockLeft), lineThicknessPx)
+                setLineThickness(findViewById(R.id.lineUnlockRight), lineThicknessPx)
+                setLineThickness(findViewById(R.id.lineRepeatLeft), lineThicknessPx)
+                setLineThickness(findViewById(R.id.lineRepeatRight), lineThicknessPx)
+
+                val titleIds = intArrayOf(R.id.textStepWatchTitle, R.id.textStepUnlockTitle, R.id.textStepRepeatTitle)
+                val subIds = intArrayOf(R.id.textStepWatchSub, R.id.textStepUnlockSub, R.id.textStepRepeatSub)
+
+                titleIds.forEach { id ->
+                    val textView = findViewById<TextView>(id)
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextPx)
+                    setTopMargin(textView, gapAboveTitlePx)
+                }
+
+                subIds.forEach { id ->
+                    val textView = findViewById<TextView>(id)
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, subTextPx)
+                    setTopMargin(textView, gapAboveSubPx)
+                }
+            }
+        })
+    }
+
+    private fun resizeSquare(view: View, sizePx: Int) {
+        val params = view.layoutParams
+        params.width = sizePx
+        params.height = sizePx
+        view.layoutParams = params
+    }
+
+    private fun resizeExact(view: View, widthPx: Int, heightPx: Int) {
+        val params = view.layoutParams
+        params.width = widthPx
+        params.height = heightPx
+        view.layoutParams = params
+    }
+
+    private fun setLineThickness(view: View, thicknessPx: Int) {
+        val params = view.layoutParams
+        params.height = thicknessPx
+        view.layoutParams = params
+    }
+
+    private fun setTopMargin(view: View, marginPx: Int) {
+        val params = view.layoutParams as? ViewGroup.MarginLayoutParams ?: return
+        params.topMargin = marginPx
+        view.layoutParams = params
     }
 
     private fun onWatchAdClicked() {
