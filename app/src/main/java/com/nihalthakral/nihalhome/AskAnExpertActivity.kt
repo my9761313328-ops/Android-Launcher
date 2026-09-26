@@ -1,13 +1,18 @@
 package com.nihalthakral.nihalhome
 
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.ViewTreeObserver
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -27,6 +32,7 @@ class AskAnExpertActivity : ComponentActivity() {
 
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
+    private lateinit var imageNoInternet: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +40,7 @@ class AskAnExpertActivity : ComponentActivity() {
 
         webView = findViewById(R.id.webViewHowToUse)
         progressBar = findViewById(R.id.progressHowToUse)
+        imageNoInternet = findViewById(R.id.imageNoInternet)
 
         val buttonPrevious = findViewById<Button>(R.id.buttonPrevious)
         val buttonNext = findViewById<Button>(R.id.buttonNext)
@@ -53,6 +60,16 @@ class AskAnExpertActivity : ComponentActivity() {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
                 progressBar.visibility = android.view.View.GONE
+            }
+
+            override fun onReceivedError(
+                view: WebView,
+                request: WebResourceRequest,
+                error: WebResourceError
+            ) {
+                if (request.isForMainFrame) {
+                    showNoInternet()
+                }
             }
         }
 
@@ -90,8 +107,31 @@ class AskAnExpertActivity : ComponentActivity() {
     }
 
     private fun playCurrentVideo() {
+        if (!isNetworkAvailable()) {
+            showNoInternet()
+            return
+        }
+
         progressBar.visibility = android.view.View.VISIBLE
+        webView.visibility = android.view.View.VISIBLE
+        imageNoInternet.visibility = android.view.View.GONE
         webView.loadUrl(videoUrls[currentIndex])
+    }
+
+    private fun showNoInternet() {
+        progressBar.visibility = android.view.View.GONE
+        webView.visibility = android.view.View.GONE
+        imageNoInternet.visibility = android.view.View.VISIBLE
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager =
+            getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(network) ?: return false
+
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 
     private fun shareApp() {
@@ -116,6 +156,10 @@ class AskAnExpertActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         webView.onResume()
+
+        if (imageNoInternet.visibility == android.view.View.VISIBLE && isNetworkAvailable()) {
+            playCurrentVideo()
+        }
     }
 
     private fun applyResponsiveButtonTextSize(emojiView: android.widget.TextView, vararg buttons: Button) {
