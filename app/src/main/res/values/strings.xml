@@ -9,7 +9,6 @@
     <string name="action_previous_hi">पीछे</string>
     <string name="action_share_app">Share App</string>
     <string name="action_share_app_hi">ऐप शेयर करें</string>
-    <string name="error_video_playback">Unable to play video. Check your internet connection.</string>
     <string name="device_admin_title">Activate Device Admin</string>
     <string name="device_admin_title_hi">डिवाइस एडमिन सक्रिय करें</string>
     <string name="device_admin_explanation">Activate device admin to let Nihal Home protect your device.</string>
