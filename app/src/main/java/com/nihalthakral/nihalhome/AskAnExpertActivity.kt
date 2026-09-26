@@ -38,6 +38,7 @@ class AskAnExpertActivity : ComponentActivity() {
         val buttonPrevious = findViewById<Button>(R.id.buttonPrevious)
         val buttonNext = findViewById<Button>(R.id.buttonNext)
         val buttonShareApp = findViewById<Button>(R.id.buttonShareApp)
+        val emojiShareApp = findViewById<android.widget.TextView>(R.id.emojiShareApp)
 
         applyHindiStaticText(buttonPrevious, buttonNext, buttonShareApp)
 
@@ -57,7 +58,7 @@ class AskAnExpertActivity : ComponentActivity() {
 
         playCurrentVideo()
 
-        applyResponsiveButtonTextSize(buttonPrevious, buttonNext, buttonShareApp)
+        applyResponsiveButtonTextSize(emojiShareApp, buttonPrevious, buttonNext, buttonShareApp)
 
         buttonPrevious.setOnClickListener {
             currentIndex = if (currentIndex == 0) videoUrls.size - 1 else currentIndex - 1
@@ -117,7 +118,7 @@ class AskAnExpertActivity : ComponentActivity() {
         webView.onResume()
     }
 
-    private fun applyResponsiveButtonTextSize(vararg buttons: Button) {
+    private fun applyResponsiveButtonTextSize(emojiView: android.widget.TextView, vararg buttons: Button) {
         val root = buttons[0].rootView
         root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -144,6 +145,7 @@ class AskAnExpertActivity : ComponentActivity() {
                 }
 
                 buttons.forEach { it.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx) }
+                emojiView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx)
 
                 buttons.forEach { button -> centerTextVertically(button) }
             }
