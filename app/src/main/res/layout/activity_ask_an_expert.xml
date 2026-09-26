@@ -1,5 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/onboarding_background" />
+    android:orientation="vertical"
+    android:weightSum="1000"
+    android:background="@color/onboarding_background"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="30" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="620">
+
+        <VideoView
+            android:id="@+id/videoHowToUse"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ProgressBar
+            android:id="@+id/progressHowToUse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="visible" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="90"
+        android:orientation="horizontal"
+        android:weightSum="100">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="10" />
+
+        <Button
+            android:id="@+id/buttonPrevious"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="25"
+            android:background="@drawable/bg_social_nav_button"
+            android:text="@string/action_previous"
+            android:textAllCaps="false"
+            android:textColor="@color/onboarding_button_text"
+            android:includeFontPadding="false"
+            android:elevation="0dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="30" />
+
+        <Button
+            android:id="@+id/buttonNext"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="25"
+            android:background="@drawable/bg_social_nav_button"
+            android:text="@string/action_next"
+            android:textAllCaps="false"
+            android:textColor="@color/onboarding_button_text"
+            android:includeFontPadding="false"
+            android:elevation="0dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="10" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="20" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="100"
+        android:orientation="horizontal"
+        android:weightSum="100">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="10" />
+
+        <FrameLayout
+            android:id="@+id/shareAppContainer"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="80">
+
+            <Button
+                android:id="@+id/buttonShareApp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/onboarding_accent"
+                android:text="@string/action_share_app"
+                android:textColor="@color/onboarding_button_text"
+                android:textAllCaps="false"
+                android:includeFontPadding="false"
+                android:elevation="0dp" />
+
+            <TextView
+                android:id="@+id/emojiShareApp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="16dp"
+                android:text="❤️"
+                android:textSize="20sp"
+                android:textColor="@color/onboarding_button_text"
+                android:includeFontPadding="false"
+                android:visibility="visible"
+                android:clickable="false"
+                android:focusable="false"
+                android:elevation="4dp"
+                android:translationZ="4dp"
+                android:importantForAccessibility="no" />
+
+        </FrameLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="10" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="40" />
+
+</LinearLayout>
