@@ -1,14 +1,14 @@
 package com.nihalthakral.nihalhome
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.ViewTreeObserver
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.ProgressBar
-import android.widget.Toast
-import android.widget.VideoView
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 
@@ -25,14 +25,14 @@ class AskAnExpertActivity : ComponentActivity() {
 
     private var currentIndex = 0
 
-    private lateinit var videoView: VideoView
+    private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ask_an_expert)
 
-        videoView = findViewById(R.id.videoHowToUse)
+        webView = findViewById(R.id.webViewHowToUse)
         progressBar = findViewById(R.id.progressHowToUse)
 
         val buttonPrevious = findViewById<Button>(R.id.buttonPrevious)
@@ -41,16 +41,18 @@ class AskAnExpertActivity : ComponentActivity() {
 
         applyHindiStaticText(buttonPrevious, buttonNext, buttonShareApp)
 
-        videoView.setOnPreparedListener { player ->
-            progressBar.visibility = android.view.View.GONE
-            player.isLooping = true
-            player.start()
-        }
+        webView.settings.javaScriptEnabled = true
+        webView.settings.mediaPlaybackRequiresUserGesture = false
+        webView.settings.domStorageEnabled = true
+        webView.settings.loadWithOverviewMode = true
+        webView.settings.useWideViewPort = true
+        webView.setBackgroundColor(android.graphics.Color.TRANSPARENT)
 
-        videoView.setOnErrorListener { _, _, _ ->
-            progressBar.visibility = android.view.View.GONE
-            Toast.makeText(this, getString(R.string.error_video_playback), Toast.LENGTH_SHORT).show()
-            true
+        webView.webChromeClient = WebChromeClient()
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView, url: String) {
+                progressBar.visibility = android.view.View.GONE
+            }
         }
 
         playCurrentVideo()
@@ -88,8 +90,7 @@ class AskAnExpertActivity : ComponentActivity() {
 
     private fun playCurrentVideo() {
         progressBar.visibility = android.view.View.VISIBLE
-        videoView.setVideoURI(Uri.parse(videoUrls[currentIndex]))
-        videoView.requestFocus()
+        webView.loadUrl(videoUrls[currentIndex])
     }
 
     private fun shareApp() {
@@ -108,16 +109,12 @@ class AskAnExpertActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
-        if (videoView.isPlaying) {
-            videoView.pause()
-        }
+        webView.onPause()
     }
 
     override fun onResume() {
         super.onResume()
-        if (!videoView.isPlaying) {
-            videoView.start()
-        }
+        webView.onResume()
     }
 
     private fun applyResponsiveButtonTextSize(vararg buttons: Button) {
