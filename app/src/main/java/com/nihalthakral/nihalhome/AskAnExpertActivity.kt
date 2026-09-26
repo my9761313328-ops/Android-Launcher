@@ -1,10 +1,14 @@
 package com.nihalthakral.nihalhome
 
+import android.animation.Keyframe
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.TypedValue
+import android.view.View
 import android.view.ViewTreeObserver
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
@@ -33,6 +37,8 @@ class AskAnExpertActivity : ComponentActivity() {
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
     private lateinit var imageNoInternet: ImageView
+    private lateinit var buttonPrevious: Button
+    private lateinit var buttonNext: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +48,8 @@ class AskAnExpertActivity : ComponentActivity() {
         progressBar = findViewById(R.id.progressHowToUse)
         imageNoInternet = findViewById(R.id.imageNoInternet)
 
-        val buttonPrevious = findViewById<Button>(R.id.buttonPrevious)
-        val buttonNext = findViewById<Button>(R.id.buttonNext)
+        buttonPrevious = findViewById(R.id.buttonPrevious)
+        buttonNext = findViewById(R.id.buttonNext)
         val buttonShareApp = findViewById<Button>(R.id.buttonShareApp)
         val emojiShareApp = findViewById<android.widget.TextView>(R.id.emojiShareApp)
 
@@ -78,18 +84,24 @@ class AskAnExpertActivity : ComponentActivity() {
         applyResponsiveButtonTextSize(emojiShareApp, buttonPrevious, buttonNext, buttonShareApp)
 
         buttonPrevious.setOnClickListener {
-            currentIndex = if (currentIndex == 0) videoUrls.size - 1 else currentIndex - 1
-            playCurrentVideo()
+            if (currentIndex > 0) {
+                currentIndex -= 1
+                playCurrentVideo()
+            }
         }
 
         buttonNext.setOnClickListener {
-            currentIndex = if (currentIndex == videoUrls.size - 1) 0 else currentIndex + 1
-            playCurrentVideo()
+            if (currentIndex < videoUrls.size - 1) {
+                currentIndex += 1
+                playCurrentVideo()
+            }
         }
 
         buttonShareApp.setOnClickListener {
             shareApp()
         }
+
+        startShareButtonHeartbeat(findViewById(R.id.shareAppContainer))
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -107,6 +119,8 @@ class AskAnExpertActivity : ComponentActivity() {
     }
 
     private fun playCurrentVideo() {
+        updateNavButtonsState()
+
         if (!isNetworkAvailable()) {
             showNoInternet()
             return
@@ -116,6 +130,17 @@ class AskAnExpertActivity : ComponentActivity() {
         webView.visibility = android.view.View.VISIBLE
         imageNoInternet.visibility = android.view.View.GONE
         webView.loadUrl(videoUrls[currentIndex])
+    }
+
+    private fun updateNavButtonsState() {
+        val isFirst = currentIndex == 0
+        val isLast = currentIndex == videoUrls.size - 1
+
+        buttonPrevious.isEnabled = !isFirst
+        buttonPrevious.alpha = if (isFirst) 0.4f else 1f
+
+        buttonNext.isEnabled = !isLast
+        buttonNext.alpha = if (isLast) 0.4f else 1f
     }
 
     private fun showNoInternet() {
@@ -160,6 +185,33 @@ class AskAnExpertActivity : ComponentActivity() {
         if (imageNoInternet.visibility == android.view.View.VISIBLE && isNetworkAvailable()) {
             playCurrentVideo()
         }
+    }
+
+    private fun startShareButtonHeartbeat(target: View) {
+        val scaleXKeyframes = PropertyValuesHolder.ofKeyframe(
+            View.SCALE_X,
+            Keyframe.ofFloat(0f, 1f),
+            Keyframe.ofFloat(0.06f, 1.06f),
+            Keyframe.ofFloat(0.14f, 1f),
+            Keyframe.ofFloat(0.20f, 1.05f),
+            Keyframe.ofFloat(0.28f, 1f),
+            Keyframe.ofFloat(1f, 1f)
+        )
+
+        val scaleYKeyframes = PropertyValuesHolder.ofKeyframe(
+            View.SCALE_Y,
+            Keyframe.ofFloat(0f, 1f),
+            Keyframe.ofFloat(0.06f, 1.06f),
+            Keyframe.ofFloat(0.14f, 1f),
+            Keyframe.ofFloat(0.20f, 1.05f),
+            Keyframe.ofFloat(0.28f, 1f),
+            Keyframe.ofFloat(1f, 1f)
+        )
+
+        val heartbeat = ObjectAnimator.ofPropertyValuesHolder(target, scaleXKeyframes, scaleYKeyframes)
+        heartbeat.duration = 2600L
+        heartbeat.repeatCount = ObjectAnimator.INFINITE
+        heartbeat.start()
     }
 
     private fun applyResponsiveButtonTextSize(emojiView: android.widget.TextView, vararg buttons: Button) {
