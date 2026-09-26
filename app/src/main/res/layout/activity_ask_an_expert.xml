@@ -18,8 +18,8 @@
         android:layout_height="0dp"
         android:layout_weight="620">
 
-        <VideoView
-            android:id="@+id/videoHowToUse"
+        <WebView
+            android:id="@+id/webViewHowToUse"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
