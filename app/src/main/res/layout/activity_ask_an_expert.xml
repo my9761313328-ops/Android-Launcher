@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="1000"
+    android:weightSum="920"
     android:background="@color/onboarding_background"
     android:clipChildren="false"
     android:clipToPadding="false">
@@ -31,6 +31,11 @@
             android:visibility="visible" />
 
     </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="20" />
 
     <LinearLayout
         android:layout_width="match_parent"
