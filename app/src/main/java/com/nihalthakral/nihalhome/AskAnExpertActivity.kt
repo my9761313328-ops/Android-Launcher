@@ -9,6 +9,7 @@ import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
@@ -33,6 +34,8 @@ class AskAnExpertActivity : ComponentActivity() {
     private val shareAppLink = "https://example.com/"
 
     private var currentIndex = 0
+    private var isScreenVisible = false
+    private var needsReload = false
 
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
@@ -66,6 +69,7 @@ class AskAnExpertActivity : ComponentActivity() {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
                 progressBar.visibility = android.view.View.GONE
+                if (!isScreenVisible) pauseMedia()
             }
 
             override fun onReceivedError(
@@ -175,16 +179,52 @@ class AskAnExpertActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
+        isScreenVisible = false
+        pauseMedia()
         webView.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        webView.stopLoading()
+        webView.loadUrl("about:blank")
+        needsReload = true
     }
 
     override fun onResume() {
         super.onResume()
+        isScreenVisible = true
         webView.onResume()
 
-        if (imageNoInternet.visibility == android.view.View.VISIBLE && isNetworkAvailable()) {
+        val noInternetShown = imageNoInternet.visibility == android.view.View.VISIBLE
+        if (needsReload || (noInternetShown && isNetworkAvailable())) {
+            needsReload = false
             playCurrentVideo()
+        } else {
+            resumeMedia()
         }
+    }
+
+    override fun onDestroy() {
+        webView.stopLoading()
+        webView.loadUrl("about:blank")
+        (webView.parent as? ViewGroup)?.removeView(webView)
+        webView.destroy()
+        super.onDestroy()
+    }
+
+    private fun pauseMedia() {
+        webView.evaluateJavascript(
+            "document.querySelectorAll('video,audio').forEach(function(m){if(!m.paused){m.dataset.appPaused='1';m.pause();}});",
+            null
+        )
+    }
+
+    private fun resumeMedia() {
+        webView.evaluateJavascript(
+            "document.querySelectorAll('video,audio').forEach(function(m){if(m.dataset.appPaused==='1'){delete m.dataset.appPaused;m.play();}});",
+            null
+        )
     }
 
     private fun startShareButtonHeartbeat(target: View) {
