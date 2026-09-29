@@ -91,4 +91,12 @@
     <string name="premium_step_repeat_sub">one ad a day</string>
     <string name="premium_step_repeat_sub_hi">रोज़ एक ऐड</string>
 
+    <string name="update_button">Update</string>
+    <string name="update_button_hi">अपडेट करें</string>
+    <string name="update_downloading">Downloading… %1$d%%</string>
+    <string name="update_downloading_hi">डाउनलोड हो रहा है… %1$d%%</string>
+    <string name="update_downloading_plain">Downloading…</string>
+    <string name="update_downloading_plain_hi">डाउनलोड हो रहा है…</string>
+    <string name="update_failed">Download failed. Check your internet and tap Update again.</string>
+    <string name="update_failed_hi">डाउनलोड नहीं हो सका। इंटरनेट जांचें और फिर से अपडेट दबाएं।</string>
 </resources>
