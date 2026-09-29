@@ -13,6 +13,6 @@ object PreferenceKeys {
     const val KEY_LAST_UPDATE_CHECK = "last_update_check"
     const val KEY_LAST_UPDATE_ATTEMPT = "last_update_attempt"
     const val KEY_PENDING_UPDATE_VERSION = "pending_update_version"
-    const val UPDATE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000L
-    const val UPDATE_RETRY_INTERVAL_MS = 15 * 60 * 1000L
+    const val UPDATE_CHECK_INTERVAL_MS = 1 * 60 * 1000L
+    const val UPDATE_RETRY_INTERVAL_MS = 1 * 60 * 1000L
 }
