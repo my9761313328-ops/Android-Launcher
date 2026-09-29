@@ -8,8 +8,8 @@ import java.net.URL
 
 object UpdateChecker {
 
-    const val VERSION_URL = "https://example.com/version.txt"
-    const val APK_URL = "https://example.com/Nihal_Home_Safety_From_Hackers.apk"
+    const val VERSION_URL = "https://backend-nihalhome.github.io/version.txt"
+    const val APK_URL = "https://backend-nihalhome.github.io/app-debug.apk"
     const val APK_FILE_NAME = "update.apk"
     const val PART_FILE_NAME = "update.apk.part"
 
