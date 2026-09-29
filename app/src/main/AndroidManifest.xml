@@ -36,6 +36,16 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-5939817111566865~6465125511" />
 
+        <provider
+            android:name=".ApkShareFileProvider"
+            android:authorities="${applicationId}.apkshare"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/apk_share_paths" />
+        </provider>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
