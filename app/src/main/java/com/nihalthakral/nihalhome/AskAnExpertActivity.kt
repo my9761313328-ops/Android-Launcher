@@ -27,6 +27,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import java.io.File
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -44,6 +45,7 @@ class AskAnExpertActivity : ComponentActivity() {
     private var currentIndex = 0
     private var isScreenVisible = false
     private var needsReload = false
+    private var isPreparingShare = false
 
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
@@ -172,15 +174,24 @@ class AskAnExpertActivity : ComponentActivity() {
     }
 
     private fun shareApp() {
-        lifecycleScope.launch {
-            val apkUri = withContext(Dispatchers.IO) { prepareApkForShare() } ?: return@launch
+        if (isPreparingShare) return
+        isPreparingShare = true
 
-            val intent = Intent(Intent.ACTION_SEND)
-            intent.type = "application/vnd.android.package-archive"
-            intent.putExtra(Intent.EXTRA_STREAM, apkUri)
-            intent.clipData = ClipData.newRawUri(shareApkFileName, apkUri)
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            startActivity(Intent.createChooser(intent, getString(R.string.action_share_app)))
+        lifecycleScope.launch {
+            try {
+                val apkUri = withContext(Dispatchers.IO) { prepareApkForShare() } ?: return@launch
+
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.type = "application/vnd.android.package-archive"
+                intent.putExtra(Intent.EXTRA_STREAM, apkUri)
+                intent.clipData = ClipData.newRawUri(shareApkFileName, apkUri)
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                startActivity(Intent.createChooser(intent, getString(R.string.action_share_app)))
+
+                delay(1000L)
+            } finally {
+                isPreparingShare = false
+            }
         }
     }
 
