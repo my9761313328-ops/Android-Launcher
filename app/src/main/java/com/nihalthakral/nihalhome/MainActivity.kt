@@ -18,6 +18,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
+import androidx.lifecycle.Lifecycle
 import kotlin.concurrent.thread
 
 class MainActivity : ComponentActivity() {
@@ -60,6 +61,35 @@ class MainActivity : ComponentActivity() {
 
         ensureUnlockInitialized(prefs)
 
+        if (UpdateChecker.hasPendingUpdate(this)) {
+            openUpdateScreen()
+            return
+        }
+
+        if (UpdateChecker.isCheckDue(this)) {
+            val waitingView = View(this)
+            waitingView.setBackgroundColor(getColor(R.color.onboarding_background))
+            setContentView(waitingView)
+
+            thread {
+                val updateFound = UpdateChecker.checkForUpdate(applicationContext)
+                runOnUiThread {
+                    if (isFinishing || isDestroyed) return@runOnUiThread
+
+                    if (updateFound) {
+                        openUpdateScreen()
+                    } else {
+                        setupMainContent()
+                    }
+                }
+            }
+            return
+        }
+
+        setupMainContent()
+    }
+
+    private fun setupMainContent() {
         setContentView(R.layout.activity_main)
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -103,6 +133,17 @@ class MainActivity : ComponentActivity() {
         applyHeaderSizeToFeatureCardsDeferred()
 
         isMainContentReady = true
+
+        if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+            startAccessibilityScan()
+        }
+    }
+
+    private fun openUpdateScreen() {
+        val intent = Intent(this, UpdateActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        startActivity(intent)
+        finish()
     }
 
     override fun onResume() {
@@ -112,6 +153,16 @@ class MainActivity : ComponentActivity() {
         if (isMainContentReady && isUnlockExpired(prefs)) {
             startActivity(Intent(this, PremiumActivity::class.java))
             finish()
+            return
+        }
+
+        if (isMainContentReady && UpdateChecker.hasPendingUpdate(this)) {
+            openUpdateScreen()
+            return
+        }
+
+        if (isMainContentReady && UpdateChecker.isCheckDue(this)) {
+            recreate()
             return
         }
 
@@ -426,19 +477,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun onCloseClicked() {
-        val prefs = getSharedPreferences(PreferenceKeys.PREFS_NAME, MODE_PRIVATE)
-        val dontAskAgain = prefs.getBoolean(PreferenceKeys.KEY_DONT_ASK_AGAIN, false)
-        val savedPackage = prefs.getString(PreferenceKeys.KEY_SAVED_LAUNCHER_PACKAGE, null)
-        val savedActivity = prefs.getString(PreferenceKeys.KEY_SAVED_LAUNCHER_CLASS, null)
-
-        if (dontAskAgain && savedPackage != null && savedActivity != null) {
-            val launched = LauncherUtils.launchSelected(this, savedPackage, savedActivity)
-            if (!launched) {
-                startActivity(Intent(this, ChooseLauncherActivity::class.java))
-            }
-        } else {
-            startActivity(Intent(this, ChooseLauncherActivity::class.java))
-        }
+        LauncherUtils.openUserLauncher(this)
     }
 
     private fun applyResponsiveButtonTextSize(vararg buttons: Button) {
