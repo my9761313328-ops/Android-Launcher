@@ -3,9 +3,11 @@ package com.nihalthakral.nihalhome
 import android.animation.Keyframe
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.content.ClipData
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.Uri
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
@@ -21,6 +23,12 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.FileProvider
+import androidx.lifecycle.lifecycleScope
+import java.io.File
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AskAnExpertActivity : ComponentActivity() {
 
@@ -31,7 +39,7 @@ class AskAnExpertActivity : ComponentActivity() {
         "https://backend-nihalhome.github.io/4.mp4"
     )
 
-    private val shareAppLink = "https://example.com/"
+    private val shareApkFileName = "Nihal_Home_Safety_From_Hackers.apk"
 
     private var currentIndex = 0
     private var isScreenVisible = false
@@ -164,10 +172,28 @@ class AskAnExpertActivity : ComponentActivity() {
     }
 
     private fun shareApp() {
-        val intent = Intent(Intent.ACTION_SEND)
-        intent.type = "text/plain"
-        intent.putExtra(Intent.EXTRA_TEXT, shareAppLink)
-        startActivity(Intent.createChooser(intent, getString(R.string.action_share_app)))
+        lifecycleScope.launch {
+            val apkUri = withContext(Dispatchers.IO) { prepareApkForShare() } ?: return@launch
+
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.type = "application/vnd.android.package-archive"
+            intent.putExtra(Intent.EXTRA_STREAM, apkUri)
+            intent.clipData = ClipData.newRawUri(shareApkFileName, apkUri)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startActivity(Intent.createChooser(intent, getString(R.string.action_share_app)))
+        }
+    }
+
+    private fun prepareApkForShare(): Uri? {
+        return try {
+            val directory = File(cacheDir, "shared_apk")
+            directory.mkdirs()
+            val target = File(directory, shareApkFileName)
+            File(applicationInfo.sourceDir).copyTo(target, overwrite = true)
+            FileProvider.getUriForFile(this, "$packageName.apkshare", target)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private fun goToMainScreen() {
