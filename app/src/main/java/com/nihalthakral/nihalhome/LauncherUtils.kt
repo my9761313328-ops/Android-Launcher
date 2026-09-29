@@ -106,6 +106,22 @@ object LauncherUtils {
         }
     }
 
+    fun openUserLauncher(context: Context) {
+        val prefs = context.getSharedPreferences(PreferenceKeys.PREFS_NAME, Context.MODE_PRIVATE)
+        val dontAskAgain = prefs.getBoolean(PreferenceKeys.KEY_DONT_ASK_AGAIN, false)
+        val savedPackage = prefs.getString(PreferenceKeys.KEY_SAVED_LAUNCHER_PACKAGE, null)
+        val savedActivity = prefs.getString(PreferenceKeys.KEY_SAVED_LAUNCHER_CLASS, null)
+
+        val launched = dontAskAgain &&
+            savedPackage != null &&
+            savedActivity != null &&
+            launchSelected(context, savedPackage, savedActivity)
+
+        if (!launched) {
+            context.startActivity(Intent(context, ChooseLauncherActivity::class.java))
+        }
+    }
+
     fun launchSelected(context: Context, packageName: String, activityName: String): Boolean {
         return try {
             val intent = Intent(Intent.ACTION_MAIN).apply {
