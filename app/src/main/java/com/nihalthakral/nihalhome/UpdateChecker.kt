@@ -5,6 +5,7 @@ import androidx.core.content.pm.PackageInfoCompat
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.concurrent.atomic.AtomicBoolean
 
 object UpdateChecker {
 
@@ -46,6 +47,21 @@ object UpdateChecker {
 
         return hasElapsed(now, lastCheck, PreferenceKeys.UPDATE_CHECK_INTERVAL_MS) &&
             hasElapsed(now, lastAttempt, PreferenceKeys.UPDATE_RETRY_INTERVAL_MS)
+    }
+
+    private val checkRunning = AtomicBoolean(false)
+
+    fun checkInBackground(context: Context) {
+        if (!checkRunning.compareAndSet(false, true)) return
+        val appContext = context.applicationContext
+        Thread {
+            try {
+                checkForUpdate(appContext)
+            } catch (e: Exception) {
+            } finally {
+                checkRunning.set(false)
+            }
+        }.start()
     }
 
     fun checkForUpdate(context: Context): Boolean {
