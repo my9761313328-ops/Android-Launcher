@@ -66,26 +66,6 @@ class MainActivity : ComponentActivity() {
             return
         }
 
-        if (!UpdateChecker.updateDismissed && UpdateChecker.isCheckDue(this)) {
-            val waitingView = View(this)
-            waitingView.setBackgroundColor(getColor(R.color.onboarding_background))
-            setContentView(waitingView)
-
-            thread {
-                val updateFound = UpdateChecker.checkForUpdate(applicationContext)
-                runOnUiThread {
-                    if (isFinishing || isDestroyed) return@runOnUiThread
-
-                    if (updateFound) {
-                        openUpdateScreen()
-                    } else {
-                        setupMainContent()
-                    }
-                }
-            }
-            return
-        }
-
         setupMainContent()
     }
 
@@ -161,9 +141,8 @@ class MainActivity : ComponentActivity() {
             return
         }
 
-        if (isMainContentReady && !UpdateChecker.updateDismissed && UpdateChecker.isCheckDue(this)) {
-            recreate()
-            return
+        if (isMainContentReady && UpdateChecker.isCheckDue(this)) {
+            UpdateChecker.checkInBackground(this)
         }
 
         if (isMainContentReady) {
