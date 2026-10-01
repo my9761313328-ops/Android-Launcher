@@ -61,12 +61,12 @@ class MainActivity : ComponentActivity() {
 
         ensureUnlockInitialized(prefs)
 
-        if (UpdateChecker.hasPendingUpdate(this)) {
+        if (!UpdateChecker.updateDismissed && UpdateChecker.hasPendingUpdate(this)) {
             openUpdateScreen()
             return
         }
 
-        if (UpdateChecker.isCheckDue(this)) {
+        if (!UpdateChecker.updateDismissed && UpdateChecker.isCheckDue(this)) {
             val waitingView = View(this)
             waitingView.setBackgroundColor(getColor(R.color.onboarding_background))
             setContentView(waitingView)
@@ -156,12 +156,12 @@ class MainActivity : ComponentActivity() {
             return
         }
 
-        if (isMainContentReady && UpdateChecker.hasPendingUpdate(this)) {
+        if (isMainContentReady && !UpdateChecker.updateDismissed && UpdateChecker.hasPendingUpdate(this)) {
             openUpdateScreen()
             return
         }
 
-        if (isMainContentReady && UpdateChecker.isCheckDue(this)) {
+        if (isMainContentReady && !UpdateChecker.updateDismissed && UpdateChecker.isCheckDue(this)) {
             recreate()
             return
         }
