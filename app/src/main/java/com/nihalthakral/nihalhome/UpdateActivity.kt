@@ -121,7 +121,11 @@ class UpdateActivity : ComponentActivity() {
     private fun onCloseClicked() {
         downloadJob?.cancel()
         UpdateChecker.clearDownloadedFiles(this)
-        LauncherUtils.openUserLauncher(this)
+        UpdateChecker.updateDismissed = true
+
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        startActivity(intent)
         finish()
     }
 
