@@ -477,6 +477,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun onCloseClicked() {
+        UpdateChecker.updateDismissed = false
         LauncherUtils.openUserLauncher(this)
     }
 
