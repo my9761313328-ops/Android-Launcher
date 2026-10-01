@@ -15,6 +15,9 @@ object UpdateChecker {
 
     private const val NETWORK_TIMEOUT_MS = 3000
 
+    @Volatile
+    var updateDismissed = false
+
     fun updateDirectory(context: Context): File {
         return File(context.cacheDir, "update_apk")
     }
